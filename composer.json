@@ -1,0 +1,16 @@
+{
+    "name": "goshencollege/gc-communicator",
+    "description": "Communicator Web App for GC",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "David King",
+            "email": "davidwk@goshen.edu"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^8.5",
+        "symfony/symfony": "^5.2"
+    }
+}
