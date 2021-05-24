@@ -1,0 +1,17 @@
+name: Enforce branch naming
+
+on:
+    push:
+        branches-ignore:
+            - main
+            - develop
+
+jobs:
+    validate-branch-name:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Validate branch name requirements
+              uses: goshencollege/validate-branch-name@v1.0.1
+              with:
+                  pattern: '^(feature|release|fix|hotfix)\/([a-z-])+$'
+    
