@@ -23,7 +23,7 @@ What's required for this to be considered complete?  It may be helpful to frame 
 List any dependencies for this with links to relevant issues when applicable.
 
 ## Required Tests
-- Automated unit tests
+- Automated tests
 - Manual tests
 
 ## Additional context
