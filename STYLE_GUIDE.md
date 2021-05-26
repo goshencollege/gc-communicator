@@ -1,6 +1,6 @@
 # PHP Style Guide
 
-All rules and guidelines in this document apply to PHP files unless otherwise noted. References to PHP/HTML files can be interpreted as files that primarily contain HTML, but use PHP for templating purposes.
+This guide was adapted from [https://gist.github.com/ryansechrest/8138375](https://gist.github.com/ryansechrest/8138375).  All rules and guidelines in this document apply to PHP files unless otherwise noted. References to PHP/HTML files can be interpreted as files that primarily contain HTML, but use PHP for templating purposes.
 
 > The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](http://www.ietf.org/rfc/rfc2119.txt).
 
@@ -153,8 +153,8 @@ This section describes the use of PHP tags in PHP and PHP/HTML files.
 	* i.e. `<?php ... ?>`
 4. [**Short open tag**](#4-short-open-tag) MUST NOT be used
 	* i.e. `<?` &rarr; `<?php`
-5. [**Short echo tag**](#5-short-echo-tag) SHOULD be used in PHP/HTML files
-	* i.e. `<?php echo` &rarr; `<?=`
+5. [**Short echo tag**](#5-short-echo-tag) SHOULD NOT be used in PHP/HTML files
+	* i.e. `<?=` &rarr; `<?php echo`  
 
 &#9650; [Table of Contents](#table-of-contents)
 
@@ -275,13 +275,13 @@ print_welcome_message();
 
 ### 5. Short Echo Tag
 
-Short echo tag SHOULD be used in PHP/HTML files.
+Short echo tag SHOULD NOT be used in PHP/HTML files.
 
 #### ~ Acceptable
 
 <pre lang=html>
 &lt;div&gt;
-	&lt;p&gt;&lt;?php echo get_welcome_message(); ?&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;?= echo get_welcome_message(); ?&gt;&lt;/p&gt;
 &lt;/div&gt;
 </pre>
 
@@ -291,7 +291,7 @@ Short echo tag SHOULD be used in PHP/HTML files.
 
 <pre lang=html>
 &lt;div&gt;
-	&lt;p&gt;&lt;?= get_welcome_message(); ?&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;?php get_welcome_message(); ?&gt;&lt;/p&gt;
 &lt;/div&gt;
 </pre>
 
@@ -464,7 +464,8 @@ namespace MyCompany;
 
 ### 3. Multiple Namespaces
 
-Multiple namespaces MUST use the curly brace syntax.
+Multiple namespaces SHOULD NOT be used in a single file.  If multiple namespaces
+are required they MUST use the curly brace syntax.
 
 #### &#10006; Incorrect
 
@@ -1014,13 +1015,13 @@ This section outline various, general formatting rules related to whitespace and
 
 1. [**Line length**](#1-line-length) MUST NOT exceed 80 characters, unless it is text
 	* i.e. `|---- 80+ chars ----|` &rarr; refactor expression and/or break list values
-2. [**Line indentation**](#2-line-indentation) MUST be accomplished using tabs
+2. [**Line indentation**](#2-line-indentation) MUST be accomplished using two spaces
 	* i.e. `function func() {` `↵` `⇥` `...` `↵` `}`
 3. [**Blank lines**](#3-blank-lines) SHOULD be added between logical blocks of code
 	* i.e. `...` `↵` `↵` `...`
 4. [**Text alignment**](#4-text-alignment) MUST be accomplished using spaces
 	* i.e. `$var` `·` `·` `·` `= ...;`
-5. [**Trailing whitespace**](#5-trailing-whitespace) MUST NOT be present after statements or serial comma break or on blank lines
+5. [**Trailing whitespace**](#5-trailing-whitespace) SHOULD NOT be present after statements or serial comma break or on blank lines
 	* i.e. no `...` `·` `·` `↵` `·` `↵` `...`
 6. [**Keywords**](#6-keywords) MUST be all lowercase
 	* e.g. `false`, `true`, `null`, etc.
@@ -1129,7 +1130,7 @@ $some_long_variable = get_something_else(
 
 ### 2. Line Indentation
 
-Line indentation MUST be accomplished using tabs.
+Line indentation MUST be accomplished using two spaces.
 
 #### &#10006; Incorrect
 
@@ -1137,14 +1138,14 @@ Line indentation MUST be accomplished using tabs.
 &lt;?php
 
 function print_welcome_message() {
-    echo WELCOME_MESSAGE;
+	echo WELCOME_MESSAGE;
 }
 
 // EOF
  
 </pre>
 
-&#8627; Incorrect because spaces are used to indent `echo WELCOME_MESSAGE;` instead of a tab.
+&#8627; Incorrect because tabs are used to indent `echo WELCOME_MESSAGE;` instead of two spaces.
 
 #### &#10004; Correct
 
@@ -1152,7 +1153,7 @@ function print_welcome_message() {
 &lt;?php
 
 function print_welcome_message() {
-	echo WELCOME_MESSAGE;
+  echo WELCOME_MESSAGE;
 }
 
 // EOF
@@ -1236,10 +1237,10 @@ Text alignment MUST be accomplished using spaces.
 &lt;?php
 
 $movie_quotes = array(
-	'slumdog_millionaire'		=> 'When somebody asks me a question, I tell them the answer.',
-	'silver_linings_playbook'	=> 'I opened up to you, and you judged me.',
-	'the_lives_of_others'		=> 'To think that people like you ruled a country.',
-	'the_shawshank_redemption'	=> 'Get busy living, or get busy dying.'
+  'slumdog_millionaire'		=> 'When somebody asks me a question, I tell them the answer.',
+  'silver_linings_playbook'	=> 'I opened up to you, and you judged me.',
+  'the_lives_of_others'		=> 'To think that people like you ruled a country.',
+  'the_shawshank_redemption'	=> 'Get busy living, or get busy dying.'
 );
 
 // EOF
@@ -1247,24 +1248,6 @@ $movie_quotes = array(
 </pre>
 
 &#8627; Incorrect because tabs are used instead of spaces to vertically align `=>`.
-
-<pre lang=php>
-&lt;?php
-
-$movie_quotes = array(
-    'slumdog_millionaire'       => 'When somebody asks me a question, I tell them the answer.',
-    'silver_linings_playbook'   => 'I opened up to you, and you judged me.',
-    'the_lives_of_others'       => 'To think that people like you ruled a country.',
-    'the_shawshank_redemption'  => 'Get busy living, or get busy dying.'
-);
-
-// EOF
- 
-</pre>
-
-&#8627; Incorrect because spaces are used instead of tabs to indent array keys.
-
-#### &#10004; Correct
 
 <pre lang=php>
 &lt;?php
@@ -1280,13 +1263,31 @@ $movie_quotes = array(
  
 </pre>
 
+&#8627; Incorrect because tabs are used instead of two spaces to indent array keys.
+
+#### &#10004; Correct
+
+<pre lang=php>
+&lt;?php
+
+$movie_quotes = array(
+  'slumdog_millionaire'       => 'When somebody asks me a question, I tell them the answer.',
+  'silver_linings_playbook'   => 'I opened up to you, and you judged me.',
+  'the_lives_of_others'       => 'To think that people like you ruled a country.',
+  'the_shawshank_redemption'  => 'Get busy living, or get busy dying.'
+);
+
+// EOF
+ 
+</pre>
+
 &#9650; [Formatting](#8-formatting)
 
 <!-- ------------------------------ -->
 
 ### 5. Trailing Whitespace
 
-Trailing whitespace MUST NOT be present after statements or serial comma break or on blank lines.
+Trailing whitespace SHOULD NOT be present after statements or serial comma break or on blank lines.
 
 #### &#10006; Incorrect
 
@@ -2569,8 +2570,7 @@ try {
 
 This section describes class files, names, definitions, properties, methods and instantiation.
 
-1. [**Class file**](#1-class-file) MUST only contain one definition and MUST be prefixed with `class-`
-	* i.e. `class User` &rarr; `class-user.php`, `class Office` &rarr; `class-office.php`
+1. [**Class file**](#1-class-file) MUST only contain one class definition 
 2. [**Class namespace**](#2-class-namespace) MUST be defined and MUST include vendor name
 	* e.g. `namespace MyCompany\Model;`, `namespace MyCompany\View;`, `namespace MyCompany\Controller;`
 3. [**Class name**](#3-class-name) MUST start with a capital letter and MUST be camelcase
@@ -2605,7 +2605,7 @@ Class file MUST only contain one definition and MUST be prefixed with `class-`.
 
 #### &#10006; Incorrect
 
-Filename: `class-user.php`
+Filename: `user.php`
 
 <pre lang=php>
 &lt;?php
@@ -2628,6 +2628,8 @@ class Office
 
 &#8627; Incorrect because `User` and `Office` are defined in one file.
 
+#### &#10004; Correct
+
 Filename: `user.php`
 
 <pre lang=php>
@@ -2644,27 +2646,7 @@ class User
  
 </pre>
 
-&#8627; Incorrect because filename is not prefixed with `class-`.
-
-#### &#10004; Correct
-
-Filename: `class-user.php`
-
-<pre lang=php>
-&lt;?php
-
-namespace MyCompany\Model;
-
-class User
-{
-	// ...
-}
-
-// EOF
- 
-</pre>
-
-Filename: `class-office.php`
+Filename: `office.php`
 
 <pre lang=php>
 &lt;?php
