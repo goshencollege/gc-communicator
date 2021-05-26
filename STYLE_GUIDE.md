@@ -1,6 +1,6 @@
 # PHP Style Guide
 
-This guide was adapted from [https://gist.github.com/ryansechrest/8138375](https://gist.github.com/ryansechrest/8138375).  All rules and guidelines in this document apply to PHP files unless otherwise noted. References to PHP/HTML files can be interpreted as files that primarily contain HTML, but use PHP for templating purposes.
+All rules and guidelines in this document apply to PHP files unless otherwise noted. References to PHP/HTML files can be interpreted as files that primarily contain HTML, but use PHP for templating purposes.
 
 > The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](http://www.ietf.org/rfc/rfc2119.txt).
 
@@ -3471,5 +3471,5 @@ $firstname = call_user_func(array($User, 'get_firstname'));
 
 &#9650; [Table of Contents](#table-of-contents)
 
-Inspired in part by style guides from:<br />
+This style guide was adapted from [@ryansechrest](https://gist.github.com/ryansechrest/8138375) which was inspired in part by style guides from:<br />
 [CodeIgniter](http://ellislab.com/codeigniter/user-guide/general/styleguide.html), [Drupal](https://drupal.org/coding-standards), [Horde](http://www.horde.org/apps/horde/docs/CODING_STANDARDS), [Pear](http://pear.php.net/manual/en/standards.php), [PSR-1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md), [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), [Symfony](http://symfony.com/doc/current/contributing/code/standards.html), and [WordPress](http://make.wordpress.org/core/handbook/coding-standards/php/).
