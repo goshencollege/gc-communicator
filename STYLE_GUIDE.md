@@ -2577,19 +2577,17 @@ This section describes class files, names, definitions, properties, methods and 
 	* e.g. `MyCompany`
 4. [**Class documentation**](#4-class-documentation) MUST be present and MUST use [phpDocumentor](http://phpdoc.org/docs/latest/index.html) tag style
 	* i.e. `@author`, `@global`, `@package`
-5. [**Class definition**](#5-class-definition) MUST place curly braces on their own line
-	* i.e. `class User` `↵` `{` `↵` `...` `↵` `}`
-6. [**Class properties**](#6-class-properties)
+5. [**Class properties**](#6-class-properties)
 	* MUST follow [variable standards](#7-variables)
 	* MUST specify visibility
 	* MUST NOT be prefixed with an underscore if private or protected
 	* e.g. `$var1;`, `private $var2;`, `protected $var3;`
-7. [**Class methods**](#7-class-methods)
+6. [**Class methods**](#7-class-methods)
 	* MUST follow [function standards](#9-functions)
 	* MUST specify visibility
 	* MUST NOT be prefixed with an underscore if private or protected
 	* e.g. `func1()`, `private func2()`, `protected func3()`
-8. [**Class instance**](#8-class-instance)
+7. [**Class instance**](#8-class-instance)
 	* MUST start with capital letter
 	* MUST be camelcase
 	* MUST include parenthesis
@@ -2848,48 +2846,7 @@ class User
 
 <!-- ------------------------------ -->
 
-### 5. Class Definition
-
-Class definition MUST place curly braces on their own line.
-
-#### &#10006; Incorrect
-
-<pre lang=php>
-&lt;?php
-
-namespace MyCompany\Model;
-
-class User {
-	// ...
-}
-
-// EOF
- 
-</pre>
-
-&#8627; Incorrect because `{` is not on its own line.
-
-#### &#10004; Correct
-
-<pre lang=php>
-&lt;?php
-
-namespace MyCompany\Model;
-
-class User
-{
-	// ...
-}
-
-// EOF
- 
-</pre>
-
-&#9650; [Classes](#11-classes)
-
-<!-- ------------------------------ -->
-
-### 6. Class Properties
+### 5. Class Properties
 
 Class properties:
 
@@ -2962,7 +2919,7 @@ class User
 
 <!-- ------------------------------ -->
 
-### 7. Class Methods
+### 6. Class Methods
 
 Class methods:
 
@@ -3063,7 +3020,7 @@ class User
 
 <!-- ------------------------------ -->
 
-### 8. Class Instance
+### 7. Class Instance
 
 Class instance:
 
