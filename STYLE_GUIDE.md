@@ -80,10 +80,9 @@ Most sections are broken up into two parts:
 	2. [Class Namespace](#2-class-namespace)
 	3. [Class Name](#3-class-name)
 	4. [Class Documentation](#4-class-documentation)
-	5. [Class Definition](#5-class-definition)
-	6. [Class Properties](#6-class-properties)
-	7. [Class Methods](#7-class-methods)
-	8. [Class Instance](#8-class-instance)
+	5. [Class Properties](#5-class-properties)
+	6. [Class Methods](#6-class-methods)
+	7. [Class Instance](#7-class-instance)
 12. [**Best Practices**](#12-best-practices)
 	1. [Variable Initialization](#1-variable-initialization)
 	2. [Initialization/Declaration Order](#2-initializationdeclaration-order)
@@ -2577,17 +2576,17 @@ This section describes class files, names, definitions, properties, methods and 
 	* e.g. `MyCompany`
 4. [**Class documentation**](#4-class-documentation) MUST be present and MUST use [phpDocumentor](http://phpdoc.org/docs/latest/index.html) tag style
 	* i.e. `@author`, `@global`, `@package`
-5. [**Class properties**](#6-class-properties)
+5. [**Class properties**](#5-class-properties)
 	* MUST follow [variable standards](#7-variables)
 	* MUST specify visibility
 	* MUST NOT be prefixed with an underscore if private or protected
 	* e.g. `$var1;`, `private $var2;`, `protected $var3;`
-6. [**Class methods**](#7-class-methods)
+6. [**Class methods**](#6-class-methods)
 	* MUST follow [function standards](#9-functions)
 	* MUST specify visibility
 	* MUST NOT be prefixed with an underscore if private or protected
 	* e.g. `func1()`, `private func2()`, `protected func3()`
-7. [**Class instance**](#8-class-instance)
+7. [**Class instance**](#7-class-instance)
 	* MUST start with capital letter
 	* MUST be camelcase
 	* MUST include parenthesis
