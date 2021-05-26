@@ -11,7 +11,7 @@ Most sections are broken up into two parts:
 
 **Icon Legend**:
 
-`·` Space, `⇥` Tab, `↵` Enter/Return
+`·` Space, `⇥` Indent, `↵` Enter/Return
 
 <!-- ---------------------------------------------------------------------- -->
 
