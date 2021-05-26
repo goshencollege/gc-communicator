@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Something is broken and needs to be fixed...
 title: ''
 labels: ''
 assignees: ''
