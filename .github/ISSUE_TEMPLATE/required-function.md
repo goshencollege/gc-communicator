@@ -1,6 +1,6 @@
 ---
 name: Required function
-about: Detail an required function for this project
+about: This is an absolutely critical function that must be implemented.
 title: ''
 labels: ''
 assignees: ''
