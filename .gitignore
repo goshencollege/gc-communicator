@@ -19,3 +19,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> database info ###
+.env.local
+###< database info ###
