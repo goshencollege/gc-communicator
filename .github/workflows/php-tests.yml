@@ -9,9 +9,20 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    
+    services:
+      mariadb:
+        image: mariadb:latest
+        env:
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+          MYSQL_DATABASE: symfonytest
+          MYSQL_ROOT_PASSWORD: rootpassword
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=5s --health-retries=3
+        
     steps:
     - uses: actions/checkout@v2
 
@@ -32,8 +43,17 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+#    - name: Create the test DB
+#      run: php ./bin/console --env=test doctrine:database:create
+#      env:
+#        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/symfonytest?serverVersion=5.7"
+#        
+#    - name: Set up the test DB
+#      run: php ./bin/console --env=test doctrine:schema:create
+#      env:
+#        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/symfonytest?serverVersion=5.7"
 
     - name: Run test suite
       run: php ./vendor/bin/phpunit tests
+      env:
+        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/symfonytest?serverVersion=5.7"
