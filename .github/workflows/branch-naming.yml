@@ -13,5 +13,5 @@ jobs:
             - name: Validate branch name requirements
               uses: goshencollege/validate-branch-name@v1.0.1
               with:
-                  pattern: '^(feature|release|fix|hotfix)\/([a-z-])+$'
+                  pattern: '^(feature|release|fix|hotfix)\/([a-z-_])+$'
     
