@@ -50,9 +50,9 @@ class OverviewController extends AbstractController
         );
       }
 
-      return $this->render('current.html.twig', [
+      return $this->render('overview.html.twig', [
         'date' => $date,
-        'articles' => $article,
+        'articles' => $articles,
       ]);
 
   }
