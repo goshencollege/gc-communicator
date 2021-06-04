@@ -22,9 +22,6 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return string and id of new test article
    * 
-   */
-
-  /**
    * @Route("/add", name="add_info")
    */
   public function add_info(): Response
@@ -53,11 +50,9 @@ class OverviewController extends AbstractController
    * 
    * @author Daniel Boling
    * @return rendered overview.html.twig
+   * 
+   * @Route("/overview", name="show_all")
    */
-
-  /**
-  * @Route("/overview", name="show_all")
-  */
   public function show_all(): Response
   {
 
