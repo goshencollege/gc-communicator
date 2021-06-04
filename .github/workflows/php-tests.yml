@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     services:
       mariadb:
         image: mariadb:latest
@@ -22,7 +22,7 @@ jobs:
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=5s --health-retries=3
-        
+  
     steps:
     - uses: actions/checkout@v2
 
@@ -38,23 +38,28 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-#    - name: Update composer
-#      run: composer update
-
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-#    - name: Create the test DB
-#      run: php ./bin/console --env=test doctrine:database:create
-#      env:
-#        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/symfonytest?serverVersion=5.7"
-#        
-#    - name: Set up the test DB
-#      run: php ./bin/console --env=test doctrine:schema:create
-#      env:
-#        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/symfonytest?serverVersion=5.7"
+    - name: Verify MariaDB connection
+      env:
+        PORT: ${{ job.services.mariadb.ports[3306] }}
+      run: |
+        while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+          sleep 1
+        done
+
+    - name: Create the test DB
+      run: php ./bin/console --env=test doctrine:database:create
+      env:
+        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
+
+    - name: Set up the test DB
+      run: php ./bin/console --env=test doctrine:schema:create
+      env:
+        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
 
     - name: Run test suite
       run: php ./vendor/bin/phpunit tests
       env:
-        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:3306/symfonytest?serverVersion=5.7"
+        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
