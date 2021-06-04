@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="stylesheet.css">
+
+    <title>Communicator - Overview</title>
+  </head>
+
+  <body>
+    <div>
+      <h3>{{ articles|length }} New Announcements</h3>
+      <p>{{ date.weekday }}, {{ [date.month, date.mday]|join(' ') }}, {{ date.year }}</p>
+    </div>
+    <div class="w3-container .dbtheme-purple">
+      <table class="w3-table-all">
+        <tr>
+          <th>ID</th>
+          <th>Subject</th>
+          <th>Author</th>
+          <th>Text</th>
+        </tr>
+        {% for row in articles %} {# simple loop to output rows #}
+          <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.subject }}</td>
+            <td>{{ row.author }}</td>
+            <td>{{ row.text }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+
+
+</html>
