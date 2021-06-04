@@ -43,6 +43,14 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
+      
+    - name: Verify MariaDB connection
+      env:
+        PORT: ${{ job.services.mariadb.ports[3306] }}
+      run: |
+        while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+          sleep 1
+        done
 
     - name: Create the test DB
       run: php ./bin/console --env=test doctrine:database:create
