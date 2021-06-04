@@ -19,6 +19,7 @@ class OverviewController extends AbstractController
    * automatically through the authenticator (assuming I have access to
    * that in this file)
    * 
+   * @author Daniel Boling
    * @return string and id of new test article
    * 
    */
@@ -50,6 +51,7 @@ class OverviewController extends AbstractController
    * on it. This will be modified more clearly from it's current state. Currently
    * being used as a testing stage for database outputs.
    * 
+   * @author Daniel Boling
    * @return rendered overview.html.twig
    */
 
