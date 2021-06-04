@@ -55,18 +55,15 @@ jobs:
     - name: Create the test DB
       run: php ./bin/console --env=test doctrine:database:create
       env:
-        PORT: ${{ job.services.mariadb.ports[3306] }}
-        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:$PORT/symfonytest?serverVersion=5.7"
+        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
         
     - name: Set up the test DB
       run: php ./bin/console --env=test doctrine:schema:create
       env:
-        PORT: ${{ job.services.mariadb.ports[3306] }}
-        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:$PORT/symfonytest?serverVersion=5.7"
+        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
+
         
     - name: Run test suite
       run: php ./vendor/bin/phpunit tests
       env:
-        PORT: ${{ job.services.mariadb.ports[3306] }}
-        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:$PORT/symfonytest?serverVersion=5.7"
-        
+        DATABASE_URL: "mysql://testuser:testpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
