@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      run: composer validate
 
     - name: Cache Composer packages
       id: composer-cache
@@ -38,8 +38,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-    - name: Update composer
-      run: composer update
+#    - name: Update composer
+#      run: composer update
+
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
