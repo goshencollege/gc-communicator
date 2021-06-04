@@ -1,4 +1,6 @@
 {
+    "name": "goshencollege/gc-communicator",
+    "description": "GC Communicator Web App",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "dev",
