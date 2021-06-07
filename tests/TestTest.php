@@ -1,4 +1,6 @@
 <?php
+namespace App\Tests;
+
 use PHPUnit\Framework\TestCase;
 
 final class TestTest extends TestCase 
@@ -12,3 +14,5 @@ final class TestTest extends TestCase
         $this->assertSame(1, count($stack));
     }
 }
+
+//EOF
