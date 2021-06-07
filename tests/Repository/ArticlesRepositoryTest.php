@@ -38,6 +38,11 @@ class ArticlesRepositoryTest extends KernelTestCase
      */
     public function testCreate(): void
     {
+        $existing_articles = count(
+            $this->entityManager
+            ->getRepository(Articles::class)
+            ->findAll());
+
         $article = new Articles();    
         $article->setSubject('testSubject');
         $article->setAuthor('testAuthor');
@@ -50,7 +55,7 @@ class ArticlesRepositoryTest extends KernelTestCase
             ->findAll();
 
         $this->assertNotNull($article2);
-        $this->assertSame(1, count($article2));
+        $this->assertSame(++$existing_articles, count($article2));
         $this->assertSame($article->getSubject(), $article2[0]->getSubject());
         $this->assertSame($article->getAuthor(), $article2[0]->getAuthor());
         $this->assertSame($article->getText(), $article2[0]->getText());
