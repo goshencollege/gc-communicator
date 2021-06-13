@@ -11,34 +11,16 @@ use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+https://symfony.com/doc/current/reference/forms/types.html
+
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class OverviewController extends AbstractController
 {
 
-  /**
-   * @author Daniel Boling
-   * @return rendered HTML form
-   * 
-   * @Route("/form", name="add_article_form")
-   */
-  public function add_article_form(Request $Request): Response
-  {
-
-    $article = new Article();
-
-    $form = $this->createFormBuilder($article)
-      ->add('subject', TextType::class)
-      ->add('author', TextType::class)
-      ->add('text', TextType::class)
-      ->getForm();
-        
-    return $this->render('add_article.html.twig', [
-      'form' => $form->createView()
-    ]);
-
-  }
-
-  /**
+   /**
    * Simply adds a row into the database through a standard function
    * Will eventually have an input form for users to input things like
    * subject and text, their name and email will probably be pulled
@@ -50,23 +32,26 @@ class OverviewController extends AbstractController
    * 
    * @Route("/add", name="add_article")
    */
-  public function add_article(): Response
+  
+  public function add_article_form(Request $Request): Response
   {
 
     $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
 
+    $article = new Article();
 
-
-    /**
-    $article = new Articles();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-    $article->setSubject('testSubject');
-    $article->setAuthor('testAuthor');
-    $article->setText('testText');
-
-    $entityManager->persist($article);
-
-    $entityManager->flush();
-    */
+    $form = $this->createFormBuilder($article)
+      ->add('subject', TextType::class, ['label' => 'Subject'])
+      ->add('author', TextType::class, ['label' => 'Author'])
+      ->add('text', TextType::class, ['label' => 'Text'])
+      ->add('dateStart', DateType::class)
+      ->add('dateEnd', DateType::class)
+      ->add('submit', SubmitType::class, ['label' => 'Submit'])
+      ->getForm();
+        
+    return $this->render('add_article.html.twig', [
+      'form' => $form->createView()
+    ]);
 
   }
 
