@@ -8,6 +8,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Articles;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+// https://symfony.com/doc/current/reference/forms/types.html
+
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class OverviewController extends AbstractController
 {
@@ -22,24 +30,30 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return string and id of new test article
    * 
-   * @Route("/add", name="add_info")
+   * @Route("/add", name="add_article")
    */
-  public function add_info(): Response
+  public function add_article(): Response
   {
 
-    $entityManager = $this->getDoctrine()->getManager(); // SiAAAmply understanding this as a basic "rule" of symfony;
+    $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
 
+    $article = new Article();
+    $article->setSubject('')
+    
+    /**
     $article = new Articles();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-    $articleId = strval($article->getId());
-    $article->setSubject('testSubject'.$articleId);
-    $article->setAuthor('testAuthor'.$articleId);
-    $article->setText('testText'.$articleId);
+    $article->setSubject('testSubject');
+    $article->setAuthor('testAuthor');
+    $article->setText('testText');
 
     $entityManager->persist($article);
 
     $entityManager->flush();
+    */
 
-    return new Response('Created new article with id '.$article->getId());
+    return $this->render('add_article.html.twig', [
+      'text' => $text,
+    ]);
   }
 
   /**
