@@ -2,23 +2,41 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Articles;
+use App\Entity\Article;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use App\Entity\Articles;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// https://symfony.com/doc/current/reference/forms/types.html
-
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class OverviewController extends AbstractController
 {
+
+  /**
+   * @author Daniel Boling
+   * @return rendered HTML form
+   * 
+   * @Route("/form", name="add_article_form")
+   */
+  public function add_article_form(Request $Request): Response
+  {
+
+    $article = new Article();
+
+    $form = $this->createFormBuilder($article)
+      ->add('subject', TextType::class)
+      ->add('author', TextType::class)
+      ->add('text', TextType::class)
+      ->getForm();
+        
+    return $this->render('add_article.html.twig', [
+      'form' => $form->createView()
+    ]);
+
+  }
 
   /**
    * Simply adds a row into the database through a standard function
@@ -37,9 +55,8 @@ class OverviewController extends AbstractController
 
     $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
 
-    $article = new Article();
-    $article->setSubject('')
-    
+
+
     /**
     $article = new Articles();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
     $article->setSubject('testSubject');
@@ -51,9 +68,6 @@ class OverviewController extends AbstractController
     $entityManager->flush();
     */
 
-    return $this->render('add_article.html.twig', [
-      'text' => $text,
-    ]);
   }
 
   /**
