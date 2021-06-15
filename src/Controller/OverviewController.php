@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Articles;
-use App\Entity\Article;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -33,21 +32,24 @@ class OverviewController extends AbstractController
    * @Route("/add", name="add_article")
    */
   
-  public function add_article_form(Request $Request): Response
+  public function add_article_form(Request $request): Response
   {
 
     $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
 
-    $article = new Article();
+    $article = new Articles();
 
     $form = $this->createFormBuilder($article)
       ->add('subject', TextType::class, ['label' => 'Subject'])
       ->add('author', TextType::class, ['label' => 'Author'])
       ->add('text', TextType::class, ['label' => 'Text'])
-      ->add('dateStart', DateType::class)
-      ->add('dateEnd', DateType::class)
       ->add('submit', SubmitType::class, ['label' => 'Submit'])
       ->getForm();
+
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->valid()){
+      $article = $form->getData();
+    }
         
     return $this->render('add_article.html.twig', [
       'form' => $form->createView()

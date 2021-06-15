@@ -8,8 +8,12 @@
   </head>
 
   <body>
-    {{ form_start(form) }}
-    {{ form_end(form) }}
+    <div class='w3-container'>
+      {{ form(form.subject) }}
+    </div>
+    <div class='w3-container'>
+      {{ form(form.author) }}
+    </div>
   </body>
 
 </html>
