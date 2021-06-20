@@ -75,6 +75,19 @@ class OverviewController extends AbstractController
 
   }
 
+  /**
+   * Beginnings of a user login page and management page
+   * 
+   * @author Daniel BOling
+   * @return rendered login.html.twig
+   * 
+   * @Route("/login", name="login_user")
+   */
+  public function login_user(): Response
+  {
+    echo 'Hello World';
+  }
+
 }
 
 // EOF
