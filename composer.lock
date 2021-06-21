@@ -6051,12 +6051,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-bundle.git",
-                "reference": "d9193d3bd8055e5a5e0f4e4c380867475f4f005d"
+                "reference": "b9a4590a1fb8e1997a6e8ac265848f82587016ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-bundle/zipball/d9193d3bd8055e5a5e0f4e4c380867475f4f005d",
-                "reference": "d9193d3bd8055e5a5e0f4e4c380867475f4f005d",
+                "url": "https://api.github.com/repos/symfony/security-bundle/zipball/b9a4590a1fb8e1997a6e8ac265848f82587016ef",
+                "reference": "b9a4590a1fb8e1997a6e8ac265848f82587016ef",
                 "shasum": ""
             },
             "require": {
@@ -6073,7 +6073,7 @@
                 "symfony/security-core": "^5.3|^6.0",
                 "symfony/security-csrf": "^4.4|^5.0|^6.0",
                 "symfony/security-guard": "^5.3|^6.0",
-                "symfony/security-http": "^5.3|^6.0"
+                "symfony/security-http": "^5.3.2|^6.0"
             },
             "conflict": {
                 "symfony/browser-kit": "<4.4",
@@ -6145,7 +6145,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-06-03T14:00:26+00:00"
+            "time": "2021-06-17T13:36:49+00:00"
         },
         {
             "name": "symfony/security-core",
