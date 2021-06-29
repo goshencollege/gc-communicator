@@ -43,13 +43,13 @@ class AnnouncementRepositoryTest extends KernelTestCase
             ->getRepository(Announcement::class)
             ->findAll());
 
-        $date = new DateTime('')
+        //$date = new DateTime('2000-01-01');
         $announcement = new Announcement();    
         $announcement->setSubject('testSubject');
         $announcement->setAuthor('testAuthor');
         $announcement->setText('testText');
         $announcement->setUser('testUser');
-        $announcement->setDate('2021-01-30');
+        $announcement->setDate(new \DateTime());
         $this->entityManager->persist($announcement);
         $this->entityManager->flush();
 

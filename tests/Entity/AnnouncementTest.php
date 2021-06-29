@@ -7,7 +7,7 @@ use App\Entity\Announcement;
 final class AnnouncementTest extends TestCase 
 {
     /**
-     * Test creating a new Article then verify it's info.
+     * Test creating a new announcement then verify it's info.
      * 
      * @author David King
      * 
