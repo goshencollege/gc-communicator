@@ -59,6 +59,11 @@ jobs:
       env:
         DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
 
+    - name: Load test fixtures
+      run: php ./bin/console --env=test --append doctrine:fixtures:load
+      env:
+        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
+
     - name: Run test suite
       run: php ./vendor/bin/phpunit tests
       env:
