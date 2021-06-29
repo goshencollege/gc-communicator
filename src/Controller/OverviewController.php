@@ -26,7 +26,7 @@ class OverviewController extends AbstractController
    * that in this file)
    * 
    * @author Daniel Boling
-   * @return string and id of new test article
+   * @return rendered form and redirect to overview when submitted
    * 
    * @Route("/add", name="add_info")
    */
@@ -34,12 +34,15 @@ class OverviewController extends AbstractController
   {
 
     $date = getDate();
-    $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
+    // Simply understanding this as a basic "rule" of symfony;
+    $entityManager = $this->getDoctrine()->getManager(); 
     
-    $announcement = new Announcement();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
+    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
+    $announcement = new Announcement();    
     $user = $this->getUser();
 
-    $form = $this->createFormBuilder($announcement)       // Move this form creation to its own class eventually;
+    // Move this form creation to its own class eventually;
+    $form = $this->createFormBuilder($announcement)       
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
       ->add('text', TextType::class)
@@ -50,11 +53,13 @@ class OverviewController extends AbstractController
     $form->handleRequest($request);
     if($form->isSubmitted() && $form->isValid()){
 
-      $announcement = $form->getData();   // should pull data from the form and flush it to the database;
+      // should pull data from the form and flush it to the database;
+      $announcement = $form->getData();   
       $announcement->setUser($user->getUsername());
       $entityManager->persist($announcement);
       $entityManager->flush();
-
+      
+      return $this->redirectToRoute('show_all');
     }
 
     return $this->render('add.html.twig', [
@@ -81,8 +86,9 @@ class OverviewController extends AbstractController
     $date = getdate();
 
     $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)    // inits the database and table Articles;
-      ->findAll();    // defined in /src/Entity/Articles.php;
+      // inits the database and table Articles;
+      ->getRepository(Announcement::class)
+      ->findAll();    
 
       return $this->render('overview.html.twig', [
         'date' => $date,

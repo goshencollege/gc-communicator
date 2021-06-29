@@ -43,7 +43,6 @@ class AnnouncementRepositoryTest extends KernelTestCase
             ->getRepository(Announcement::class)
             ->findAll());
 
-        //$date = new DateTime('2000-01-01');
         $announcement = new Announcement();    
         $announcement->setSubject('testSubject');
         $announcement->setAuthor('testAuthor');
@@ -55,15 +54,16 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
         $announcement2 = $this->entityManager
             ->getRepository(Announcement::class)
-            ->findAll();
+            ->find(1);
 
-        $this->assertNotNull($announcement2);
-        $this->assertSame(++$existing_announcements, count($announcement2));
-        $this->assertSame($announcement->getSubject(), $announcement2[0]->getSubject());
-        $this->assertSame($announcement->getAuthor(), $announcement2[0]->getAuthor());
-        $this->assertSame($announcement->getText(), $announcement2[0]->getText());
-        $this->assertSame($announcement->getUser(), $announcement2[0]->getUser());
-        $this->assertSame($announcement->getDate(), $announcement2[0]->getDate());
+        //$this->assertNotNull($announcement2);
+        //$this->assertSame(++$existing_announcements, count($announcement2));
+        // used to be $announcement2[0];
+        $this->assertSame($announcement->getSubject(), $announcement2->getSubject());
+        $this->assertSame($announcement->getAuthor(), $announcement2->getAuthor());
+        $this->assertSame($announcement->getText(), $announcement2->getText());
+        $this->assertSame($announcement->getUser(), $announcement2->getUser());
+        $this->assertSame($announcement->getDate(), $announcement2->getDate());
     }
 
     /**
