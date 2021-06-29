@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -28,22 +29,13 @@ class OverviewController extends AbstractController
    * 
    * @Route("/add", name="add_info")
    */
-  public function add_info(): Response
+  public function add_info(Request $request): Response
   {
 
     $date = getDate();
     $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
     
     $announcement = new Announcement();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-
-    $form->handleRequest($request);   // handleRequest() should come before the createForm to prevent issues with submission checks;
-    if($form->isSubmitted() && form->isValid()){
-
-      $announcement = $form->getData();
-
-      return $this->redirectToRoute('announcement_success');
-
-    }
 
     $form = $this->createFormBuilder($announcement)       // Move this form creation to its own class eventually;
       ->add('subject', TextType::class)
@@ -52,6 +44,14 @@ class OverviewController extends AbstractController
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
 
+    $form->handleRequest($request);
+    if($form->isSubmitted() && $form->isValid()){
+
+      $announcement = $form->getData();   // should pull data from the form and flush it to the database;
+      $entityManager->persist($announcement);
+      $entityManager->flush();
+
+    }
 
     return $this->render('add.html.twig', [
       'form' => $form->createView(),

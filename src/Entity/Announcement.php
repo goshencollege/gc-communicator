@@ -10,100 +10,100 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Announcement
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+  /**
+   * @ORM\Id
+   * @ORM\GeneratedValue
+   * @ORM\Column(type="integer")
+   */
+  private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Subject;
+  /**
+   * @ORM\Column(type="string", length=255)
+   */
+  private $Subject;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Author;
+  /**
+   * @ORM\Column(type="string", length=255)
+   */
+  private $Author;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $User;
+  /**
+   * @ORM\Column(type="string", length=255)
+   */
+  private $User;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $Date;
+  /**
+   * @ORM\Column(type="date")
+   */
+  private $Date;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $text;
+  /**
+   * @ORM\Column(type="text")
+   */
+  private $text;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-    public function getSubject(): ?string
-    {
-        return $this->Subject;
-    }
+  public function getSubject(): ?string
+  {
+    return $this->Subject;
+  }
 
-    public function setSubject(string $Subject): self
-    {
-        $this->Subject = $Subject;
+  public function setSubject(string $Subject): self
+  {
+    $this->Subject = $Subject;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getAuthor(): ?string
-    {
-        return $this->Author;
-    }
+  public function getAuthor(): ?string
+  {
+    return $this->Author;
+  }
 
-    public function setAuthor(string $Author): self
-    {
-        $this->Author = $Author;
+  public function setAuthor(string $Author): self
+  {
+    $this->Author = $Author;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getUser(): ?string
-    {
-        return $this->User;
-    }
+  public function getUser(): ?string
+  {
+    return $this->User;
+  }
 
-    public function setUser(string $User): self
-    {
-        $this->User = $User;
+  public function setUser(string $User): self
+  {
+    $this->User = $User;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->Date;
-    }
+  public function getDate(): ?\DateTimeInterface
+  {
+    return $this->Date;
+  }
 
-    public function setDate(\DateTimeInterface $Date): self
-    {
-        $this->Date = $Date;
+  public function setDate(\DateTimeInterface $Date): self
+  {
+    $this->Date = $Date;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getText(): ?string
-    {
-        return $this->text;
-    }
+  public function getText(): ?string
+  {
+    return $this->text;
+  }
 
-    public function setText(string $text): self
-    {
-        $this->text = $text;
+  public function setText(string $text): self
+  {
+    $this->text = $text;
 
-        return $this;
-    }
+    return $this;
+  }
 }
