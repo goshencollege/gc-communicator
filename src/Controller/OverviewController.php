@@ -7,7 +7,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use App\Entity\Articles;
+use App\Entity\Announcement;
+
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class OverviewController extends AbstractController
 {
@@ -27,19 +31,33 @@ class OverviewController extends AbstractController
   public function add_info(): Response
   {
 
-    $entityManager = $this->getDoctrine()->getManager(); // SiAAAmply understanding this as a basic "rule" of symfony;
+    $date = getDate();
+    $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
+    
+    $announcement = new Announcement();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
 
-    $article = new Articles();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-    $articleId = strval($article->getId());
-    $article->setSubject('testSubject'.$articleId);
-    $article->setAuthor('testAuthor'.$articleId);
-    $article->setText('testText'.$articleId);
+    $form->handleRequest($request);   // handleRequest() should come before the createForm to prevent issues with submission checks;
+    if($form->isSubmitted() && form->isValid()){
 
-    $entityManager->persist($article);
+      $announcement = $form->getData();
 
-    $entityManager->flush();
+      return $this->redirectToRoute('announcement_success');
 
-    return new Response('Created new article with id '.$article->getId());
+    }
+
+    $form = $this->createFormBuilder($announcement)       // Move this form creation to its own class eventually;
+      ->add('subject', TextType::class)
+      ->add('author', TextType::class)
+      ->add('text', TextType::class)
+      ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
+      ->getForm();
+
+
+    return $this->render('add.html.twig', [
+      'form' => $form->createView(),
+      'date' => $date,
+    ]);
+
   }
 
   /**
@@ -58,19 +76,13 @@ class OverviewController extends AbstractController
 
     $date = getdate();
 
-    $articles = $this->getDoctrine()
-      ->getRepository(Articles::class)    // inits the database and table Articles;
+    $announcement = $this->getDoctrine()
+      ->getRepository(Announcement::class)    // inits the database and table Articles;
       ->findAll();    // defined in /src/Entity/Articles.php;
-    
-      if($articles == null){   // testing for blank database or values;
-        throw $this->createNotFoundException(   // I don't like this resolution very much, but it works for now;
-          'No articles found!'
-        );
-      }
 
       return $this->render('overview.html.twig', [
         'date' => $date,
-        'articles' => $articles,
+        'announcement' => $announcement,
       ]);
 
   }
