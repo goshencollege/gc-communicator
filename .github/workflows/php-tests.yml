@@ -23,6 +23,9 @@ jobs:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=5s --health-retries=3
   
+    env:
+      DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
+
     steps:
     - uses: actions/checkout@v2
 
@@ -51,15 +54,12 @@ jobs:
 
     - name: Create the test DB
       run: php ./bin/console --env=test doctrine:database:create
-      env:
-        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
 
     - name: Set up the test DB
       run: php ./bin/console --env=test doctrine:schema:create
-      env:
-        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
+
+    - name: Load test fixtures
+      run: php ./bin/console --env=test doctrine:fixtures:load
 
     - name: Run test suite
       run: php ./vendor/bin/phpunit tests
-      env:
-        DATABASE_URL: "mysql://root:rootpassword@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/symfonytest?serverVersion=5.7"
