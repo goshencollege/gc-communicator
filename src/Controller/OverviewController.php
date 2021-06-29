@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
+use App\Entity\User;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -36,11 +37,13 @@ class OverviewController extends AbstractController
     $entityManager = $this->getDoctrine()->getManager(); // Simply understanding this as a basic "rule" of symfony;
     
     $announcement = new Announcement();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
+    $user = $this->getUser();
 
     $form = $this->createFormBuilder($announcement)       // Move this form creation to its own class eventually;
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
       ->add('text', TextType::class)
+      ->add('date', DateType::class)
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
 
@@ -48,6 +51,7 @@ class OverviewController extends AbstractController
     if($form->isSubmitted() && $form->isValid()){
 
       $announcement = $form->getData();   // should pull data from the form and flush it to the database;
+      $announcement->setUser($user->getUsername());
       $entityManager->persist($announcement);
       $entityManager->flush();
 
