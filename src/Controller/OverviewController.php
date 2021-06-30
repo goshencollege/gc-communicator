@@ -57,7 +57,7 @@ class OverviewController extends AbstractController
 
       // should pull data from the form and flush it to the database;
       $announcement = $form->getData();   
-      $announcement->setUser($user->getUsername());
+      $announcement->setUser($user);
       $entityManager->persist($announcement);
       $entityManager->flush();
       
