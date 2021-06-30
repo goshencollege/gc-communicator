@@ -3,12 +3,18 @@
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use App\Entity\Articles;
+use App\Entity\Announcement;
+use App\Entity\User;
+
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class OverviewController extends AbstractController
 {
@@ -21,27 +27,48 @@ class OverviewController extends AbstractController
    * that in this file)
    * 
    * @author Daniel Boling
-   * @return string and id of new test article
+   * @return rendered form and redirect to overview when submitted
    * 
    * @Route("/add", name="add_info")
    * @IsGranted("ROLE_USER")
    */
-  public function add_info(): Response
+  public function add_info(Request $request): Response
   {
 
-    $entityManager = $this->getDoctrine()->getManager(); // SiAAAmply understanding this as a basic "rule" of symfony;
+    $date = getDate();
+    // Simply understanding this as a basic "rule" of symfony;
+    $entityManager = $this->getDoctrine()->getManager(); 
+    
+    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
+    $announcement = new Announcement();    
+    $user = $this->getUser();
 
-    $article = new Articles();    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-    $articleId = strval($article->getId());
-    $article->setSubject('testSubject'.$articleId);
-    $article->setAuthor('testAuthor'.$articleId);
-    $article->setText('testText'.$articleId);
+    // Move this form creation to its own class eventually;
+    $form = $this->createFormBuilder($announcement)       
+      ->add('subject', TextType::class)
+      ->add('author', TextType::class)
+      ->add('text', TextType::class)
+      ->add('date', DateType::class)
+      ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
+      ->getForm();
 
-    $entityManager->persist($article);
+    $form->handleRequest($request);
+    if($form->isSubmitted() && $form->isValid()){
 
-    $entityManager->flush();
+      // should pull data from the form and flush it to the database;
+      $announcement = $form->getData();   
+      $announcement->setUser($user);
+      $entityManager->persist($announcement);
+      $entityManager->flush();
+      
+      return $this->redirectToRoute('show_all');
+    }
 
-    return new Response('Created new article with id '.$article->getId());
+    return $this->render('add.html.twig', [
+      'form' => $form->createView(),
+      'date' => $date,
+    ]);
+
   }
 
   /**
@@ -60,19 +87,14 @@ class OverviewController extends AbstractController
 
     $date = getdate();
 
-    $articles = $this->getDoctrine()
-      ->getRepository(Articles::class)    // inits the database and table Articles;
-      ->findAll();    // defined in /src/Entity/Articles.php;
-    
-      if($articles == null){   // testing for blank database or values;
-        throw $this->createNotFoundException(   // I don't like this resolution very much, but it works for now;
-          'No articles found!'
-        );
-      }
+    $announcement = $this->getDoctrine()
+      // inits the database and table Articles;
+      ->getRepository(Announcement::class)
+      ->findAll();    
 
       return $this->render('overview.html.twig', [
         'date' => $date,
-        'articles' => $articles,
+        'announcement' => $announcement,
       ]);
 
   }

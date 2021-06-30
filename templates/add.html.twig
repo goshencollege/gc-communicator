@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="stylesheet.css">
+
+    <title>Communicator - Overview</title>
+  </head>
+
+  <body>
+    <div class="w3-panel">
+      <h3>Create New Announcement</h3>
+      <p>{{ date.weekday }}, {{ [date.month, date.mday]|join(' ') }}, {{ date.year }}</p>
+    </div>
+    <div class="w3-panel">
+      {{ form(form) }}
+    </div>
+  </body>
+
+
+</html>
