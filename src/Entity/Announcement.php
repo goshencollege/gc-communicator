@@ -71,17 +71,6 @@ class Announcement
     return $this;
   }
 
-  public function getUser(): ?string
-  {
-    return $this->User;
-  }
-
-  public function setUser(string $User): self
-  {
-    $this->User = $User;
-
-    return $this;
-  }
 
   public function getDate(): ?\DateTimeInterface
   {
@@ -105,5 +94,17 @@ class Announcement
     $this->text = $text;
 
     return $this;
+  }
+
+  public function getUser(): ?User
+  {
+      return $this->User;
+  }
+
+  public function setUser(?User $User): self
+  {
+      $this->User = $User;
+
+      return $this;
   }
 }
