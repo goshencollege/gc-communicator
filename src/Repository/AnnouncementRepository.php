@@ -22,15 +22,15 @@ class AnnouncementRepository extends ServiceEntityRepository
   public function findToday()
   {
 
-    $date = new \DateTime();
+    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
 
     return $this->createQueryBuilder('a')
-      ->andWhere('a.date = :date')
-      ->setParameter('date', $date)
+      ->andWhere('a.Date = :date')
+      ->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
       ->getQuery()
       ->getResult()
-   ;
+    ;
 
   }
 
