@@ -22,17 +22,15 @@ class AnnouncementRepository extends ServiceEntityRepository
   public function findToday()
   {
 
-    $entityManager = $this->getDoctrine()->getManager(); 
     $date = new \DateTime();
 
-    $qb = $entityManager->createQueryBuilder();
-
-    $qb->select(array('a'))
-       ->from('announcement', 'a')
-       ->where($qb->expt()->orX(
-         $qb->expr()->like('a.date', $date)
-       ))
-       ->orderBy('u.id', 'ASC');
+    return $this->createQueryBuilder('a')
+      ->andWhere('a.date = :date')
+      ->setParameter('date', $date)
+      ->orderBy('a.id', 'ASC')
+      ->getQuery()
+      ->getResult()
+   ;
 
   }
 
