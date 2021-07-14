@@ -34,13 +34,6 @@ class AnnouncementRepository extends ServiceEntityRepository
        ))
        ->orderBy('u.id', 'ASC');
 
-    return $this->createQueryBuilder('a')
-      ->andWhere('a.date = :val')
-      ->setParameter('val', $date)
-      ->orderBy('a.id', 'ASC')
-      ->getQuery()
-      ->getResult();
-
   }
 
   // /**
