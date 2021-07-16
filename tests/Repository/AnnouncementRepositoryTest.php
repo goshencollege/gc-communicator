@@ -44,7 +44,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
             ->getRepository(Announcement::class)
             ->findAll());
 
-        $userRepo = static::$container->get(UserRepository::class);
+        $userRepo = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepo->findOneByUsername("david");
 
         $announcement = new Announcement();    

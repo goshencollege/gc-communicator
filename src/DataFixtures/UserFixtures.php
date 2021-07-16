@@ -20,12 +20,24 @@ class UserFixtures extends Fixture
   {
     $user = new User();
     $user->setUsername('david');
+    $this->addReference('user_1', $user);
     $user->setPassword($this->passwordHasher->hashPassword(
         $user,
         '12345'
     ));
     $manager->persist($user);
 
+    $user = new User();
+    $user->setUsername('dboling');
+    $this->addReference('user_2', $user);
+    $user->setPassword($this->passwordHasher->hashPassword(
+      $user,
+      '12345'
+    ));
+    $manager->persist($user);
+
     $manager->flush();
   }
 }
+
+// EOF
