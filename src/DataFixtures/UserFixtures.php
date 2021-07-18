@@ -10,6 +10,7 @@ use App\Entity\User;
 class UserFixtures extends Fixture
 {
   private $passwordHasher;
+  public const ADMIN_USER_REFERENCE = 'admin-user';
 
   public function __construct(UserPasswordHasherInterface $passwordHasher)
   {
@@ -20,23 +21,23 @@ class UserFixtures extends Fixture
   {
     $user = new User();
     $user->setUsername('david');
-    $this->addReference('user_1', $user);
     $user->setPassword($this->passwordHasher->hashPassword(
         $user,
         '12345'
     ));
     $manager->persist($user);
-
+    /**
     $user = new User();
     $user->setUsername('dboling');
-    $this->addReference('user_2', $user);
     $user->setPassword($this->passwordHasher->hashPassword(
       $user,
       '12345'
     ));
     $manager->persist($user);
-
+    */
     $manager->flush();
+    $this->addReference(self::ADMIN_USER_REFERENCE, $user);
+
   }
 }
 
