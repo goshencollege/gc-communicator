@@ -23,8 +23,8 @@ class OverviewControllerTest extends WebTestCase
         $this->assertEquals(302, $response->getStatusCode());
 
         // authenticate a test user
-        $userRepo = static::$container->get(UserRepository::class);
-        $testUser = $userRepo->findOneByUsername("david");
+        $userRepo = static::getContainer(UserRepository::class);
+        $testUser = $userRepo->findOneBy("david");
         $client->loginUser($testUser);
 
         // This should now return 200 since a user is authenticated
