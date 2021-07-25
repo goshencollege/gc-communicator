@@ -72,10 +72,10 @@ class OverviewController extends AbstractController
   }
 
   /**
-   * This should be the main page that everyone should see. Ever user (not sure
-   * if we're doing guest users or not) should be able to see this page and everything
-   * on it. This will be modified more clearly from it's current state. Currently
-   * being used as a testing stage for database outputs.
+   * This should be the main page that everyone should see. Every user
+   * should be able to see this page and everything on it. 
+   * This will be modified more clearly from it's current state. 
+   * Set to show all announcements for the locale date.
    * 
    * @author Daniel Boling
    * @return rendered overview.html.twig
@@ -92,13 +92,40 @@ class OverviewController extends AbstractController
       ->getRepository(Announcement::class)
       ->findToday();
 
-      return $this->render('overview.html.twig', [
-        'date' => $date,
-        'announcement' => $announcement,
-      ]);
+    return $this->render('overview.html.twig', [
+      'date' => $date,
+      'announcement' => $announcement,
+    ]);
 
   }
 
+  /**
+   * Basically the same page as /overview, except shows all announcements of
+   * the currently logged in user.
+   * Future Additions - allow users to modify announcements
+   * 
+   * @author Daniel Boling
+   * @return rendered overview.html.twig
+   * 
+   * @Route("/overview/user", name="show_all_user")
+   */
+  public function show_user(): Response
+  {
+
+    $date = getdate();
+    $user = $this->getUser();
+
+    $announcement = $this->getDoctrine()
+      ->getRepository(Announcement::class)
+      ->findByUser($user)
+      ;
+    
+    return $this->render('overview.html.twig', [
+      'date' => $date,
+      'announcement' => $announcement,
+    ]);
+
+  }
 }
 
 // EOF

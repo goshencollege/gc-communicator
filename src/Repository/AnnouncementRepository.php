@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Announcement;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,11 @@ class AnnouncementRepository extends ServiceEntityRepository
     parent::__construct($registry, Announcement::class);
   }
 
+  /**
+   * Function building a query to only return all announcements for the locale date
+   * 
+   * @author Daniel Boling
+   */
   public function findToday()
   {
 
@@ -32,6 +38,22 @@ class AnnouncementRepository extends ServiceEntityRepository
       ->getResult()
     ;
 
+  }
+
+  /**
+   * Function building a query to return all announcements from the logged in user
+   * 
+   * @author Daniel Boling
+   */
+  public function findByUser($user)
+  {
+
+    return $this->createQueryBuilder('a')
+      ->andWhere('a.User = :user')
+      ->setParameter('user', $user)
+      ->getQuery()
+      ->getResult()
+    ;
   }
 
   // /**
