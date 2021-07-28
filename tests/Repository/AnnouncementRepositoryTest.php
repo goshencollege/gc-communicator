@@ -49,8 +49,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $userRepo = static::getContainer()->get(UserRepository::class);
     $testUser = $userRepo->findOneByUsername("david");
+    $countPre = count($testUser->getAnnouncements());
 
-    $announcement = new Announcement();    
+    $announcement = new Announcement();
     $announcement->setSubject('testSubject');
     $announcement->setAuthor('testAuthor');
     $announcement->setText('testText');
@@ -59,7 +60,13 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->entityManager->persist($announcement);
     $this->entityManager->flush();
 
-    $announcement2 = $testUser->getAnnouncements()[0];
+    $testUser = $userRepo->findOneByUsername("david");
+    $countPost = count($testUser->getAnnouncements());
+    echo $countPre;
+    echo $countPost;
+    // $this->assertSame($countPre, $countPost);
+
+    $announcement2 = $testUser->getAnnouncements()[$countPost-1];
 
     //$this->assertNotNull($announcement2);
     //$this->assertSame(++$existing_announcements, count($announcement2));
