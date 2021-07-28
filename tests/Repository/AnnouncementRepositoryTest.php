@@ -116,7 +116,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $announcement = $this->entityManager
       ->getRepository(AnnouncementRepository::class)
-      ->findOneBy(['date' => new \DateTime('now')]);
+      ->findToday();
 
     $this->assertSame(1, $announcement->count());
 
