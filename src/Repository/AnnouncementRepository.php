@@ -40,20 +40,7 @@ class AnnouncementRepository extends ServiceEntityRepository
 
   }
 
-  /**
-   * Custom method to pull all announcements from the logged in user
-   * 
-   * @author Daniel Boling
-   */
-  public function findByUser($user)
-  {
-    return $this->createQueryBuilder('u')
-      ->andWhere('u.User = :user')
-      ->setParameter('user', $user)
-      ->getQuery()
-      ->getResult()
-      ;
-  }
+  
 
   // /**
   //  * @return Announcement[] Returns an array of Announcement objects
