@@ -60,11 +60,10 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->entityManager->persist($announcement);
     $this->entityManager->flush();
 
+    $this->entityManager->refresh($testUser);
     $testUser = $userRepo->findOneByUsername("david");
     $countPost = count($testUser->getAnnouncements());
-    echo $countPre;
-    echo $countPost;
-    // $this->assertSame($countPre, $countPost);
+    $this->assertSame($countPre + 1, $countPost);
 
     $announcement2 = $testUser->getAnnouncements()[$countPost-1];
 
