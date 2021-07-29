@@ -129,6 +129,49 @@ class AnnouncementRepositoryTest extends KernelTestCase
   }
 
   /**
+   * testing user filter feature
+   * 
+   * @todo create 2 announcements with two different users, then test that the 
+   * created findByUser() function works properly by returning only the announcement(s) created with that user.
+   * 
+   * @author Daniel Boling 
+   */
+  public function userTest(ObjectManager $manager): void
+  {
+    $userRepo = static::getContainer()->get(UserRepository::class);
+    $testUser = $userRepo->findOneByUsername("david");
+
+    $announcement = new Announcement();
+    $announcement_date = new \DateTime('now');
+    $announcement->setSubject('autoSubject');
+    $announcement->setAuthor('autoAuthor');
+    $announcement->setUser($testUser);
+    $announcement->setDate($announcement_date);
+    $announcement->setText('autoText');
+    $manager->persist($announcement);
+
+    $testUser = $userRepo->findOneByUsername("dboling");
+
+    $announcement = new Announcement();
+    $announcement_date = new \DateTime('now');
+    $announcement->setSubject('autoSubject');
+    $announcement->setAuthor('autoAuthor');
+    $announcement->setUser($testUser);
+    $announcement->setDate($announcement_date);
+    $announcement->setText('autoText');
+    $manager->persist($announcement);
+
+    $testUser = $userRepo->findOneByUsername("david");
+    // Switching back to "cause possible issues"
+
+    $manager->flush();
+
+    $announcement = $testUser->getAnnouncements();
+
+    $this->assertSame($testUser, $announcement->getUser());
+  }
+
+  /**
    * Cleanup from the testing.  This is called automatically by PHPUnit
    * 
    * @author David King

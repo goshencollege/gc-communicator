@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Announcement;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,11 @@ class AnnouncementRepository extends ServiceEntityRepository
     parent::__construct($registry, Announcement::class);
   }
 
+  /**
+   * Custom method to pull all announcements created for the current date
+   * 
+   * @author Daniel Boling
+   */
   public function findToday()
   {
 
@@ -30,9 +36,11 @@ class AnnouncementRepository extends ServiceEntityRepository
       ->orderBy('a.id', 'ASC')
       ->getQuery()
       ->getResult()
-    ;
+      ;
 
   }
+
+  
 
   // /**
   //  * @return Announcement[] Returns an array of Announcement objects
