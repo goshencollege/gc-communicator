@@ -115,10 +115,7 @@ class OverviewController extends AbstractController
     $date = getdate();
     $user = $this->getUser();
 
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->findByUser($user)
-      ;
+    $announcement = $user->getAnnouncements();
     
     return $this->render('overview.html.twig', [
       'date' => $date,

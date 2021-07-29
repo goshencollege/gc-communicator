@@ -166,11 +166,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $manager->flush();
 
-    $announcement = $this->entityManager
-      ->getRepository(AnnouncementRepository::class)
-      ->findByUser($testUser);
+    $announcement = $testUser->getAnnouncements();
 
-    $this->assertSame('author', $announcement->getUser());
+    $this->assertSame($testUser, $announcement->getUser());
   }
 
   /**
