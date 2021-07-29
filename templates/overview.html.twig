@@ -19,6 +19,7 @@
           <th>Author</th>
           <th>User</th>
           <th>Text</th>
+          <th>Date</th>
         </tr>
         {% for row in announcement %} {# simple loop to output rows #}
           <tr>
@@ -27,6 +28,7 @@
             <td>{{ row.author }}</td>
             <td>{{ row.user.username }}</td>
             <td>{{ row.text }}</td>
+            <td>{{ row.date|date("Y-m-d") }}</td>
           </tr>
         {% endfor %}
       </table>

@@ -9,7 +9,7 @@ use App\Entity\User;
 
 class UserFixtures extends Fixture
 {
-  private $passwordHasher;
+  public const USER_REFERENCE = 'User';
 
   public function __construct(UserPasswordHasherInterface $passwordHasher)
   {
@@ -27,5 +27,9 @@ class UserFixtures extends Fixture
     $manager->persist($user);
 
     $manager->flush();
+    $this->addReference(self::USER_REFERENCE, $user);
+
   }
 }
+
+// EOF

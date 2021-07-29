@@ -14,37 +14,54 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AnnouncementRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Announcement::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Announcement::class);
+  }
 
-    // /**
-    //  * @return Announcement[] Returns an array of Announcement objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+  public function findToday()
+  {
 
-    /*
-    public function findOneBySomeField($value): ?Announcement
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+
+    return $this->createQueryBuilder('a')
+      ->andWhere('a.Date = :date')
+      ->setParameter('date', $date->format('Y-m-d'))
+      ->orderBy('a.id', 'ASC')
+      ->getQuery()
+      ->getResult()
+    ;
+
+  }
+
+  // /**
+  //  * @return Announcement[] Returns an array of Announcement objects
+  //  */
+  /*
+  public function findByExampleField($value)
+  {
+      return $this->createQueryBuilder('a')
+          ->andWhere('a.exampleField = :val')
+          ->setParameter('val', $value)
+          ->orderBy('a.id', 'ASC')
+          ->setMaxResults(10)
+          ->getQuery()
+          ->getResult()
+      ;
+  }
+  */
+
+  /*
+  public function findOneBySomeField($value): ?Announcement
+  {
+      return $this->createQueryBuilder('a')
+          ->andWhere('a.exampleField = :val')
+          ->setParameter('val', $value)
+          ->getQuery()
+          ->getOneOrNullResult()
+      ;
+  }
+  */
 }
+
+// EOF
