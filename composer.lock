@@ -2240,17 +2240,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
-                "reference": "57722c82477ea3893bf2ae4a2bd75a953034a23c"
+                "reference": "c585cf688470abafa6649d70f78cc1860728121b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset/zipball/57722c82477ea3893bf2ae4a2bd75a953034a23c",
-                "reference": "57722c82477ea3893bf2ae4a2bd75a953034a23c",
+                "url": "https://api.github.com/repos/symfony/asset/zipball/c585cf688470abafa6649d70f78cc1860728121b",
+                "reference": "c585cf688470abafa6649d70f78cc1860728121b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "symfony/deprecation-contracts": "^2.1"
+                "symfony/deprecation-contracts": "^2.1",
+                "symfony/polyfill-php80": "^1.16"
             },
             "conflict": {
                 "symfony/http-foundation": "<5.3"
@@ -2305,7 +2306,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-06-06T09:52:30+00:00"
+            "time": "2021-07-25T15:25:29+00:00"
         },
         {
             "name": "symfony/cache",
