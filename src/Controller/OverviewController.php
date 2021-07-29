@@ -99,6 +99,34 @@ class OverviewController extends AbstractController
 
   }
 
+  /**
+   * Basically the same page as /overview, except shows all announcements of
+   * the currently logged in user.
+   * Future Additions - allow users to modify announcements
+   * 
+   * @author Daniel Boling
+   * @return rendered overview.html.twig
+   * 
+   * @Route("/overview/user", name="show_all_user")
+   */
+  public function show_user(): Response
+  {
+
+    $date = getdate();
+    $user = $this->getUser();
+
+    $announcement = $this->getDoctrine()
+      ->getRepository(Announcement::class)
+      ->findByUser($user)
+      ;
+    
+    return $this->render('overview.html.twig', [
+      'date' => $date,
+      'announcement' => $announcement,
+    ]);
+
+  }
+
 }
 
 // EOF
