@@ -1,13 +1,15 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="stylesheet.css">
 
     <title>Communicator - Overview</title>
   </head>
 
   <body>
     <div class="w3-panel">
+      <button class="w3-bar-item w3-button">Overview</button>
+      <button class="w3-bar-item w3-button">Add Announcement</button>
+      <button class="w3-bar-item w3-button">My Announcements</button>
       <h3>{{ announcement|length }} New Announcements</h3>
       <p>{{ date.weekday }}, {{ [date.month, date.mday]|join(' ') }}, {{ date.year }}</p>
     </div>
