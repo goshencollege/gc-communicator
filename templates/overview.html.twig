@@ -33,6 +33,9 @@
             <td>{{ row.date|date("Y-m-d") }}</td>
           </tr>
         {% endfor %}
+        {% block javascripts %}
+          {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </div>
   </body>
 
