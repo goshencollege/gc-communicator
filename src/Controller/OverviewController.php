@@ -13,8 +13,11 @@ use App\Entity\Announcement;
 use App\Entity\User;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class OverviewController extends AbstractController
 {
@@ -47,7 +50,12 @@ class OverviewController extends AbstractController
     $form = $this->createFormBuilder($announcement)       
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
-      ->add('text', TextType::class)
+      // ->add('category', ChoiceType::class, [
+      //   'choices' => [
+          
+      //   ]
+      // ])
+      ->add('text', TextAreaType::class)
       ->add('date', DateType::class)
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
