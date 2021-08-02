@@ -9,9 +9,9 @@
   <body>
     <div class="w3-panel">
       <div class="dbtheme-purple">
-        <button class="w3-bar-item w3-button">Overview</button>
-        <button class="w3-bar-item w3-button">Add Announcement</button>
-        <button class="w3-bar-item w3-button">My Announcements</button>
+        <button class="w3-bar-item w3-button"> <a href="https://localhost:8000/overview" title="Overview"> Overview </a></button>
+        <button class="w3-bar-item w3-button" onclick="https://localhost:8000/add" >Add Announcement</button>
+        <button class="w3-bar-item w3-button" onclick="https://localhost:8000/overview/user" >My Announcements</button>
       </div>
       <h3>{{ announcement|length }} New Announcements</h3>
       <p>{{ date.weekday }}, {{ [date.month, date.mday]|join(' ') }}, {{ date.year }}</p>
