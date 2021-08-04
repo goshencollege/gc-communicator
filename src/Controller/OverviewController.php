@@ -11,10 +11,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
+use App\Entity\Category;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class OverviewController extends AbstractController
 {
@@ -37,17 +41,21 @@ class OverviewController extends AbstractController
 
     $date = getDate();
     // Simply understanding this as a basic "rule" of symfony;
-    $entityManager = $this->getDoctrine()->getManager(); 
+    $em = $this->getDoctrine()->getManager();
     
     // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-    $announcement = new Announcement();    
+    $announcement = new Announcement();
     $user = $this->getUser();
 
     // Move this form creation to its own class eventually;
-    $form = $this->createFormBuilder($announcement)       
+    $form = $this->createFormBuilder($announcement)
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
-      ->add('text', TextType::class)
+      ->add('category', EntityType::class, [
+        'class' => Category::class,
+        'choice_label' => 'name',
+      ])
+      ->add('text', TextareaType::class)
       ->add('date', DateType::class)
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
@@ -58,8 +66,8 @@ class OverviewController extends AbstractController
       // should pull data from the form and flush it to the database;
       $announcement = $form->getData();   
       $announcement->setUser($user);
-      $entityManager->persist($announcement);
-      $entityManager->flush();
+      $em->persist($announcement);
+      $em->flush();
       
       return $this->redirectToRoute('show_all');
     }
@@ -108,6 +116,7 @@ class OverviewController extends AbstractController
    * @return rendered overview.html.twig
    * 
    * @Route("/overview/user", name="show_all_user")
+   * @IsGranted("ROLE_USER")
    */
   public function show_user(): Response
   {

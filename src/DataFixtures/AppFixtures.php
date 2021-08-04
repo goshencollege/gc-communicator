@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Announcement;
 use App\Entity\User;
+use App\Entity\Category;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -52,6 +53,7 @@ class AppFixtures extends Fixture
     $announcement_date = new \DateTime('2021-07-14');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -61,6 +63,7 @@ class AppFixtures extends Fixture
     $announcement_date = new \DateTime('now');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -70,10 +73,28 @@ class AppFixtures extends Fixture
     $announcement_date = new \DateTime('3021-07-14');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
     $manager->persist($announcement);
+
+
+    // loading fixtures for category table
+    $cat = new Category();
+    $cat->setName('Rooms');
+    $cat->setActive(1);
+    $manager->persist($cat);
+
+    $cat = new Category();
+    $cat->setName('Buildings');
+    $cat->setActive(1);
+    $manager->persist($cat);
+
+    $cat = new Category();
+    $cat->setName('Classes');
+    $cat->setActive(0);
+    $manager->persist($cat);
 
     $manager->flush();
 
