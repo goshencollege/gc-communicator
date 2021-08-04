@@ -42,6 +42,11 @@ class Announcement
    */
   private $text;
 
+  /**
+   * @ORM\Column(type="string", length=255)
+   */
+  private $category;
+
   public function getId(): ?int
   {
     return $this->id;
@@ -104,6 +109,18 @@ class Announcement
   public function setUser(?User $User): self
   {
       $this->User = $User;
+
+      return $this;
+  }
+
+  public function getCategory(): ?string
+  {
+      return $this->category;
+  }
+
+  public function setCategory(string $category): self
+  {
+      $this->category = $category;
 
       return $this;
   }
