@@ -39,7 +39,8 @@ class OverviewController extends AbstractController
   public function add_info(Request $request): Response
   {
 
-    $date = getDate();
+    $date = new \DateTime();
+    $date = $date->format('l, j F, Y');
     // Simply understanding this as a basic "rule" of symfony;
     $em = $this->getDoctrine()->getManager();
     
@@ -93,7 +94,8 @@ class OverviewController extends AbstractController
   public function show_all(): Response
   {
 
-    $date = getdate();
+    $date = new \DateTime();
+    $date = $date->format('l, j F, Y');
 
     $announcement = $this->getDoctrine()
       // inits the database and table Articles;
@@ -121,7 +123,8 @@ class OverviewController extends AbstractController
   public function show_user(): Response
   {
 
-    $date = getdate();
+    $date = new \DateTime();
+    $date = $date->format('l, j F, Y');
     $user = $this->getUser();
 
     $announcement = $user->getAnnouncements();
