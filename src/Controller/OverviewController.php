@@ -55,6 +55,7 @@ class OverviewController extends AbstractController
       ->add('category', EntityType::class, [
         'class' => Category::class,
         'choice_label' => 'name',
+        'choice_value' => 'name',
       ])
       ->add('text', TextareaType::class)
       ->add('date', DateType::class)

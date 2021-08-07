@@ -124,4 +124,5 @@ class Announcement
 
       return $this;
   }
+
 }
