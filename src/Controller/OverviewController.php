@@ -54,8 +54,7 @@ class OverviewController extends AbstractController
       ->add('author', TextType::class)
       ->add('category', EntityType::class, [
         'class' => Category::class,
-        'choice_label' => 'name',
-        'choice_value' => 'name',
+        'choices' => getActive(),
       ])
       ->add('text', TextareaType::class)
       ->add('date', DateType::class)
@@ -64,7 +63,6 @@ class OverviewController extends AbstractController
 
     $form->handleRequest($request);
     if($form->isSubmitted() && $form->isValid()){
-
       // should pull data from the form and flush it to the database;
       $announcement = $form->getData();   
       $announcement->setUser($user);
