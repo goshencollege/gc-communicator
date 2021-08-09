@@ -42,9 +42,7 @@ class OverviewController extends AbstractController
     $em = $this->getDoctrine()->getManager();
 
     $date = new \DateTime();
-    $date_html = $date->format('l, j F, Y');
-    $date_form = $date->format('MM-dd-yyyy');
-    // Separating these for form defaults and html data;
+    $date = $date->format('l, j F, Y');
     
     // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
     $announcement = new Announcement();
@@ -65,7 +63,7 @@ class OverviewController extends AbstractController
       ])
       ->add('text', TextareaType::class)
       ->add('date', DateType::class, [
-        'data' => $date_form,
+        'data' => new \DateTime,
       ])
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
@@ -83,7 +81,7 @@ class OverviewController extends AbstractController
 
     return $this->render('add.html.twig', [
       'form' => $form->createView(),
-      'date' => $date_html,
+      'date' => $date,
     ]);
 
   }
