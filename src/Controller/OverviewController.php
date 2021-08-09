@@ -39,14 +39,18 @@ class OverviewController extends AbstractController
   public function add_info(Request $request): Response
   {
 
-    $date = new \DateTime();
-    $date = $date->format('l, j F, Y');
-    // Simply understanding this as a basic "rule" of symfony;
     $em = $this->getDoctrine()->getManager();
+
+    $date = new \DateTime();
+    $date_html = $date->format('l, j F, Y');
+    $date_form = $date->format('MM-dd-yyyy');
+    // Separating these for form defaults and html data;
     
     // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
     $announcement = new Announcement();
     $user = $this->getUser();
+
+
 
     // Move this form creation to its own class eventually;
     $form = $this->createFormBuilder($announcement)
@@ -54,10 +58,15 @@ class OverviewController extends AbstractController
       ->add('author', TextType::class)
       ->add('category', EntityType::class, [
         'class' => Category::class,
-        'choices' => getActive(),
+        'choice_label' => function($category)
+        {
+          return $category->getName();
+        },
       ])
       ->add('text', TextareaType::class)
-      ->add('date', DateType::class)
+      ->add('date', DateType::class, [
+        'data' => $date_form,
+      ])
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
 
@@ -74,7 +83,7 @@ class OverviewController extends AbstractController
 
     return $this->render('add.html.twig', [
       'form' => $form->createView(),
-      'date' => $date,
+      'date' => $date_html,
     ]);
 
   }

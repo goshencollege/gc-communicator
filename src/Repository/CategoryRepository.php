@@ -19,6 +19,12 @@ class CategoryRepository extends ServiceEntityRepository
     parent::__construct($registry, Category::class);
   }
 
+  /**
+   * A function written to return all "active" categories in the category table.
+   * Active categories are defined by a binary field.
+   * 
+   * @author Daniel Boling
+   */
   public function getActive()
   {
     return $this->createQueryBuilder('a')
