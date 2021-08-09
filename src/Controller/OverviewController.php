@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
@@ -56,10 +57,16 @@ class OverviewController extends AbstractController
       ->add('author', TextType::class)
       ->add('category', EntityType::class, [
         'class' => Category::class,
-        'choice_label' => function($category)
+        'query_builder' => function(EntityRepository $er)
         {
-          return $category->getName();
+          return $er->createQueryBuilder('a')
+            ->andWhere('a.active = :val')
+            ->setParameter('val', 1)
+            ->orderBy('a.name', 'ASC')
+          ;
         },
+        'choice_label' => 'name',
+        'placeholder' => 'Category',
       ])
       ->add('text', TextareaType::class)
       ->add('date', DateType::class, [

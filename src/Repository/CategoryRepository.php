@@ -25,7 +25,7 @@ class CategoryRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function getActive()
+  public function findActive()
   {
     return $this->createQueryBuilder('a')
       ->andWhere('a.active = :val')
