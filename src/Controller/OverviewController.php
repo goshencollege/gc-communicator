@@ -24,6 +24,12 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class OverviewController extends AbstractController
 {
 
+  public function __construct()
+  {
+    $date = new \DateTime;
+    $this->date = $date->format('l, j F, Y');
+  }
+
   /**
    * Simply adds a row into the database through a standard function
    * Will eventually have an input form for users to input things like
@@ -41,9 +47,6 @@ class OverviewController extends AbstractController
   {
 
     $em = $this->getDoctrine()->getManager();
-
-    $date = new \DateTime();
-    $date = $date->format('l, j F, Y');
     
     // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
     $announcement = new Announcement();
@@ -88,7 +91,7 @@ class OverviewController extends AbstractController
 
     return $this->render('add.html.twig', [
       'form' => $form->createView(),
-      'date' => $date,
+      'date' => $this->date,
     ]);
 
   }
@@ -107,16 +110,13 @@ class OverviewController extends AbstractController
   public function show_all(): Response
   {
 
-    $date = new \DateTime();
-    $date = $date->format('l, j F, Y');
-
     $announcement = $this->getDoctrine()
       // inits the database and table Articles;
       ->getRepository(Announcement::class)
       ->findToday();
 
       return $this->render('overview.html.twig', [
-        'date' => $date,
+        'date' => $this->date,
         'announcement' => $announcement,
       ]);
 
@@ -136,14 +136,12 @@ class OverviewController extends AbstractController
   public function show_user(): Response
   {
 
-    $date = new \DateTime();
-    $date = $date->format('l, j F, Y');
     $user = $this->getUser();
 
     $announcement = $user->getAnnouncements();
     
     return $this->render('overview.html.twig', [
-      'date' => $date,
+      'date' => $this->date,
       'announcement' => $announcement,
     ]);
 
