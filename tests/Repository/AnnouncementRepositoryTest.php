@@ -54,8 +54,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement = new Announcement();
     $announcement->setSubject('testSubject');
     $announcement->setAuthor('testAuthor');
-    $announcement->setText('testText');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
+    $announcement->setText('testText');
     $announcement->setDate(new \DateTime());
     $this->entityManager->persist($announcement);
     $this->entityManager->flush();
@@ -95,6 +96,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('2021-07-14');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -104,6 +106,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('now');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -113,6 +116,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('3021-07-14');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -145,6 +149,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('now');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -156,6 +161,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('now');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
+    $announcement->setCategory('testCategory');
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
