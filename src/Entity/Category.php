@@ -72,4 +72,26 @@ class Category
 
         return $this;
     }
+
+    public function addAnnouncement(Category $category): self
+    {
+        if (!$this->category->contains($category)) {
+            $this->category[] = $category;
+            $category->setAnnouncement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnouncement(Category $category): self
+    {
+        if ($this->category->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getAnnouncement() === $this) {
+                $category->setAnnouncement(null);
+            }
+        }
+
+        return $this;
+    }
 }
