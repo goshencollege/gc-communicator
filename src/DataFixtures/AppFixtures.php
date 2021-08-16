@@ -97,11 +97,6 @@ class AppFixtures extends Fixture
     $manager->persist($cat);
 
     $cat = new Category();
-    $cat->setName('testCategory');
-    $cat->setActive(1);
-    $manager->persist($cat);
-
-    $cat = new Category();
     $cat->setName('Classes');
     $cat->setActive(0);
     $manager->persist($cat);
