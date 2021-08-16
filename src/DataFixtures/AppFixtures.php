@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Datafixtures;
+namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
-use Doctrine\Common\Datafixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 
-class Appfixtures extends Fixture
+class AppFixtures extends Fixture
 {
   private $passwordHasher;
 
