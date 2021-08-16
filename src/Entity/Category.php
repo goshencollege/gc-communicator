@@ -27,6 +27,11 @@ class Category
      */
     private $active;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Announcement", mappedBy="category")
+     */
+    private $announcements;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,8 +61,15 @@ class Category
         return $this;
     }
 
-    public function __toString() 
+    public function getAnnouncement(): ?Announcement
     {
-        return $this->name;
+        return $this->announcements;
+    }
+
+    public function setAnnouncement(?Announcement $announcement): self
+    {
+        $this->announcement = $announcement;
+
+        return $this;
     }
 }

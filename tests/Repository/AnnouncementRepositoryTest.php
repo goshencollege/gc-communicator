@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Doctrine\Persistence\ObjectManager;
 use App\Repository\UserRepository;
 use App\Repository\AnnouncementRepository;
+use App\Repository\CategoryRepository;
 use App\Entity\User;
 use App\Entity\Announcement;
 
@@ -28,6 +29,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->entityManager = $kernel->getContainer()
       ->get('doctrine')
       ->getManager();
+
   }
 
   /**
@@ -49,12 +51,15 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $userRepo = static::getContainer()->get(UserRepository::class);
     $testUser = $userRepo->findOneByUsername("david");
+    $catRepo = static::getContainer()->get(CategoryRepository::class);
+    $testCat = $catRepo->findOneByName("testCategory");
+
     $countPre = count($testUser->getAnnouncements());
 
     $announcement = new Announcement();
     $announcement->setSubject('testSubject');
     $announcement->setAuthor('testAuthor');
-    $announcement->setCategory('testCategory');
+    $announcement->setCategory($testCat);
     $announcement->setUser($testUser);
     $announcement->setText('testText');
     $announcement->setDate(new \DateTime());
@@ -62,7 +67,6 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->entityManager->flush();
 
     $this->entityManager->refresh($testUser);
-    $testUser = $userRepo->findOneByUsername("david");
     $countPost = count($testUser->getAnnouncements());
     $this->assertSame($countPre + 1, $countPost);
 
@@ -90,13 +94,15 @@ class AnnouncementRepositoryTest extends KernelTestCase
   {
     $userRepo = static::getContainer()->get(UserRepository::class);
     $testUser = $userRepo->findOneByUsername("david");
+    $catRepo = static::getContainer()->get(CategoryRepository::class);
+    $testCat = $catRepo->findOneByName("testCategory");
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
     $announcement_date = new \DateTime('2021-07-14');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory('testCategory');
+    $announcement->setCategory($testCat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -106,7 +112,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('now');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory('testCategory');
+    $announcement->setCategory($testCat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -116,7 +122,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('3021-07-14');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory('testCategory');
+    $announcement->setCategory($testCat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
@@ -144,6 +150,8 @@ class AnnouncementRepositoryTest extends KernelTestCase
   {
     $userRepo = static::getContainer()->get(UserRepository::class);
     $testUser = $userRepo->findOneByUsername("david");
+    $catRepo = static::getContainer()->get(CategoryRepository::class);
+    $testCat = $catRepo->findOneByName("testCategory");
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
@@ -161,7 +169,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement_date = new \DateTime('now');
     $announcement->setSubject('autoSubject');
     $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory('testCategory');
+    $announcement->setCategory($testCat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
     $announcement->setText('autoText');
