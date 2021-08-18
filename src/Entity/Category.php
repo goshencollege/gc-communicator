@@ -73,13 +73,6 @@ class Category
         return $this->announcements;
     }
 
-    public function setAnnouncement(?Announcement $announcement): self
-    {
-        $this->announcement = $announcement;
-
-        return $this;
-    }
-
     public function addAnnouncement(Announcement $announcement): self
     {
         if (!$this->category->contains($announcement)) 
