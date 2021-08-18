@@ -36,7 +36,7 @@ class Category
 
     public function __construct()
     {
-        $this->category = new ArrayCollection();
+        $this->announcements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,17 +68,17 @@ class Category
         return $this;
     }
 
-    public function getAnnouncements(): ?Announcement
+    public function getAnnouncements(): Collection
     {
         return $this->announcements;
     }
 
     public function addAnnouncement(Announcement $announcement): self
     {
-        if (!$this->category->contains($announcement)) 
+        if (!$this->announcements->contains($announcement)) 
         {
-            $this->category[] = $category;
-            $category->setAnnouncement($this);
+            $this->announcements[] = $announcement;
+            $announcement->setCategory($this);
         }
 
         return $this;
