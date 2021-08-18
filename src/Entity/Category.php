@@ -32,6 +32,11 @@ class Category
      */
     private $announcements;
 
+    public function __construct()
+    {
+        $this->category = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,7 +66,7 @@ class Category
         return $this;
     }
 
-    public function getAnnouncement(): ?Announcement
+    public function getAnnouncements(): ?Announcement
     {
         return $this->announcements;
     }
@@ -73,9 +78,10 @@ class Category
         return $this;
     }
 
-    public function addAnnouncement(Category $category): self
+    public function addAnnouncement(Announcement $announcement): self
     {
-        if (!$this->category->contains($category)) {
+        if (!$this->category->contains($announcement)) 
+        {
             $this->category[] = $category;
             $category->setAnnouncement($this);
         }
@@ -83,11 +89,13 @@ class Category
         return $this;
     }
 
-    public function removeAnnouncement(Category $category): self
+    public function removeAnnouncement(Announcement $announcement): self
     {
-        if ($this->category->removeElement($category)) {
+        if ($this->category->removeElement($announcement)) 
+        {
             // set the owning side to null (unless already changed)
-            if ($category->getAnnouncement() === $this) {
+            if ($category->getAnnouncement() === $this) 
+            {
                 $category->setAnnouncement(null);
             }
         }
