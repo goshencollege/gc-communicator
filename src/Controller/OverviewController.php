@@ -151,7 +151,7 @@ class OverviewController extends AbstractController
    * @Route("/category/add", name="add_category")
    * @IsGranted("ROLE_USER")
    */
-  public function add_category(): Response
+  public function add_category(Request $request): Response
   {
 
     $em = $this->getDoctrine()->getManager();
@@ -160,7 +160,6 @@ class OverviewController extends AbstractController
 
     $form = $this->createFormBuilder($category)
       ->add('name', TextType::class)
-      ->add('text', TextType::class)
       ->add('submit', SubmitType::class, ['label' => 'Add Category'])
       ->getForm();
 
