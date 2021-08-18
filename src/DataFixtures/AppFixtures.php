@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Announcement;
 use App\Entity\User;
+use App\Entity\Category;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -40,40 +41,65 @@ class AppFixtures extends Fixture
     $manager->persist($user);
 
     $testUser = new User();
-    $testUser->setUsername('testUser');
+    $testUser->setUsername('fixturesUser');
     $testUser->setPassword($this->passwordHasher->hashPassword(
         $testUser,
         '12345'
     ));
     $manager->persist($testUser);
 
+    $cat = new Category();
+    $cat->setName('fixturesCategory');
+    $cat->setActive(1);
+    $manager->persist($cat);
+
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
     $announcement_date = new \DateTime('2021-07-14');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
+    $announcement->setSubject('fixturesSubject');
+    $announcement->setAuthor('fixturesAuthor');
+    $announcement->setCategory($cat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
+    $announcement->setText('fixturesText');
     $manager->persist($announcement);
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
+    $announcement->setSubject('fixturesSubject');
+    $announcement->setAuthor('fixturesAuthor');
+    $announcement->setCategory($cat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
+    $announcement->setText('fixturesText');
     $manager->persist($announcement);
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('3021-07-14');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
+    $announcement->setSubject('fixturesSubject');
+    $announcement->setAuthor('fixturesAuthor');
+    $announcement->setCategory($cat);
     $announcement->setUser($testUser);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
+    $announcement->setText('fixturesText');
     $manager->persist($announcement);
+
+
+    // loading fixtures for category table
+    $cat = new Category();
+    $cat->setName('Rooms');
+    $cat->setActive(1);
+    $manager->persist($cat);
+
+    $cat = new Category();
+    $cat->setName('Buildings');
+    $cat->setActive(1);
+    $manager->persist($cat);
+
+    $cat = new Category();
+    $cat->setName('Classes');
+    $cat->setActive(0);
+    $manager->persist($cat);
 
     $manager->flush();
 

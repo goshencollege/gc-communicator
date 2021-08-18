@@ -9,7 +9,7 @@
   <body>
     <div class="w3-panel">
       <h3>{{ announcement|length }} New Announcements</h3>
-      <p>{{ date.weekday }}, {{ [date.month, date.mday]|join(' ') }}, {{ date.year }}</p>
+      <p>{{ date }}</p>
     </div>
     <div class="w3-panel .dbtheme-purple">
       <table class="w3-table-all">
@@ -18,8 +18,8 @@
           <th>Subject</th>
           <th>Author</th>
           <th>User</th>
+          <th>Category</th>
           <th>Text</th>
-          <th>Date</th>
         </tr>
         {% for row in announcement %} {# simple loop to output rows #}
           <tr>
@@ -27,8 +27,8 @@
             <td>{{ row.subject }}</td>
             <td>{{ row.author }}</td>
             <td>{{ row.user.username }}</td>
+            <td>{{ row.category.name }}</td>
             <td>{{ row.text }}</td>
-            <td>{{ row.date|date("Y-m-d") }}</td>
           </tr>
         {% endfor %}
       </table>

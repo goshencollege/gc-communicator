@@ -8,16 +8,27 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
+use App\Entity\Category;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class OverviewController extends AbstractController
 {
+
+  public function __construct()
+  {
+    $date = new \DateTime;
+    $this->date = $date->format('l, j F, Y');
+  }
 
   /**
    * Simply adds a row into the database through a standard function
@@ -35,38 +46,52 @@ class OverviewController extends AbstractController
   public function add_info(Request $request): Response
   {
 
-    $date = getDate();
-    // Simply understanding this as a basic "rule" of symfony;
-    $entityManager = $this->getDoctrine()->getManager(); 
+    $em = $this->getDoctrine()->getManager();
     
     // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
-    $announcement = new Announcement();    
+    $announcement = new Announcement();
     $user = $this->getUser();
 
+
+
     // Move this form creation to its own class eventually;
-    $form = $this->createFormBuilder($announcement)       
+    $form = $this->createFormBuilder($announcement)
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
-      ->add('text', TextType::class)
-      ->add('date', DateType::class)
+      ->add('category', EntityType::class, [
+        'class' => Category::class,
+        'query_builder' => function(EntityRepository $er)
+        {
+          return $er->createQueryBuilder('a')
+            ->andWhere('a.active = :val')
+            ->setParameter('val', 1)
+            ->orderBy('a.name', 'ASC')
+          ;
+        },
+        'choice_label' => 'name',
+        'placeholder' => 'Category',
+      ])
+      ->add('text', TextareaType::class)
+      ->add('date', DateType::class, [
+        'data' => new \DateTime,
+      ])
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
 
     $form->handleRequest($request);
     if($form->isSubmitted() && $form->isValid()){
-
       // should pull data from the form and flush it to the database;
       $announcement = $form->getData();   
       $announcement->setUser($user);
-      $entityManager->persist($announcement);
-      $entityManager->flush();
+      $em->persist($announcement);
+      $em->flush();
       
       return $this->redirectToRoute('show_all');
     }
 
     return $this->render('add.html.twig', [
       'form' => $form->createView(),
-      'date' => $date,
+      'date' => $this->date,
     ]);
 
   }
@@ -85,15 +110,13 @@ class OverviewController extends AbstractController
   public function show_all(): Response
   {
 
-    $date = getdate();
-
     $announcement = $this->getDoctrine()
       // inits the database and table Articles;
       ->getRepository(Announcement::class)
       ->findToday();
 
       return $this->render('overview.html.twig', [
-        'date' => $date,
+        'date' => $this->date,
         'announcement' => $announcement,
       ]);
 
@@ -108,17 +131,17 @@ class OverviewController extends AbstractController
    * @return rendered overview.html.twig
    * 
    * @Route("/overview/user", name="show_all_user")
+   * @IsGranted("ROLE_USER")
    */
   public function show_user(): Response
   {
 
-    $date = getdate();
     $user = $this->getUser();
 
     $announcement = $user->getAnnouncements();
     
     return $this->render('overview.html.twig', [
-      'date' => $date,
+      'date' => $this->date,
       'announcement' => $announcement,
     ]);
 

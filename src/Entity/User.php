@@ -138,7 +138,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addAnnouncement(Announcement $announcement): self
     {
-        if (!$this->announcements->contains($announcement)) {
+        if (!$this->announcements->contains($announcement)) 
+        {
             $this->announcements[] = $announcement;
             $announcement->setUser($this);
         }
@@ -148,9 +149,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeAnnouncement(Announcement $announcement): self
     {
-        if ($this->announcements->removeElement($announcement)) {
+        if ($this->announcements->removeElement($announcement)) 
+        {
             // set the owning side to null (unless already changed)
-            if ($announcement->getUser() === $this) {
+            if ($announcement->getUser() === $this) 
+            {
                 $announcement->setUser(null);
             }
         }
