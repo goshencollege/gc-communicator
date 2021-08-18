@@ -86,12 +86,12 @@ class Category
 
     public function removeAnnouncement(Announcement $announcement): self
     {
-        if ($this->category->removeElement($announcement)) 
+        if ($this->announcements->removeElement($announcement)) 
         {
             // set the owning side to null (unless already changed)
-            if ($category->getAnnouncement() === $this) 
+            if ($announcement->getCategory() === $this) 
             {
-                $category->setAnnouncement(null);
+                $announcement->setCategory(null);
             }
         }
 
