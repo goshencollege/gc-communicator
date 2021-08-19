@@ -47,14 +47,10 @@ class OverviewController extends AbstractController
   {
 
     $em = $this->getDoctrine()->getManager();
-    
-    // Init the articles object for the Articles table. Calls found in /src/Entity/Articles.php;
     $announcement = new Announcement();
+    // Init the announcements object for the Announcement table;
     $user = $this->getUser();
 
-
-
-    // Move this form creation to its own class eventually;
     $form = $this->createFormBuilder($announcement)
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
@@ -80,7 +76,6 @@ class OverviewController extends AbstractController
 
     $form->handleRequest($request);
     if($form->isSubmitted() && $form->isValid()){
-      // should pull data from the form and flush it to the database;
       $announcement = $form->getData();   
       $announcement->setUser($user);
       $em->persist($announcement);
@@ -111,7 +106,7 @@ class OverviewController extends AbstractController
   {
 
     $announcement = $this->getDoctrine()
-      // inits the database and table Articles;
+      // inits the database and table Announcements;
       ->getRepository(Announcement::class)
       ->findToday();
 
@@ -145,6 +140,46 @@ class OverviewController extends AbstractController
       'announcement' => $announcement,
     ]);
 
+  }
+
+  /**
+   * The form page for adding new categories. This will be accessible only be admins.
+   * 
+   * @author Daniel Boling
+   * @return rendered add-category.html.twig
+   * 
+   * @Route("/category/add", name="add_category")
+   * @IsGranted("ROLE_USER")
+   */
+  public function add_category(Request $request): Response
+  {
+
+    $em = $this->getDoctrine()->getManager();
+    $category = new Category();
+    // Init the category object for the category table;
+
+    $form = $this->createFormBuilder($category)
+      ->add('name', TextType::class)
+      ->add('submit', SubmitType::class, ['label' => 'Add Category'])
+      ->getForm();
+
+    $form->handleRequest($request);
+    if($form->isSubmitted() && $form->isValid()){
+      // should pull data from the form and flush it to the database;
+      $category = $form->getData();   
+      $category->setActive(1);
+      // will always be set to active by default;
+      $em->persist($category);
+      $em->flush();
+      
+      return $this->redirectToRoute('show_all');
+      // this will be changed to redirect to the show_categories page in the next update;
+    }
+
+    return $this->render('add-category.html.twig', [
+      'form' => $form->createView(),
+      'date' => $this->date,
+    ]);
   }
 
 }
