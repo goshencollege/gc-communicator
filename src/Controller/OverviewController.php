@@ -190,7 +190,7 @@ class OverviewController extends AbstractController
    * @Route("/category/list", name="list_category")
    * @IsGranted("ROLE_USER")
    */
-  public function list_category(Request $request): Response
+  public function categoryAction(Request $request, $id): Response
   {
 
     $em = $this->getDoctrine()->getManager();
@@ -200,12 +200,39 @@ class OverviewController extends AbstractController
     ->getRepository(Category::class)
     ->findAll();
 
+    if (null !== ($request->get('myOnbutton')))
+    {
+
+      $providerstats = $this->getDoctrine()
+        ->getRepository(Category::class)
+        ->findBy(array('id' => $id));
+
+    }
+
     return $this->render('list-category.html.twig', [
       'categories' => $categories,
       'date' => $this->date,
     ]);
   }
   
+  // /**
+  //  * @Route("/category/{id}", name="toggle_active_category")
+  //  */
+  // public function categoryAction(Request $request, $id)
+  // {
+
+  //   if (null !== ($request->get('myOnbutton')))
+  //   {
+
+  //     $providerstats = $this->getDoctrine()
+  //     ->getRepository(Category::class)
+  //     ->findBy(array('id' => $id));
+
+
+  //   }
+
+  // }
+
 }
 
 // EOF
