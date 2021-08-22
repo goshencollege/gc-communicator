@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="stylesheet.css">
+
+    <title>Communicator - Categories</title>
+  </head>
+
+  <body>
+    <div class="w3-panel">
+      <h3><b>Categories</b></h3>
+      <p>{{ date }}</p>
+    </div>
+    <div class="w3-panel .dbtheme-purple">
+      <table class="w3-table-all">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Active</th>
+          <th></th>
+        </tr>
+        {% for row in categories %} {# simple loop to output rows #}
+          <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.name }}</td>
+            <td>{{ row.active }}</td>
+            <td></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+
+
+</html>
