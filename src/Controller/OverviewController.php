@@ -187,7 +187,9 @@ class OverviewController extends AbstractController
    * and then providing simple means of toggling active/inactive.
    * Will only accessible by admins
    * 
-   * @Route("/category/list", name="category_list")
+   * @author Daniel Boling
+   * 
+   * @Route("/category/list", name="list_category")
    * @IsGranted("ROLE_USER")
    */
   public function list_category(Request $request): Response
@@ -209,6 +211,11 @@ class OverviewController extends AbstractController
   }
   
   /**
+   * Is called on button-click from twig file, updates active categories, and redirects to list_category
+   * 
+   * @author Daniel Boling
+   * @return redirect to list_category
+   * 
    * @Route("/category/list/{id}", name="update_category")
    */
   public function categoryAction(Request $request, $id): Response
@@ -231,7 +238,7 @@ class OverviewController extends AbstractController
       $em->flush();
       
 
-    return $this->redirectToRoute('category_list');
+    return $this->redirectToRoute('list_category');
 
   }
 
