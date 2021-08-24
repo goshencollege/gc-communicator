@@ -218,7 +218,7 @@ class OverviewController extends AbstractController
    * 
    * @Route("/category/list/{id}", name="update_category")
    */
-  public function categoryAction(Request $request, $id): Response
+  public function update_category(Request $request, $id): Response
   {
 
     $em = $this->getDoctrine()->getManager();
