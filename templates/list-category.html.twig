@@ -24,7 +24,7 @@
             <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
             <td>{{ row.active }}</td>
-            <td><a href="{{ path('list_category',{ id: row.id }) }}" class="btn btn-default btn-xs myOnbutton">ON</a></td>
+            <td><a href="{{ path('find_category',{ id: row.id }) }}" class="btn btn-default btn-xs myOnbutton">ON</a></td>
           </tr>
         {% endfor %}
       </table>

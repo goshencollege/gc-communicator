@@ -187,51 +187,70 @@ class OverviewController extends AbstractController
    * and then providing simple means of toggling active/inactive.
    * Will only accessible by admins
    * 
-   * @Route("/category/list", name="list_category")
+   * @Route("/category/list", name="category_list")
    * @IsGranted("ROLE_USER")
    */
-  public function categoryAction(Request $request, $id): Response
+  public function list_category(Request $request): Response
   {
 
     $em = $this->getDoctrine()->getManager();
+
+    $test = 'First page';
 
     $categories = $this->getDoctrine()
     // inits the database and Category table;
     ->getRepository(Category::class)
     ->findAll();
 
-    if (null !== ($request->get('myOnbutton')))
+    if (($request->get('myOnbutton') !== null))
     {
 
-      $providerstats = $this->getDoctrine()
-        ->getRepository(Category::class)
-        ->findBy(array('id' => $id));
+      $category = $em->find('Category', $id);
+      if ($category->getActive() == 1)
+        {
+          $category->setActive(0);
 
+        } else {
+          $category->setActive(1);
+        }
+      
+        $em->flush();
+      
+    }
+    
+
+    return $this->render('list-category.html.twig', [
+      'categories' => $categories,
+      'date' => $this->date,
+      'test' => $test,
+    ]);
+  }
+  
+  /**
+   * @Route("/category/list/{id}", name="find_category")
+   */
+  public function categoryAction(Request $request, $id): Response
+  {
+
+    $categories = null;
+
+    if (($request->get('myOnbutton') != null))
+    {
+      $test = 'Hello World';
+      $categories = $this->getDoctrine()
+      // inits the database and Category table;
+      ->getRepository(Category::class)
+      ->findOneBy('category', $id);
+      
     }
 
     return $this->render('list-category.html.twig', [
       'categories' => $categories,
       'date' => $this->date,
+      'test' => $test,
     ]);
+
   }
-  
-  // /**
-  //  * @Route("/category/{id}", name="toggle_active_category")
-  //  */
-  // public function categoryAction(Request $request, $id)
-  // {
-
-  //   if (null !== ($request->get('myOnbutton')))
-  //   {
-
-  //     $providerstats = $this->getDoctrine()
-  //     ->getRepository(Category::class)
-  //     ->findBy(array('id' => $id));
-
-
-  //   }
-
-  // }
 
 }
 
