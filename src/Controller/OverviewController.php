@@ -182,6 +182,63 @@ class OverviewController extends AbstractController
     ]);
   }
 
+  /**
+   * The page for listing all categories in the system, wether they are active or not,
+   * and then providing simple means of toggling active/inactive.
+   * Will only accessible by admins
+   * 
+   * @author Daniel Boling
+   * 
+   * @Route("/category/list", name="list_category")
+   * @IsGranted("ROLE_USER")
+   */
+  public function list_category(Request $request): Response
+  {
+
+    $categories = $this->getDoctrine()
+    // inits the database and Category table;
+    ->getRepository(Category::class)
+    ->findAll();
+
+
+    return $this->render('list-category.html.twig', [
+      'categories' => $categories,
+      'date' => $this->date,
+    ]);
+  }
+  
+  /**
+   * Is called on button-click from twig file, updates active categories, and redirects to list_category
+   * 
+   * @author Daniel Boling
+   * @return redirect to list_category
+   * 
+   * @Route("/category/list/{id}", name="update_category")
+   */
+  public function update_category(Request $request, $id): Response
+  {
+
+    $em = $this->getDoctrine()->getManager();
+
+    $category = $this->getDoctrine()
+      ->getRepository(Category::class)
+      ->find($id);
+      
+    if ($category->getActive() == 1)
+      {
+        $category->setActive(0);
+
+      } else {
+        $category->setActive(1);
+      }
+      $em->persist($category);
+      $em->flush();
+      
+
+    return $this->redirectToRoute('list_category');
+
+  }
+
 }
 
 // EOF
