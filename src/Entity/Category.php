@@ -68,7 +68,6 @@ class Category
         return $this;
     }
 
-
     public function getAnnouncements(): Collection
     {
         return $this->announcements;

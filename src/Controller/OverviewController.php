@@ -195,8 +195,6 @@ class OverviewController extends AbstractController
 
     $em = $this->getDoctrine()->getManager();
 
-    $test = 'First page';
-
     $categories = $this->getDoctrine()
     // inits the database and Category table;
     ->getRepository(Category::class)
@@ -207,7 +205,6 @@ class OverviewController extends AbstractController
     return $this->render('list-category.html.twig', [
       'categories' => $categories,
       'date' => $this->date,
-      'test' => $test,
     ]);
   }
   
@@ -217,24 +214,22 @@ class OverviewController extends AbstractController
   public function categoryAction(Request $request, $id): Response
   {
 
-    $categories = null;
-    $test = "not clicked";
+    $em = $this->getDoctrine()->getManager();
 
-    if (($request->get('myOnbutton') !== null))
-    {
-
-      $category = $em->findById($id);
-      if ($category->getActive() == 1)
-        {
-          $category->setActive(0);
-
-        } else {
-          $category->setActive(1);
-        }
-        $em->persist($category);
-        $em->flush();
+    $category = $this->getDoctrine()
+      ->getRepository(Category::class)
+      ->find($id);
       
-    }
+    if ($category->getActive() == 1)
+      {
+        $category->setActive(0);
+
+      } else {
+        $category->setActive(1);
+      }
+      $em->persist($category);
+      $em->flush();
+      
 
     return $this->redirectToRoute('category_list');
 
