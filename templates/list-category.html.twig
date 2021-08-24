@@ -24,7 +24,7 @@
             <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
             <td>{{ row.active }}</td>
-            <td><a href="{{ path('update_category',{ id: row.id }) }}" class="btn btn-default btn-xs myOnbutton">ON</a></td>
+            <td><a href="{{ path('update_category',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">Toggle</a></td>
           </tr>
         {% endfor %}
       </table>
