@@ -195,14 +195,11 @@ class OverviewController extends AbstractController
   public function list_category(Request $request): Response
   {
 
-    $em = $this->getDoctrine()->getManager();
-
     $categories = $this->getDoctrine()
     // inits the database and Category table;
     ->getRepository(Category::class)
     ->findAll();
 
-    
 
     return $this->render('list-category.html.twig', [
       'categories' => $categories,
