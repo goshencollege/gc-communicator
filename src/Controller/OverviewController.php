@@ -202,21 +202,6 @@ class OverviewController extends AbstractController
     ->getRepository(Category::class)
     ->findAll();
 
-    if (($request->get('myOnbutton') !== null))
-    {
-
-      $category = $em->find('Category', $id);
-      if ($category->getActive() == 1)
-        {
-          $category->setActive(0);
-
-        } else {
-          $category->setActive(1);
-        }
-      
-        $em->flush();
-      
-    }
     
 
     return $this->render('list-category.html.twig', [
@@ -227,7 +212,7 @@ class OverviewController extends AbstractController
   }
   
   /**
-   * @Route("/category/list/{id}", name="find_category")
+   * @Route("/category/list/{id}", name="update_category")
    */
   public function categoryAction(Request $request, $id): Response
   {
@@ -235,21 +220,23 @@ class OverviewController extends AbstractController
     $categories = null;
     $test = "not clicked";
 
-    if (($request->get('myOnbutton') == !null))
+    if (($request->get('myOnbutton') !== null))
     {
-      $test = 'button clicked';
-      $categories = $this->getDoctrine()
-      // inits the database and Category table;
-      ->getRepository(Category::class)
-      ->findOneBy('category', $id);
+
+      $category = $em->findById($id);
+      if ($category->getActive() == 1)
+        {
+          $category->setActive(0);
+
+        } else {
+          $category->setActive(1);
+        }
+        $em->persist($category);
+        $em->flush();
       
     }
 
-    return $this->render('list-category.html.twig', [
-      'categories' => $categories,
-      'date' => $this->date,
-      'test' => $test,
-    ]);
+    return redirectToRoute('category_list');
 
   }
 
