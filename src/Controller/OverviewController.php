@@ -236,7 +236,7 @@ class OverviewController extends AbstractController
       
     }
 
-    return redirectToRoute('category_list');
+    return $this->redirectToRoute('category_list');
 
   }
 
