@@ -233,10 +233,11 @@ class OverviewController extends AbstractController
   {
 
     $categories = null;
+    $test = "not clicked";
 
-    if (($request->get('myOnbutton') != null))
+    if (($request->get('myOnbutton') == !null))
     {
-      $test = 'Hello World';
+      $test = 'button clicked';
       $categories = $this->getDoctrine()
       // inits the database and Category table;
       ->getRepository(Category::class)
