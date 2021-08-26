@@ -90,8 +90,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * 
    * @author Daniel Boling
    */
-  public function dateTest(ObjectManager $manager): void
+  public function dateTest(): void
   {
+    $manager = $this->entityManager;
     $userRepo = static::getContainer()->get(UserRepository::class);
     $testUser = $userRepo->findOneByUsername("david");
     $catRepo = static::getContainer()->get(CategoryRepository::class);
@@ -146,8 +147,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * 
    * @author Daniel Boling 
    */
-  public function userTest(ObjectManager $manager): void
+  public function userTest(): void
   {
+    $manager = $this->entityManager;
     $userRepo = static::getContainer()->get(UserRepository::class);
     $testUser = $userRepo->findOneByUsername("david");
     $catRepo = static::getContainer()->get(CategoryRepository::class);
@@ -192,8 +194,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * @author Daniel Boling
    * 
    */
-  public function categoryTest(ObjectManager $manager): Void
+  public function categoryTest(): Void
   {
+    $manager = $this->entityManager;
     $cat = new Category();
     $cat->setName('testCategory1');
     $cat->setActive(1);
