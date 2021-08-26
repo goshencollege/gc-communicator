@@ -186,6 +186,35 @@ class AnnouncementRepositoryTest extends KernelTestCase
   }
 
   /**
+   * Testing category creation and deactiviation.
+   * 
+   * @todo Create 2 categories, one active, one inactive, and test for 1 active.
+   * @author Daniel Boling
+   * 
+   */
+  public function categoryTest(ObjectManager $manager): Void
+  {
+    $cat = new Category();
+    $cat->setName('testCategory1');
+    $cat->setActive(1);
+    $manager->persist($cat);
+
+    $cat = new Category();
+    $cat->setName('testCategory2');
+    $cat->setActive(0);
+    $manager->persist($cat);
+
+    $manager->flush();
+
+    $cat = $this->entityManager
+      ->getRepository(Category::class)
+      ->findActive();
+
+    $this->assertSame(1, $cat->count());
+
+  }
+
+  /**
    * Cleanup from the testing.  This is called automatically by PHPUnit
    * 
    * @author David King
