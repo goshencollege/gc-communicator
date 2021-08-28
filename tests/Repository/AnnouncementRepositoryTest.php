@@ -8,13 +8,14 @@ use App\Repository\AnnouncementRepository;
 use App\Repository\CategoryRepository;
 use App\Entity\User;
 use App\Entity\Announcement;
+use App\Entity\Category;
 
 class AnnouncementRepositoryTest extends KernelTestCase
 {
   /**
    * @var \Doctrine\ORM\EntityManager
    */
-  private $entityManager;
+  private $em;
 
   /**
    * Setup the test environment.  This is called automatically by PHPUnit
@@ -26,7 +27,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
   {
     $kernel = self::bootKernel();
 
-    $this->entityManager = $kernel->getContainer()
+    $this->em = $kernel->getContainer()
       ->get('doctrine')
       ->getManager();
 
@@ -42,44 +43,48 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * @author David King
    * 
    */
-  public function testCreate(): void
+  public function test_create(): void
   {
+
     $existing_announcements = count(
-      $this->entityManager
+      $this->em
       ->getRepository(Announcement::class)
       ->findAll());
 
-    $userRepo = static::getContainer()->get(UserRepository::class);
-    $testUser = $userRepo->findOneByUsername("david");
-    $catRepo = static::getContainer()->get(CategoryRepository::class);
-    $testCat = $catRepo->findOneByName("testCategory");
+    $test_user = $this->em
+      ->getRepository(User::class)
+      ->findOneByUsername("test_user");
 
-    $countPre = count($testUser->getAnnouncements());
+    $test_cat = $this->em
+      ->getRepository(Category::class)
+      ->findOneByName("test_category");
+
+    $count_pre = count($test_user->getAnnouncements());
 
     $announcement = new Announcement();
-    $announcement->setSubject('testSubject');
-    $announcement->setAuthor('testAuthor');
-    $announcement->setCategory($testCat);
-    $announcement->setUser($testUser);
-    $announcement->setText('testText');
+    $announcement->setSubject('test_subject');
+    $announcement->setAuthor('test_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setText('test_text');
     $announcement->setDate(new \DateTime());
-    $this->entityManager->persist($announcement);
-    $this->entityManager->flush();
+    $this->em->persist($announcement);
+    $this->em->flush();
 
-    $this->entityManager->refresh($testUser);
-    $countPost = count($testUser->getAnnouncements());
-    $this->assertSame($countPre + 1, $countPost);
+    $this->em->refresh($test_user);
+    $count_post = count($test_user->getAnnouncements());
+    $this->assertSame($count_pre + 1, $count_post);
 
-    $announcement2 = $testUser->getAnnouncements()[$countPost-1];
+    $announcement2 = $test_user->getAnnouncements()[$count_post-1];
 
-    //$this->assertNotNull($announcement2);
-    //$this->assertSame(++$existing_announcements, count($announcement2));
-    // used to be $announcement2[0];
+    $this->assertSame(($existing_announcements + 1), $count_post);
     $this->assertSame($announcement->getSubject(), $announcement2->getSubject());
     $this->assertSame($announcement->getAuthor(), $announcement2->getAuthor());
+    $this->assertSame($announcement->getCategory(), $announcement2->getCategory());
+    $this->assertSame($announcement->getUser(), $announcement2->getUser());
     $this->assertSame($announcement->getText(), $announcement2->getText());
-    //$this->assertSame($announcement->getUser(), $announcement2->getUser());
-    //$this->assertSame($announcement->getDate(), $announcement2->getDate());
+    $this->assertSame($announcement->getDate(), $announcement2->getDate());
+
   }
 
   /**
@@ -90,52 +95,57 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * 
    * @author Daniel Boling
    */
-  public function dateTest(): void
+  public function test_date(): void
   {
-    $manager = $this->entityManager;
-    $userRepo = static::getContainer()->get(UserRepository::class);
-    $testUser = $userRepo->findOneByUsername("david");
-    $catRepo = static::getContainer()->get(CategoryRepository::class);
-    $testCat = $catRepo->findOneByName("testCategory");
+    $user_repo = static::getContainer()->get(UserRepository::class);
+    $test_user = $user_repo->findOneByUsername("test_user");
+    $cat_repo = static::getContainer()->get(CategoryRepository::class);
+    $test_cat = $cat_repo->findOneByName("test_category");
+
+    $pre_announcement = $this->em
+      ->getRepository(Announcement::class)
+      ->find_today();
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
     $announcement_date = new \DateTime('2021-07-14');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory($testCat);
-    $announcement->setUser($testUser);
+    $announcement->setSubject('test_subject');
+    $announcement->setAuthor('test_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
-    $manager->persist($announcement);
+    $announcement->setText('test_text');
+    $this->em->persist($announcement);
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory($testCat);
-    $announcement->setUser($testUser);
+    $announcement->setSubject('test_subject');
+    $announcement->setAuthor('test_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
-    $manager->persist($announcement);
+    $announcement->setText('test_text');
+    $this->em->persist($announcement);
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('3021-07-14');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory($testCat);
-    $announcement->setUser($testUser);
+    $announcement->setSubject('test_subject');
+    $announcement->setAuthor('test_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
-    $manager->persist($announcement);
+    $announcement->setText('test_text');
+    $this->em->persist($announcement);
 
-    $manager->flush();
+    $this->em->flush();
 
-    $announcement = $this->entityManager
-      ->getRepository(AnnouncementRepository::class)
-      ->findToday();
+    $post_announcement = $this->em
+      ->getRepository(Announcement::class)
+      ->find_today();
 
-    $this->assertSame(1, $announcement->count());
+    $this->assertSame(count(($pre_announcement)+1), count($post_announcement));
+    // checking that the count of announcements with current date prior to addition + 1
+    // is the same as the count of announcements with current date after addition
 
   }
 
@@ -145,46 +155,45 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * @todo create 2 announcements with two different users, then test that the 
    * created findByUser() function works properly by returning only the announcement(s) created with that user.
    * 
-   * @author Daniel Boling 
+   * @author Daniel Boling
    */
-  public function userTest(): void
+  public function test_user(): void
   {
-    $manager = $this->entityManager;
-    $userRepo = static::getContainer()->get(UserRepository::class);
-    $testUser = $userRepo->findOneByUsername("david");
-    $catRepo = static::getContainer()->get(CategoryRepository::class);
-    $testCat = $catRepo->findOneByName("testCategory");
+    $user_repo = static::getContainer()->get(UserRepository::class);
+    $test_user = $user_repo->findOneByUsername("test_user");
+    $cat_repo = static::getContainer()->get(CategoryRepository::class);
+    $test_cat = $cat_repo->findOneByName("test_category");
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory('testCategory');
-    $announcement->setUser($testUser);
+    $announcement->setSubject('auto_subject');
+    $announcement->setAuthor('auto_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
-    $manager->persist($announcement);
+    $announcement->setText('auto_text');
+    $this->em->persist($announcement);
 
-    $testUser = $userRepo->findOneByUsername("dboling");
+    $test_user = $user_repo->findOneByUsername("fixture_user");
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
-    $announcement->setSubject('autoSubject');
-    $announcement->setAuthor('autoAuthor');
-    $announcement->setCategory($testCat);
-    $announcement->setUser($testUser);
+    $announcement->setSubject('test_subject');
+    $announcement->setAuthor('test_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
     $announcement->setDate($announcement_date);
-    $announcement->setText('autoText');
-    $manager->persist($announcement);
+    $announcement->setText('test_text');
+    $this->em->persist($announcement);
 
-    $testUser = $userRepo->findOneByUsername("david");
+    $test_user = $user_repo->findOneByUsername("test_user");
     // Switching back to "cause possible issues"
 
-    $manager->flush();
+    $this->em->flush();
 
-    $announcement = $testUser->getAnnouncements();
+    $announcement = $test_user->getAnnouncements();
 
-    $this->assertSame($testUser, $announcement->getUser());
+    $this->assertSame($test_user, $announcement->getUser());
   }
 
   /**
@@ -194,9 +203,12 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * @author Daniel Boling
    * 
    */
-  public function categoryTest(): Void
+  public function test_category(): Void
   {
-    $manager = $this->entityManager;
+
+    $preCat = 
+
+    $manager = $this->em;
     $cat = new Category();
     $cat->setName('testCategory1');
     $cat->setActive(1);
@@ -209,7 +221,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $manager->flush();
 
-    $cat = $this->entityManager
+    $cat = $this->em
       ->getRepository(Category::class)
       ->findActive();
 
@@ -227,8 +239,8 @@ class AnnouncementRepositoryTest extends KernelTestCase
     parent::tearDown();
 
     // doing this is recommended to avoid memory leaks
-    $this->entityManager->close();
-    $this->entityManager = null;
+    $this->em->close();
+    $this->em = null;
   }
 }
 

@@ -108,7 +108,7 @@ class OverviewController extends AbstractController
     $announcement = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
-      ->findToday();
+      ->find_today();
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,

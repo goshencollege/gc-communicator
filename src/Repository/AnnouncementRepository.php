@@ -25,7 +25,7 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function findToday()
+  public function find_today()
   {
 
     $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));

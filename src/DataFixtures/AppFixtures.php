@@ -40,50 +40,26 @@ class AppFixtures extends Fixture
     ));
     $manager->persist($user);
 
-    $testUser = new User();
-    $testUser->setUsername('fixturesUser');
-    $testUser->setPassword($this->passwordHasher->hashPassword(
-        $testUser,
+    $test_user = new User();
+    $test_user->setUsername('fixture_user');
+    $test_user->setPassword($this->passwordHasher->hashPassword(
+        $test_user,
         '12345'
     ));
-    $manager->persist($testUser);
+    $manager->persist($test_user);
 
-    $cat = new Category();
-    $cat->setName('fixturesCategory');
-    $cat->setActive(1);
-    $manager->persist($cat);
+    $test_user = new User();
+    $test_user->setUsername('test_user');
+    $test_user->setPassword($this->passwordHasher->hashPassword(
+        $test_user,
+        '12345'
+    ));
+    $manager->persist($test_user);
 
-    // one announcement set to a past date, one to the current date (constant) and one for a future date
-    $announcement = new Announcement();
-    $announcement_date = new \DateTime('2021-07-14');
-    $announcement->setSubject('fixturesSubject');
-    $announcement->setAuthor('fixturesAuthor');
-    $announcement->setCategory($cat);
-    $announcement->setUser($testUser);
-    $announcement->setDate($announcement_date);
-    $announcement->setText('fixturesText');
-    $manager->persist($announcement);
-
-    $announcement = new Announcement();
-    $announcement_date = new \DateTime('now');
-    $announcement->setSubject('fixturesSubject');
-    $announcement->setAuthor('fixturesAuthor');
-    $announcement->setCategory($cat);
-    $announcement->setUser($testUser);
-    $announcement->setDate($announcement_date);
-    $announcement->setText('fixturesText');
-    $manager->persist($announcement);
-
-    $announcement = new Announcement();
-    $announcement_date = new \DateTime('3021-07-14');
-    $announcement->setSubject('fixturesSubject');
-    $announcement->setAuthor('fixturesAuthor');
-    $announcement->setCategory($cat);
-    $announcement->setUser($testUser);
-    $announcement->setDate($announcement_date);
-    $announcement->setText('fixturesText');
-    $manager->persist($announcement);
-
+    $test_cat = new Category();
+    $test_cat->setName('fixture_category');
+    $test_cat->setActive(1);
+    $manager->persist($test_cat);
 
     // loading fixtures for category table
     $cat = new Category();
@@ -100,6 +76,37 @@ class AppFixtures extends Fixture
     $cat->setName('Classes');
     $cat->setActive(0);
     $manager->persist($cat);
+
+    // one announcement set to a past date, one to the current date (constant) and one for a future date
+    $announcement = new Announcement();
+    $announcement_date = new \DateTime('2021-07-14');
+    $announcement->setSubject('fixture_subject');
+    $announcement->setAuthor('fixture_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setDate($announcement_date);
+    $announcement->setText('fixture_text');
+    $manager->persist($announcement);
+
+    $announcement = new Announcement();
+    $announcement_date = new \DateTime('now');
+    $announcement->setSubject('fixture_subject');
+    $announcement->setAuthor('fixture_author');
+    $announcement->setCategory($cat);
+    $announcement->setUser($test_user);
+    $announcement->setDate($announcement_date);
+    $announcement->setText('fixture_text');
+    $manager->persist($announcement);
+
+    $announcement = new Announcement();
+    $announcement_date = new \DateTime('3021-07-14');
+    $announcement->setSubject('fixture_subject');
+    $announcement->setAuthor('fixture_author');
+    $announcement->setCategory($cat);
+    $announcement->setUser($test_user);
+    $announcement->setDate($announcement_date);
+    $announcement->setText('fixture_text');
+    $manager->persist($announcement);
 
     $manager->flush();
 
