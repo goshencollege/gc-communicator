@@ -145,7 +145,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->getRepository(Announcement::class)
       ->find_today();
 
-    $this->assertSame(count($pre_announcement), count($post_announcement));
+    $this->assertSame(count($pre_announcement)+1, count($post_announcement));
     // checking that the count of announcements with current date prior to addition + 1
     // is the same as the count of announcements with current date after addition
 
@@ -161,10 +161,13 @@ class AnnouncementRepositoryTest extends KernelTestCase
    */
   public function test_user(): void
   {
-    $user_repo = static::getContainer()->get(UserRepository::class);
-    $test_user = $user_repo->findOneByUsername("test_user");
-    $cat_repo = static::getContainer()->get(CategoryRepository::class);
-    $test_cat = $cat_repo->findOneByName("test_category");
+    $test_user = $this->em
+      ->getRepository(User::class)
+      ->findOneByUsername("test_user");
+
+    $test_cat = $this->em
+      ->getRepository(Category::class)
+      ->findOneByName("test_category");
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
@@ -176,7 +179,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setText('auto_text');
     $this->em->persist($announcement);
 
-    $test_user = $user_repo->findOneByUsername("fixture_user");
+    $test_user = $this->em
+      ->getRepository(User::class)
+      ->findOneByUsername("fixture_user");
 
     $announcement = new Announcement();
     $announcement_date = new \DateTime('now');
@@ -188,16 +193,19 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setText('test_text');
     $this->em->persist($announcement);
 
-    $test_user = $user_repo->findOneByUsername("test_user");
-
     $this->em->flush();
 
-    $announcement = $this->em
-      ->getRepository(Announcement::class)
-      ->findLastInserted();
+    $test_user = $this->em
+      ->getRepository(User::class)
+      ->findOneByUsername("test_user");
 
+    $count_post = count($test_user->getAnnouncements());
 
-    $this->assertSame($test_user, $announcement->getUser());
+    $announcement_user = $test_user->getAnnouncements()[$count_post-1];
+
+    $this->assertSame($test_user, $announcement_user->getUser());
+    // this is a bad test - needs different steps
+
   }
 
   /**
@@ -210,7 +218,10 @@ class AnnouncementRepositoryTest extends KernelTestCase
   public function test_category(): Void
   {
 
-    $preCat = 
+    $cat_pre_count = count($this->em
+      ->getRepository(Category::class)
+      ->findAll())
+    ;
 
     $manager = $this->em;
     $cat = new Category();
@@ -225,11 +236,12 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $manager->flush();
 
-    $cat = $this->em
+    $cat_post_count = count($this->em
       ->getRepository(Category::class)
-      ->findActive();
+      ->find_active())
+    ;
 
-    $this->assertSame(1, $cat->count());
+    $this->assertSame($cat_pre_count, $cat_post_count);
 
   }
 
