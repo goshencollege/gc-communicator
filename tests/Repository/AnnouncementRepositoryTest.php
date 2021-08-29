@@ -73,11 +73,10 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $this->em->refresh($test_user);
     $count_post = count($test_user->getAnnouncements());
-    $this->assertSame($count_pre + 1, $count_post);
 
     $announcement2 = $test_user->getAnnouncements()[$count_post-1];
 
-    $this->assertSame(($existing_announcements + 1), $count_post);
+    $this->assertSame($count_pre + 1, $count_post);
     $this->assertSame($announcement->getSubject(), $announcement2->getSubject());
     $this->assertSame($announcement->getAuthor(), $announcement2->getAuthor());
     $this->assertSame($announcement->getCategory(), $announcement2->getCategory());
@@ -97,10 +96,13 @@ class AnnouncementRepositoryTest extends KernelTestCase
    */
   public function test_date(): void
   {
-    $user_repo = static::getContainer()->get(UserRepository::class);
-    $test_user = $user_repo->findOneByUsername("test_user");
-    $cat_repo = static::getContainer()->get(CategoryRepository::class);
-    $test_cat = $cat_repo->findOneByName("test_category");
+    $test_user = $this->em
+      ->getRepository(User::class)
+      ->findOneByUsername("test_user");
+
+    $test_cat = $this->em
+      ->getRepository(Category::class)
+      ->findOneByName("test_category");
 
     $pre_announcement = $this->em
       ->getRepository(Announcement::class)
@@ -143,7 +145,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->getRepository(Announcement::class)
       ->find_today();
 
-    $this->assertSame(count(($pre_announcement)+1), count($post_announcement));
+    $this->assertSame(count($pre_announcement), count($post_announcement));
     // checking that the count of announcements with current date prior to addition + 1
     // is the same as the count of announcements with current date after addition
 
@@ -187,11 +189,13 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->em->persist($announcement);
 
     $test_user = $user_repo->findOneByUsername("test_user");
-    // Switching back to "cause possible issues"
 
     $this->em->flush();
 
-    $announcement = $test_user->getAnnouncements();
+    $announcement = $this->em
+      ->getRepository(Announcement::class)
+      ->findLastInserted();
+
 
     $this->assertSame($test_user, $announcement->getUser());
   }

@@ -36,8 +36,24 @@ class AnnouncementRepository extends ServiceEntityRepository
       ->orderBy('a.id', 'ASC')
       ->getQuery()
       ->getResult()
-      ;
+    ;
 
+  }
+
+  /**
+   * Custom method purely for testing to return the last-inserted result.
+   * 
+   * @author Daniel Boling
+   */
+  public function findLastInserted()
+  {
+
+    return $this->createQueryBuilder('a')
+      ->orderBy('a.id', 'DESC')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
   }
 
   
