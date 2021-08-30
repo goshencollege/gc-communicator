@@ -25,7 +25,7 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function findToday()
+  public function find_today()
   {
 
     $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
@@ -36,8 +36,24 @@ class AnnouncementRepository extends ServiceEntityRepository
       ->orderBy('a.id', 'ASC')
       ->getQuery()
       ->getResult()
-      ;
+    ;
 
+  }
+
+  /**
+   * Custom method purely for testing to return the last-inserted result.
+   * 
+   * @author Daniel Boling
+   */
+  public function findLastInserted()
+  {
+
+    return $this->createQueryBuilder('a')
+      ->orderBy('a.id', 'DESC')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult()
+    ;
   }
 
   
