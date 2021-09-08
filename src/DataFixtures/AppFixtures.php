@@ -26,6 +26,7 @@ class AppFixtures extends Fixture
 
     $user = new User();
     $user->setUsername('david');
+    $user->setRoles(['ROLE_ADMIN']);
     $user->setPassword($this->passwordHasher->hashPassword(
         $user,
         '12345'
@@ -34,6 +35,7 @@ class AppFixtures extends Fixture
 
     $user = new User();
     $user->setUsername('dboling');
+    $user->setRoles(['ROLE_ADMIN']);
     $user->setPassword($this->passwordHasher->hashPassword(
         $user,
         '12345'
@@ -42,6 +44,7 @@ class AppFixtures extends Fixture
 
     $test_user = new User();
     $test_user->setUsername('fixture_user');
+    $test_user->setRoles(['ROLE_USER']);
     $test_user->setPassword($this->passwordHasher->hashPassword(
         $test_user,
         '12345'
@@ -50,6 +53,7 @@ class AppFixtures extends Fixture
 
     $test_user = new User();
     $test_user->setUsername('test_user');
+    $test_user->setRoles(['ROLE_USER']);
     $test_user->setPassword($this->passwordHasher->hashPassword(
         $test_user,
         '12345'

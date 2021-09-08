@@ -149,7 +149,7 @@ class OverviewController extends AbstractController
    * @return rendered add-category.html.twig
    * 
    * @Route("/category/add", name="add_category")
-   * @IsGranted("ROLE_USER")
+   * @IsGranted("ROLE_ADMIN")
    */
   public function add_category(Request $request): Response
   {
@@ -190,7 +190,7 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * 
    * @Route("/category/list", name="list_category")
-   * @IsGranted("ROLE_USER")
+   * @IsGranted("ROLE_ADMIN")
    */
   public function list_category(Request $request): Response
   {
@@ -214,6 +214,7 @@ class OverviewController extends AbstractController
    * @return redirect to list_category
    * 
    * @Route("/category/list/{id}", name="update_category")
+   * @IsGranted("ROLE_ADMIN")
    */
   public function update_category(Request $request, $id): Response
   {
