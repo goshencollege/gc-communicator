@@ -74,6 +74,13 @@ class OverviewController extends AbstractController
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
 
+    // $rule = (new \Recurr\Rule)
+    //     ->setStartDate($start_date)
+    //     ->setTimeZone('America/New_York')
+    //     ->setFreq($frequency)
+    //     ->setByDay
+    // Finish after form is created
+
     $form->handleRequest($request);
     if($form->isSubmitted() && $form->isValid()){
       $announcement = $form->getData();   
