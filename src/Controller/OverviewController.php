@@ -17,8 +17,11 @@ use App\Entity\Category;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 
 class OverviewController extends AbstractController
@@ -31,11 +34,10 @@ class OverviewController extends AbstractController
   }
 
   /**
-   * Simply adds a row into the database through a standard function
-   * Will eventually have an input form for users to input things like
-   * subject and text, their name and email will probably be pulled
-   * automatically through the authenticator (assuming I have access to
-   * that in this file)
+   * Currently acts as the main input form for users.
+   * Subject, Author (custom or autofilled), Category selection, text, and date
+   * are available to be input.
+   * Recurrence is next.
    * 
    * @author Daniel Boling
    * @return rendered form and redirect to overview when submitted
@@ -51,7 +53,7 @@ class OverviewController extends AbstractController
     // Init the announcements object for the Announcement table;
     $user = $this->getUser();
 
-    $form = $this->createFormBuilder($announcement)
+    $info_form = $this->createFormBuilder($announcement)
       ->add('subject', TextType::class)
       ->add('author', TextType::class)
       ->add('category', EntityType::class, [
@@ -73,6 +75,33 @@ class OverviewController extends AbstractController
       ])
       ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
       ->getForm();
+    
+    $date_form = $this->createFormBuilder()
+        ->add('freq', ChoiceType::class, [
+          'label' => 'Recurrence',
+          'choices' => [
+            'None' => 'none',
+            'Daily' => 'daily',
+            'Weekly' => 'weekly',
+            'Monthly' => 'monthly',
+            'Yearly' => 'yearly',
+          ],
+          'data' => 'none',
+          'expanded' => true,
+        ])
+        ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+          $freq = $event->getData();
+          $date_form = $event->getForm();
+
+          if ($freq == 'daily')
+          {
+            $date_form
+              ->add('pattern', ChoiceType::class, [
+                'label' => 'Daily'
+              ])
+          }
+        });
+        ->getForm();
 
     // $rule = (new \Recurr\Rule)
     //     ->setStartDate($start_date)
@@ -81,9 +110,9 @@ class OverviewController extends AbstractController
     //     ->setByDay
     // Finish after form is created
 
-    $form->handleRequest($request);
-    if($form->isSubmitted() && $form->isValid()){
-      $announcement = $form->getData();   
+    $info_form->handleRequest($request);
+    if($info_form->isSubmitted() && $info_form->isValid()){
+      $announcement = $info_form->getData();   
       $announcement->setUser($user);
       $em->persist($announcement);
       $em->flush();
@@ -92,7 +121,8 @@ class OverviewController extends AbstractController
     }
 
     return $this->render('add.html.twig', [
-      'form' => $form->createView(),
+      'info_form' => $info_form->createView(),
+      'date_form' => $date_form->createView(),
       'date' => $this->date,
     ]);
 
