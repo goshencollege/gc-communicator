@@ -95,10 +95,16 @@ class OverviewController extends AbstractController
 
           if ($freq == 'daily')
           {
-            $date_form
-              ->add('pattern', ChoiceType::class, [
-                'label' => 'Daily'
+            $date_form->add('pattern', ChoiceType::class, [
+                'label' => 'Daily',
+                'choices' => [
+                  'Every' => 'every_x',
+                  'Every Weekday' => 'every_wkd',
+                ],
+                'data' => 'every',
+                'expanded' => true,
               ])
+              ->getForm();
           }
         });
         ->getForm();
