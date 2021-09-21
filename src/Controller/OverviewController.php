@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
+use App\Form\AddAnnouncement;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -42,83 +43,21 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return rendered form and redirect to overview when submitted
    * 
-   * @Route("/add", name="add_info")
+   * @Route("/add", name="new_announcement")
    * @IsGranted("ROLE_USER")
    */
-  public function add_info(Request $request): Response
+  public function new_announcement(Request $request): Response
   {
 
     $em = $this->getDoctrine()->getManager();
     $announcement = new Announcement();
-    // Init the announcements object for the Announcement table;
     $user = $this->getUser();
 
-    $info_form = $this->createFormBuilder($announcement)
-      ->add('subject', TextType::class)
-      ->add('author', TextType::class)
-      ->add('category', EntityType::class, [
-        'class' => Category::class,
-        'query_builder' => function(EntityRepository $er)
-        {
-          return $er->createQueryBuilder('a')
-            ->andWhere('a.active = :val')
-            ->setParameter('val', 1)
-            ->orderBy('a.name', 'ASC')
-          ;
-        },
-        'choice_label' => 'name',
-        'placeholder' => 'Category',
-      ])
-      ->add('text', TextareaType::class)
-      ->add('date', DateType::class, [
-        'data' => new \DateTime,
-      ])
-      ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
-      ->getForm();
-    
-    $date_form = $this->createFormBuilder()
-        ->add('freq', ChoiceType::class, [
-          'label' => 'Recurrence',
-          'choices' => [
-            'None' => 'none',
-            'Daily' => 'daily',
-            'Weekly' => 'weekly',
-            'Monthly' => 'monthly',
-            'Yearly' => 'yearly',
-          ],
-          'data' => 'none',
-          'expanded' => true,
-        ])
-        ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-          $freq = $event->getData();
-          $date_form = $event->getForm();
-
-          if ($freq == 'daily')
-          {
-            $date_form->add('pattern', ChoiceType::class, [
-                'label' => 'Daily',
-                'choices' => [
-                  'Every' => 'every_x',
-                  'Every Weekday' => 'every_wkd',
-                ],
-                'data' => 'every',
-                'expanded' => true,
-              ])
-              ->getForm();
-          }
-        });
-        ->getForm();
-
-    // $rule = (new \Recurr\Rule)
-    //     ->setStartDate($start_date)
-    //     ->setTimeZone('America/New_York')
-    //     ->setFreq($frequency)
-    //     ->setByDay
-    // Finish after form is created
+    $info_form = $this->createForm(AddAnnouncement::class, $announcement);
 
     $info_form->handleRequest($request);
     if($info_form->isSubmitted() && $info_form->isValid()){
-      $announcement = $info_form->getData();   
+      $announcement = $info_form->getData();
       $announcement->setUser($user);
       $em->persist($announcement);
       $em->flush();
@@ -128,9 +67,51 @@ class OverviewController extends AbstractController
 
     return $this->render('add.html.twig', [
       'info_form' => $info_form->createView(),
-      'date_form' => $date_form->createView(),
+      // 'date_form' => $date_form->createView(),
       'date' => $this->date,
     ]);
+
+    // $date_form = $this->createFormBuilder()
+    // ->add('freq', ChoiceType::class, [
+    //   'label' => 'Recurrence',
+    //   'choices' => [
+    //     'None' => 'none',
+    //     'Daily' => 'daily',
+    //     'Weekly' => 'weekly',
+    //     'Monthly' => 'monthly',
+    //     'Yearly' => 'yearly',
+    //   ],
+    //   'data' => 'none',
+    //   'expanded' => true,
+    // ])
+    // ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+    //   $freq = $event->getData();
+    //   $date_form = $event->getForm();
+
+    //   if ($freq == 'daily')
+    //   {
+    //     $date_form->add('pattern', ChoiceType::class, [
+    //         'label' => 'Daily',
+    //         'choices' => [
+    //           'Every' => 'every_x',
+    //           'Every Weekday' => 'every_wkd',
+    //         ],
+    //         'data' => 'every',
+    //         'expanded' => true,
+    //       ])
+    //       ->getForm();
+    //   }
+    // });
+    // ->getForm();
+
+    // $rule = (new \Recurr\Rule)
+    //     ->setStartDate($start_date)
+    //     ->setTimeZone('America/New_York')
+    //     ->setFreq($frequency)
+    //     ->setByDay
+    // Finish after form is created
+
+
 
   }
 
