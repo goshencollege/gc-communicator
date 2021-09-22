@@ -102,22 +102,11 @@ class OverviewController extends AbstractController
     //       ->getForm();
     //   }
     // });
-    // ->getForm();
-
-    // $rule = (new \Recurr\Rule)
-    //     ->setStartDate($start_date)
-    //     ->setTimeZone('America/New_York')
-    //     ->setFreq($frequency)
-    //     ->setByDay
-    // Finish after form is created
-
-
 
   }
 
   /**
-   * This should be the main page that everyone should see. Ever user (not sure
-   * if we're doing guest users or not) should be able to see this page and everything
+   * This should be the main page that everyone should see. Every user should be able to see this page and everything
    * on it. This will be modified more clearly from it's current state. Currently
    * being used as a testing stage for database outputs.
    * 
