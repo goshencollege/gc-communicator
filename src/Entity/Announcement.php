@@ -33,7 +33,7 @@ class Announcement
   private $User;
 
   /**
-   * @ORM\Column(type="date")
+   * @ORM\Column(type="string", length=255)
    */
   private $Date;
 
@@ -77,12 +77,12 @@ class Announcement
   }
 
 
-  public function getDate(): ?\DateTimeInterface
+  public function getDate(): ?string
   {
     return $this->Date;
   }
 
-  public function setDate(\DateTimeInterface $Date): self
+  public function setDate(string $Date): self
   {
     $this->Date = $Date;
 
