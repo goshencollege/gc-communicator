@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
-use App\Form\AddAnnouncement;
+use App\Form\NewAnnouncement;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -53,7 +53,7 @@ class OverviewController extends AbstractController
     $announcement = new Announcement();
     $user = $this->getUser();
 
-    $info_form = $this->createForm(AddAnnouncement::class, $announcement);
+    $info_form = $this->createForm(NewAnnouncement::class, $announcement);
 
     $info_form->handleRequest($request);
     if($info_form->isSubmitted() && $info_form->isValid()){

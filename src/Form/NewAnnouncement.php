@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 
-class AddAnnouncement extends AbstractType
+class NewAnnouncement extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
