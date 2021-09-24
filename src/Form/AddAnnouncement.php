@@ -41,33 +41,6 @@ class AddAnnouncement extends AbstractType
             ->add('date', DateType::class, [
                 'data' => new \DateTime,
             ])
-            // ->add('freq', ChoiceType::class, [
-            //       'label' => 'Recurrence',
-            //       'choices' => [
-            //         'None' => 'none',
-            //         'Daily' => 'daily',
-            //         'Weekly' => 'weekly',
-            //         'Monthly' => 'monthly',
-            //         'Yearly' => 'yearly',
-            //       ],
-            //       'data' => 'none',
-            //       'expanded' => true,
-            //     ])
-            //     ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            //       $freq = $event->getData();
-            //       $date_form = $event->getForm();
-            
-            //       if ($freq == 'daily')
-            //       {
-            //         $date_form->add('pattern', ChoiceType::class, [
-            //             'label' => 'Daily',
-            //             'choices' => [
-            //               'Every' => 'every_x',
-            //               'Every Weekday' => 'every_wkd',
-            //             ],
-            //             'data' => 'every',
-            //             'expanded' => true,
-            //           ])
             ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
         ;
     
