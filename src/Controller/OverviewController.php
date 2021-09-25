@@ -56,7 +56,13 @@ class OverviewController extends AbstractController
     $info_form = $this->createForm(NewAnnouncement::class, $announcement);
 
     $info_form->handleRequest($request);
+
     if($info_form->isSubmitted() && $info_form->isValid()){
+      // any actions done to the form data happens *after* this point
+      $rule = (new \Recurr\Rule)
+        ->setStartDate($info_form['date']->getData())
+        ->setTimezone()
+
       $announcement = $info_form->getData();
       $announcement->setUser($user);
       $em->persist($announcement);
