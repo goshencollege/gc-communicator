@@ -83,7 +83,7 @@ class AppFixtures extends Fixture
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
-    $announcement_date = new \DateTime('2021-07-14');
+    $announcement_date = new \DateTime('yesterday');
     $announcement->setSubject('fixture_subject');
     $announcement->setAuthor('fixture_author');
     $announcement->setCategory($test_cat);
@@ -103,7 +103,27 @@ class AppFixtures extends Fixture
     $manager->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_date = new \DateTime('3021-07-14');
+    $announcement_date = new \DateTime('tomorrow');
+    $announcement->setSubject('fixture_subject');
+    $announcement->setAuthor('fixture_author');
+    $announcement->setCategory($cat);
+    $announcement->setUser($test_user);
+    $announcement->setDate($announcement_date);
+    $announcement->setText('fixture_text');
+    $manager->persist($announcement);
+
+    // announcement set to recurr through all three of the above
+    $announcement = new Announcement();
+    $announcement->setDate(new \DateTime('yesterday'));
+    $rule = (new \Recurr\Rule)
+      ->setStartDate($announcement_date)
+      // get in the habit of formatting like this
+      ->setTimezone('America/New_York')
+      ->setFreq('DAILY')
+      ->setByDay(['MO', 'TU'])
+      ->setUntil(new \Datetime('tomorrow'))
+    ;
+    $announcement->setRecurrence($rule->getString());
     $announcement->setSubject('fixture_subject');
     $announcement->setAuthor('fixture_author');
     $announcement->setCategory($cat);

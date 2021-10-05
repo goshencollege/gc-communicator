@@ -33,7 +33,7 @@ class Announcement
   private $User;
 
   /**
-   * @ORM\Column(type="string", length=255)
+   * @ORM\Column(type="date")
    */
   private $Date;
 
@@ -46,6 +46,11 @@ class Announcement
    * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="announcements")
    */
   private $category;
+
+  /**
+   * @ORM\Column(type="string", length=255, nullable=true)
+   */
+  private $recurrence;
 
   public function getId(): ?int
   {
@@ -77,12 +82,12 @@ class Announcement
   }
 
 
-  public function getDate(): ?string
+  public function getDate(): ?\DateTimeInterface
   {
     return $this->Date;
   }
 
-  public function setDate(string $Date): self
+  public function setDate(\DateTimeInterface $Date): self
   {
     $this->Date = $Date;
 
@@ -121,6 +126,18 @@ class Announcement
   public function setCategory(?Category $category): self
   {
       $this->category = $category;
+
+      return $this;
+  }
+
+  public function getRecurrence(): ?string
+  {
+      return $this->recurrence;
+  }
+
+  public function setRecurrence(?string $recurrence): self
+  {
+      $this->recurrence = $recurrence;
 
       return $this;
   }
