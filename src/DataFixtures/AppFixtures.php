@@ -84,34 +84,37 @@ class AppFixtures extends Fixture
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
     $announcement_start_date = new \DateTime('yesterday');
+    $announcement_end_date = new \DateTime('yesterday');
     $announcement->setSubject('fixture_subject');
     $announcement->setAuthor('fixture_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_start_date);
+    $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
     $manager->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_date = new \DateTime('now');
+    $announcement_start_date = new \DateTime('now');
+    $announcement_end_date = new \DateTime('now');
     $announcement->setSubject('fixture_subject');
     $announcement->setAuthor('fixture_author');
     $announcement->setCategory($cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_start_date);
+    $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
     $manager->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_date = new \DateTime('tomorrow');
+    $announcement_start_date = new \DateTime('tomorrow');
+    $announcement_end_date = new \DateTime('tomorrow');
     $announcement->setSubject('fixture_subject');
     $announcement->setAuthor('fixture_author');
     $announcement->setCategory($cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_start_date);
+    $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
     $manager->persist($announcement);
 
@@ -120,6 +123,7 @@ class AppFixtures extends Fixture
     $announcement_start_date = new \DateTime('yesterday');
     $announcement_end_date = new \DateTime('tomorrow');
     $announcement->setStartDate($announcement_start_date);
+    $announcement->setEndDate($announcement_end_date);
     $rule = (new \Recurr\Rule)
       ->setStartDate($announcement_start_date)
       // get in the habit of formatting like this
@@ -133,8 +137,6 @@ class AppFixtures extends Fixture
     $announcement->setAuthor('fixture_author');
     $announcement->setCategory($cat);
     $announcement->setUser($test_user);
-    $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
     $manager->persist($announcement);
 
