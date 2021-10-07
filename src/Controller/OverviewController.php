@@ -97,6 +97,16 @@ class OverviewController extends AbstractController
       ->getRepository(Announcement::class)
       ->find_today();
 
+    if ($announcement['recurrence'] != null) {
+      // getting into the weeds with date checking. Important for leap years, month rollovers, and extra options.
+      $ann_recurr = $announcement['recurrence'];
+      // return the  recurrence string from the array
+      $ann_start = $announcement['start_date'];
+      $ann_end = $announcement['end_date'];
+
+      $rule = new \Recurr\Rule($ann_recurr, $ann_start, $ann_end, 'America/New_York');
+    }
+
       return $this->render('overview.html.twig', [
         'date' => $this->date,
         'announcement' => $announcement,
