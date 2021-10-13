@@ -38,7 +38,10 @@ class NewAnnouncement extends AbstractType
                 'placeholder' => 'Category',
             ])
             ->add('text', TextareaType::class)
-            ->add('date', DateType::class, [
+            ->add('start_date', DateType::class, [
+                'data' => new \DateTime,
+            ])
+            ->add('end_date', DateType::class, [
                 'data' => new \DateTime,
             ])
             ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])

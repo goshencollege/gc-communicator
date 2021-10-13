@@ -43,7 +43,7 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return rendered form and redirect to overview when submitted
    * 
-   * @Route("/add", name="new_announcement")
+   * @Route("/new", name="new_announcement")
    * @IsGranted("ROLE_USER")
    */
   public function new_announcement(Request $request): Response
