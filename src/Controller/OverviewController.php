@@ -38,7 +38,6 @@ class OverviewController extends AbstractController
    * Currently acts as the main input form for users.
    * Subject, Author (custom or autofilled), Category selection, text, and date
    * are available to be input.
-   * Recurrence is next.
    * 
    * @author Daniel Boling
    * @return rendered form and redirect to overview when submitted
@@ -58,10 +57,6 @@ class OverviewController extends AbstractController
     $info_form->handleRequest($request);
 
     if($info_form->isSubmitted() && $info_form->isValid()){
-      // any actions done to the form data happens *after* this point
-      // $rule = (new \Recurr\Rule)
-      //   ->setStartDate($info_form['date']->getData())
-      //   ->setTimezone();
 
       $announcement = $info_form->getData();
       $announcement->setUser($user);
