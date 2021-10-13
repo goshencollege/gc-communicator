@@ -257,7 +257,8 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * Testing announcement recurrence.
    * 
    * @todo Create 1 announcement with 3 days to "cycle through", then check with 5 dates, from before
-   * to after the recurrence date. There should be two dates returning as "false" and 3 returning as "true"
+   * to after the recurrence date. Only 2 announcements should return for "yesterday" and "tomorrow", with the
+   * 6 returning for "today". There should be no fixtures for two days prior/after.
    * @author Daniel Boling
    */
   public function test_recurrence(): Void
