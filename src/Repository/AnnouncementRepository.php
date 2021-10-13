@@ -40,6 +40,26 @@ class AnnouncementRepository extends ServiceEntityRepository
 
   }
 
+    /**
+   * Custom method to pull announcements created for the given date
+   * 
+   * @author Daniel Boling
+   */
+  public function find_by_day($date)
+  {
+
+    $date = new \DateTime($date, new \DateTimeZone('America/Indiana/Indianapolis'));
+
+    return $this->createQueryBuilder('a')
+      ->andWhere('a.start_date <= :date AND a.end_date >= :date')
+      ->setParameter('date', $date->format('Y-m-d'))
+      ->orderBy('a.id', 'ASC')
+      ->getQuery()
+      ->getScalarResult()
+    ;
+
+  }
+
   /**
    * Custom method purely for testing to return the last-inserted result.
    * 

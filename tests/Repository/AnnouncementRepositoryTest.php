@@ -9,6 +9,7 @@ use App\Repository\CategoryRepository;
 use App\Entity\User;
 use App\Entity\Announcement;
 use App\Entity\Category;
+use phpDocumentor\Reflection\Types\Void_;
 
 class AnnouncementRepositoryTest extends KernelTestCase
 {
@@ -67,8 +68,8 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setText('test_text');
-    $announcement->setStartDate(new \DateTime());
-    $announcement->setEndDate(new \DateTime());
+    $announcement->setStartDate(new \DateTime('now'));
+    $announcement->setEndDate(new \DateTime('now'));
     $this->em->persist($announcement);
     $this->em->flush();
 
@@ -112,7 +113,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
-    $announcement_past_date = new \DateTime('2021-07-14');
+    $announcement_past_date = new \DateTime('-1 week');
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -134,7 +135,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_future_date = new \DateTime('3021-07-14');
+    $announcement_future_date = new \DateTime('+1 week');
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -249,6 +250,52 @@ class AnnouncementRepositoryTest extends KernelTestCase
     ;
 
     $this->assertSame($cat_pre_count, $cat_post_count);
+
+  }
+
+  /**
+   * Testing announcement recurrence.
+   * 
+   * @todo Create 1 announcement with 3 days to "cycle through", then check with 5 dates, from before
+   * to after the recurrence date. There should be two dates returning as "false" and 3 returning as "true"
+   * @author Daniel Boling
+   */
+  public function test_recurrence(): Void
+  {
+
+    $test_user = $this->em
+    ->getRepository(User::class)
+    ->findOneByUsername("test_user");
+
+    $test_cat = $this->em
+      ->getRepository(Category::class)
+      ->findOneByName("test_category");
+
+    $announcement = new Announcement();
+    $announcement_start_date = new \DateTime('yesterday');
+    $announcement_end_date = new \DateTime('tomorrow');
+    $announcement->setSubject('test_subject');
+    $announcement->setAuthor('test_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setStartDate($announcement_start_date);
+    $announcement->setEndDate($announcement_end_date);
+    $announcement->setText('test_text');
+    $this->em->persist($announcement);
+
+    $this->em->flush();
+
+    $announcement = $this->em
+      ->getRepository(Announcement::class)
+    ;
+
+    $this->assertSame(0, count($announcement->find_by_day('-2 days')));
+    // ensure the announcement will not fire 2 days before
+    $this->assertSame(2, count($announcement->find_by_day('yesterday')));
+    $this->assertSame(6, count($announcement->find_by_day('now')));
+    $this->assertSame(2, count($announcement->find_by_day('tomorrow')));
+    $this->assertSame(0, count($announcement->find_by_day('+2 days')));
+    // ensure the announcement will not fire 2 days after
 
   }
 
