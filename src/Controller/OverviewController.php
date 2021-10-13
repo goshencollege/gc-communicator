@@ -71,7 +71,7 @@ class OverviewController extends AbstractController
       return $this->redirectToRoute('show_all');
     }
 
-    return $this->render('add.html.twig', [
+    return $this->render('new_announcement.html.twig', [
       'info_form' => $info_form->createView(),
       // 'date_form' => $date_form->createView(),
       'date' => $this->date,
@@ -133,12 +133,12 @@ class OverviewController extends AbstractController
    * The form page for adding new categories. This will be accessible only be admins.
    * 
    * @author Daniel Boling
-   * @return rendered add-category.html.twig
+   * @return rendered new_category.html.twig
    * 
-   * @Route("/category/add", name="add_category")
+   * @Route("/category/new", name="new_category")
    * @IsGranted("ROLE_ADMIN")
    */
-  public function add_category(Request $request): Response
+  public function new_category(Request $request): Response
   {
 
     $em = $this->getDoctrine()->getManager();
@@ -163,7 +163,7 @@ class OverviewController extends AbstractController
       // this will be changed to redirect to the show_categories page in the next update;
     }
 
-    return $this->render('add-category.html.twig', [
+    return $this->render('new_category.html.twig', [
       'form' => $form->createView(),
       'date' => $this->date,
     ]);
@@ -188,7 +188,7 @@ class OverviewController extends AbstractController
     ->findAll();
 
 
-    return $this->render('list-category.html.twig', [
+    return $this->render('list_category.html.twig', [
       'categories' => $categories,
       'date' => $this->date,
     ]);
