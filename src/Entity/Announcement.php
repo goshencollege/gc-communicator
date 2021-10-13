@@ -122,18 +122,6 @@ class Announcement
       return $this;
   }
 
-  public function getRecurrence(): ?string
-  {
-      return $this->recurrence;
-  }
-
-  public function setRecurrence(?string $recurrence): self
-  {
-      $this->recurrence = $recurrence;
-
-      return $this;
-  }
-
   public function getEndDate(): ?\DateTimeInterface
   {
       return $this->end_date;

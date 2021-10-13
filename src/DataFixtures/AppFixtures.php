@@ -118,28 +118,6 @@ class AppFixtures extends Fixture
     $announcement->setText('fixture_text');
     $manager->persist($announcement);
 
-    // announcement set to recurr through all three of the above
-    $announcement = new Announcement();
-    $announcement_start_date = new \DateTime('yesterday');
-    $announcement_end_date = new \DateTime('tomorrow');
-    $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_end_date);
-    $rule = (new \Recurr\Rule)
-      ->setStartDate($announcement_start_date)
-      // get in the habit of formatting like this
-      ->setTimezone('America/New_York')
-      ->setFreq('DAILY')
-      ->setByDay(['MO', 'TU'])
-      ->setUntil($announcement_end_date)
-    ;
-    $announcement->setRecurrence($rule->getString());
-    $announcement->setSubject('fixture_subject');
-    $announcement->setAuthor('fixture_author');
-    $announcement->setCategory($cat);
-    $announcement->setUser($test_user);
-    $announcement->setText('fixture_text');
-    $manager->persist($announcement);
-
     $manager->flush();
 
   }
