@@ -149,6 +149,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $post_announcement = $this->em
       ->getRepository(Announcement::class)
+      ->refresh()
       ->find_today();
 
     $this->assertSame(count($post_announcement), count($pre_announcement)+2);
