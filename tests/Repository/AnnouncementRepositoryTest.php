@@ -151,7 +151,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->getRepository(Announcement::class)
       ->find_today();
 
-    $this->assertSame(count($post_announcement), count($pre_announcement)+1);
+    $this->assertSame(count($post_announcement), count($pre_announcement)+2);
     // checking that the count of announcements with current date prior to addition + 1
     // is the same as the count of announcements with current date after addition
 
