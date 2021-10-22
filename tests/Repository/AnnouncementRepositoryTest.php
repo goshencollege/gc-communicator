@@ -109,7 +109,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $pre_announcement = $this->em
       ->getRepository(Announcement::class)
-      ->find_today();
+      ->find_by_day('now');
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
@@ -149,9 +149,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $post_announcement = $this->em
       ->getRepository(Announcement::class)
-      ->find_by_day('today');
+      ->find_by_day('now');
 
-    $this->assertSame(count($post_announcement), count($pre_announcement)+2);
+    $this->assertSame($post_announcement, $pre_announcement+1);
     // checking that the count of announcements with current date prior to addition + 1
     // is the same as the count of announcements with current date after addition
 
