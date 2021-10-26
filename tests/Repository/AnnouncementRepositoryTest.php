@@ -151,7 +151,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->getRepository(Announcement::class)
       ->find_by_day('now');
 
-    $this->assertSame($post_announcement, $pre_announcement+1);
+    $this->assertSame(count($post_announcement), (count($pre_announcement)+1));
     // checking that the count of announcements with current date prior to addition + 1
     // is the same as the count of announcements with current date after addition
 
@@ -228,7 +228,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $cat_pre_count = count($this->em
       ->getRepository(Category::class)
-      ->findAll())
+      ->find_active())
     ;
 
     $manager = $this->em;
@@ -249,7 +249,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->find_active())
     ;
 
-    $this->assertSame($cat_pre_count, $cat_post_count);
+    $this->assertSame(($cat_pre_count+1), $cat_post_count);
 
   }
 
