@@ -30,7 +30,7 @@ class OverviewController extends AbstractController
 
   public function __construct()
   {
-    $date = new \DateTime;
+    $date = new \DateTime(new DateTimeZone('GMT'));
     $this->date = $date->format('l, j F, Y');
   }
 
@@ -90,7 +90,7 @@ class OverviewController extends AbstractController
     $announcement = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
-      ->find_today();
+      ->find_today_approved();
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,

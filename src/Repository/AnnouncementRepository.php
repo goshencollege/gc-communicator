@@ -32,7 +32,6 @@ class AnnouncementRepository extends ServiceEntityRepository
 
     return $this->createQueryBuilder('a')
       ->Where('a.start_date <= :date AND a.end_date >= :date')
-      ->andWhere('a.approval = 1')
       ->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
       ->getQuery()
@@ -42,6 +41,7 @@ class AnnouncementRepository extends ServiceEntityRepository
 
   /**
    * Method using query_today to get a result array.
+   * Requirements: date match.
    * 
    * @author Daniel Boling
    */
@@ -61,6 +61,25 @@ class AnnouncementRepository extends ServiceEntityRepository
   {
     return $this->query_Today()
       ->getScalarResult()
+    ;
+  }
+
+  /**
+   * Method using query_today to get a result array.
+   * Requirement: date match. Approved.
+   * 
+   * @author Daniel Boling
+   */
+  public function find_today_approved()
+  {
+    $date = new \DateTime('now', new \DateTimeZone('GMT'));
+
+    return $this->createQueryBuilder('a')
+      ->Where('a.start_date <= :date AND a.end_date >= :date')
+      ->andWhere('a.approval = 1')
+      ->setParameter('date', $date->format('Y-m-d'))
+      ->orderBy('a.id', 'ASC')
+      ->getQuery()
     ;
   }
 
