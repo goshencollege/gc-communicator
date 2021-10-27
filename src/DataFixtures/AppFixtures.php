@@ -92,6 +92,7 @@ class AppFixtures extends Fixture
     $announcement->setStartDate($announcement_start_date);
     $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
+    $announcement->setApproval(1);
     $manager->persist($announcement);
 
     $announcement = new Announcement();
@@ -104,6 +105,7 @@ class AppFixtures extends Fixture
     $announcement->setStartDate($announcement_start_date);
     $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
+    $announcement->setApproval(1);
     $manager->persist($announcement);
 
     $announcement = new Announcement();
@@ -116,6 +118,7 @@ class AppFixtures extends Fixture
     $announcement->setStartDate($announcement_start_date);
     $announcement->setEndDate($announcement_end_date);
     $announcement->setText('fixture_text');
+    $announcement->setApproval(1);
     $manager->persist($announcement);
 
     $manager->flush();
