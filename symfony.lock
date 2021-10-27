@@ -249,6 +249,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "simshaun/recurr": {
+        "version": "v5.0.0"
+    },
     "symfony/asset": {
         "version": "5.4.x-dev"
     },

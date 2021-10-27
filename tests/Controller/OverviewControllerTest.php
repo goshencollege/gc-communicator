@@ -20,7 +20,7 @@ class OverviewControllerTest extends WebTestCase
         $client = static::createClient();
 
         // This should return 302 since no user is authenticated
-        $client->request('GET', '/add');
+        $client->request('GET', '/new');
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
 
@@ -30,7 +30,7 @@ class OverviewControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         // This should now return 200 since a user is authenticated
-        $client->request('GET', '/add');
+        $client->request('GET', '/new');
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }

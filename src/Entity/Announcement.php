@@ -33,11 +33,6 @@ class Announcement
   private $User;
 
   /**
-   * @ORM\Column(type="date")
-   */
-  private $Date;
-
-  /**
    * @ORM\Column(type="text")
    */
   private $text;
@@ -46,6 +41,21 @@ class Announcement
    * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="announcements")
    */
   private $category;
+
+  /**
+   * @ORM\Column(type="string", length=255, nullable=true)
+   */
+  private $recurrence;
+
+  /**
+   * @ORM\Column(type="date")
+   */
+  private $end_date;
+
+  /**
+   * @ORM\Column(type="date")
+   */
+  private $start_date;
 
   public function getId(): ?int
   {
@@ -72,19 +82,6 @@ class Announcement
   public function setAuthor(string $Author): self
   {
     $this->Author = $Author;
-
-    return $this;
-  }
-
-
-  public function getDate(): ?\DateTimeInterface
-  {
-    return $this->Date;
-  }
-
-  public function setDate(\DateTimeInterface $Date): self
-  {
-    $this->Date = $Date;
 
     return $this;
   }
@@ -121,6 +118,30 @@ class Announcement
   public function setCategory(?Category $category): self
   {
       $this->category = $category;
+
+      return $this;
+  }
+
+  public function getEndDate(): ?\DateTimeInterface
+  {
+      return $this->end_date;
+  }
+
+  public function setEndDate(\DateTimeInterface $end_date): self
+  {
+      $this->end_date = $end_date;
+
+      return $this;
+  }
+
+  public function getStartDate(): ?\DateTimeInterface
+  {
+      return $this->start_date;
+  }
+
+  public function setStartDate(\DateTimeInterface $start_date): self
+  {
+      $this->start_date = $start_date;
 
       return $this;
   }

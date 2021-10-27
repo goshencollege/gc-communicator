@@ -13,12 +13,16 @@ use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
+use App\Form\NewAnnouncement;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 
 class OverviewController extends AbstractController
@@ -31,52 +35,30 @@ class OverviewController extends AbstractController
   }
 
   /**
-   * Simply adds a row into the database through a standard function
-   * Will eventually have an input form for users to input things like
-   * subject and text, their name and email will probably be pulled
-   * automatically through the authenticator (assuming I have access to
-   * that in this file)
+   * Currently acts as the main input form for users.
+   * Subject, Author (custom or autofilled), Category selection, text, and date
+   * are available to be input.
    * 
    * @author Daniel Boling
    * @return rendered form and redirect to overview when submitted
    * 
-   * @Route("/add", name="add_info")
+   * @Route("/new", name="new_announcement")
    * @IsGranted("ROLE_USER")
    */
-  public function add_info(Request $request): Response
+  public function new_announcement(Request $request): Response
   {
 
     $em = $this->getDoctrine()->getManager();
     $announcement = new Announcement();
-    // Init the announcements object for the Announcement table;
     $user = $this->getUser();
 
-    $form = $this->createFormBuilder($announcement)
-      ->add('subject', TextType::class)
-      ->add('author', TextType::class)
-      ->add('category', EntityType::class, [
-        'class' => Category::class,
-        'query_builder' => function(EntityRepository $er)
-        {
-          return $er->createQueryBuilder('a')
-            ->andWhere('a.active = :val')
-            ->setParameter('val', 1)
-            ->orderBy('a.name', 'ASC')
-          ;
-        },
-        'choice_label' => 'name',
-        'placeholder' => 'Category',
-      ])
-      ->add('text', TextareaType::class)
-      ->add('date', DateType::class, [
-        'data' => new \DateTime,
-      ])
-      ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
-      ->getForm();
+    $info_form = $this->createForm(NewAnnouncement::class, $announcement);
 
-    $form->handleRequest($request);
-    if($form->isSubmitted() && $form->isValid()){
-      $announcement = $form->getData();   
+    $info_form->handleRequest($request);
+
+    if($info_form->isSubmitted() && $info_form->isValid()){
+
+      $announcement = $info_form->getData();
       $announcement->setUser($user);
       $em->persist($announcement);
       $em->flush();
@@ -84,16 +66,16 @@ class OverviewController extends AbstractController
       return $this->redirectToRoute('show_all');
     }
 
-    return $this->render('add.html.twig', [
-      'form' => $form->createView(),
+    return $this->render('new_announcement.html.twig', [
+      'info_form' => $info_form->createView(),
+      // 'date_form' => $date_form->createView(),
       'date' => $this->date,
     ]);
 
   }
 
   /**
-   * This should be the main page that everyone should see. Ever user (not sure
-   * if we're doing guest users or not) should be able to see this page and everything
+   * This should be the main page that everyone should see. Every user should be able to see this page and everything
    * on it. This will be modified more clearly from it's current state. Currently
    * being used as a testing stage for database outputs.
    * 
@@ -146,12 +128,12 @@ class OverviewController extends AbstractController
    * The form page for adding new categories. This will be accessible only be admins.
    * 
    * @author Daniel Boling
-   * @return rendered add-category.html.twig
+   * @return rendered new_category.html.twig
    * 
-   * @Route("/category/add", name="add_category")
+   * @Route("/category/new", name="new_category")
    * @IsGranted("ROLE_ADMIN")
    */
-  public function add_category(Request $request): Response
+  public function new_category(Request $request): Response
   {
 
     $em = $this->getDoctrine()->getManager();
@@ -176,7 +158,7 @@ class OverviewController extends AbstractController
       // this will be changed to redirect to the show_categories page in the next update;
     }
 
-    return $this->render('add-category.html.twig', [
+    return $this->render('new_category.html.twig', [
       'form' => $form->createView(),
       'date' => $this->date,
     ]);
@@ -201,7 +183,7 @@ class OverviewController extends AbstractController
     ->findAll();
 
 
-    return $this->render('list-category.html.twig', [
+    return $this->render('list_category.html.twig', [
       'categories' => $categories,
       'date' => $this->date,
     ]);
