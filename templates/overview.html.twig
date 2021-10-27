@@ -14,7 +14,6 @@
     <div class="w3-panel .dbtheme-purple">
       <table class="w3-table-all">
         <tr>
-          <th>ID</th>
           <th>Subject</th>
           <th>Author</th>
           <th>User</th>
@@ -23,7 +22,6 @@
         </tr>
         {% for row in announcement %} {# simple loop to output rows #}
           <tr>
-            <td>{{ row.id }}</td>
             <td>{{ row.subject }}</td>
             <td>{{ row.author }}</td>
             <td>{{ row.user.username }}</td>

@@ -68,6 +68,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $announcement->setStartDate(new \DateTime('now'));
     $announcement->setEndDate(new \DateTime('now'));
     $this->em->persist($announcement);
@@ -109,7 +110,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $pre_announcement = $this->em
       ->getRepository(Announcement::class)
-      ->find_by_day('now');
+      ->count_today();
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
@@ -121,6 +122,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_past_date);
     $announcement->setEndDate($announcement_past_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
@@ -132,6 +134,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_today_date);
     $announcement->setEndDate($announcement_today_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
@@ -143,13 +146,14 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_future_date);
     $announcement->setEndDate($announcement_future_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $this->em->flush();
 
     $post_announcement = $this->em
       ->getRepository(Announcement::class)
-      ->find_by_day('now');
+      ->count_today();
 
     $this->assertSame(count($post_announcement), (count($pre_announcement)+1));
     // checking that the count of announcements with current date prior to addition + 1
@@ -184,6 +188,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_today_date);
     $announcement->setEndDate($announcement_today_date);
     $announcement->setText('auto_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $test_user = $this->em
@@ -199,6 +204,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_today_date);
     $announcement->setEndDate($announcement_today_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $this->em->flush();
@@ -282,6 +288,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_start_date);
     $announcement->setEndDate($announcement_end_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $this->em->flush();
