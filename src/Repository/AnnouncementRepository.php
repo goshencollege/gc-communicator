@@ -18,6 +18,7 @@ class AnnouncementRepository extends ServiceEntityRepository
   public function __construct(ManagerRegistry $registry)
   {
     parent::__construct($registry, Announcement::class);
+
   }
 
   /**
@@ -25,10 +26,10 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  private function query_today()
+  private function query_today($date_input = 'now')
   {
 
-    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $date = new \DateTime($date_input, new \DateTimeZone('GMT'));
 
     return $this->createQueryBuilder('a')
       ->Where('a.start_date <= :date AND a.end_date >= :date')
@@ -45,11 +46,13 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function find_today()
+  public function find_today($date_input = 'now')
   {
-    return $this->query_today()
+
+    return $this->query_today($date_input)
       ->getResult()
     ;
+
   }
 
     /**
@@ -57,11 +60,13 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function count_today()
+  public function count_today($date_input = 'now')
   {
-    return $this->query_Today()
+
+    return $this->query_today($date_input)
       ->getScalarResult()
     ;
+
   }
 
   /**
@@ -70,9 +75,10 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function find_today_approved()
+  public function find_today_approved($date_input = 'now')
   {
-    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+
+    $date = new \DateTime($date_input, new \DateTimeZone('GMT'));
 
     return $this->createQueryBuilder('a')
       ->where('a.start_date <= :date AND a.end_date >= :date')

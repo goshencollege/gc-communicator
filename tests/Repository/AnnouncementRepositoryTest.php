@@ -69,8 +69,8 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setUser($test_user);
     $announcement->setText('test_text');
     $announcement->setApproval(1);
-    $announcement->setStartDate(new \DateTime('now'));
-    $announcement->setEndDate(new \DateTime('now'));
+    $announcement->setStartDate(new \DateTime('now', new \DateTimeZone('GMT')));
+    $announcement->setEndDate(new \DateTime('now', new \DateTimeZone('GMT')));
     $this->em->persist($announcement);
     $this->em->flush();
 
@@ -114,7 +114,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
-    $announcement_past_date = new \DateTime('-1 week');
+    $announcement_past_date = new \DateTime('-1 week', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -126,7 +126,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_today_date = new \DateTime('now');
+    $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -138,7 +138,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_future_date = new \DateTime('+1 week');
+    $announcement_future_date = new \DateTime('+1 week', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -180,7 +180,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->findOneByName("test_category");
 
     $announcement = new Announcement();
-    $announcement_today_date = new \DateTime('now');
+    $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement->setSubject('auto_subject');
     $announcement->setAuthor('auto_author');
     $announcement->setCategory($test_cat);
@@ -196,7 +196,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->findOneByUsername("fixture_user");
 
     $announcement = new Announcement();
-    $announcement_today_date = new \DateTime('now');
+    $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -271,16 +271,20 @@ class AnnouncementRepositoryTest extends KernelTestCase
   {
 
     $test_user = $this->em
-    ->getRepository(User::class)
-    ->findOneByUsername("test_user");
+      ->getRepository(User::class)
+      ->findOneByUsername("test_user");
 
     $test_cat = $this->em
       ->getRepository(Category::class)
       ->findOneByName("test_category");
 
+    $pre_announcement = $this->em
+      ->getRepository(Announcement::class)
+    ;
+
     $announcement = new Announcement();
-    $announcement_start_date = new \DateTime('yesterday');
-    $announcement_end_date = new \DateTime('tomorrow');
+    $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
+    $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -293,16 +297,16 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $this->em->flush();
 
-    $announcement = $this->em
+    $post_announcement = $this->em
       ->getRepository(Announcement::class)
     ;
 
-    $this->assertSame(0, count($announcement->find_by_day('-2 days')));
+    $this->assertSame(count($pre_announcement->count_today('-2 days')), count($post_announcement->count_today('-2 days')));
     // ensure the announcement will not fire 2 days before
-    $this->assertSame(2, count($announcement->find_by_day('yesterday')));
-    $this->assertSame(6, count($announcement->find_by_day('now')));
-    $this->assertSame(2, count($announcement->find_by_day('tomorrow')));
-    $this->assertSame(0, count($announcement->find_by_day('+2 days')));
+    $this->assertSame((count($pre_announcement->count_today('yesterday'))+1), count($post_announcement->count_today('yesterday')));
+    $this->assertSame((count($pre_announcement->count_today('now'))+1), count($post_announcement->count_today('now')));
+    $this->assertSame((count($pre_announcement->count_today('tomorrow'))+1), count($post_announcement->count_today('tomorrow')));
+    $this->assertSame(count($pre_announcement->count_today('+2 days')), count($post_announcement->count_today('+2 days')));
     // ensure the announcement will not fire 2 days after
 
   }
