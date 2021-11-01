@@ -30,8 +30,10 @@ class OverviewController extends AbstractController
 
   public function __construct()
   {
-    $date = new \DateTime(new DateTimeZone('GMT'));
+    
+    $date = new \DateTime('now', new \DateTimeZone('GMT'));
     $this->date = $date->format('l, j F, Y');
+
   }
 
   /**
