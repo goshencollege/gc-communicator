@@ -72,33 +72,17 @@ class AnnouncementRepository extends ServiceEntityRepository
    */
   public function find_today_approved()
   {
-    $date = new \DateTime('now', new \DateTimeZone('GMT'));
+    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
 
     return $this->createQueryBuilder('a')
-      ->Where('a.start_date <= :date AND a.end_date >= :date')
+      ->where('a.start_date <= :date AND a.end_date >= :date')
       ->andWhere('a.approval = 1')
       ->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
       ->getQuery()
+      ->getResult()
     ;
   }
-
-  /**
-   * Custom method purely for testing to return the last-inserted result.
-   * 
-   * @author Daniel Boling
-   */
-  public function findLastInserted()
-  {
-
-    return $this->createQueryBuilder('a')
-      ->orderBy('a.id', 'DESC')
-      ->setMaxResults(1)
-      ->getQuery()
-      ->getOneOrNullResult()
-    ;
-  }
-
   
 
   // /**
