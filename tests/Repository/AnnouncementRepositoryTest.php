@@ -281,6 +281,14 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $pre_announcement = $this->em
       ->getRepository(Announcement::class)
     ;
+    $pre_count = array();
+    foreach (['-2 days', 'yesterday', 'now', 'tomorrow', '+2 days'] as $i)
+    {
+      $value = count($pre_announcement->find_today($i));
+      array_push($pre_count, $value);
+      
+    }
+
 
     $announcement = new Announcement();
     $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
@@ -300,13 +308,21 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $post_announcement = $this->em
       ->getRepository(Announcement::class)
     ;
+    $post_count = array();
+    foreach (['-2 days', 'yesterday', 'now', 'tomorrow', '+2 days'] as $i)
+    {
+      $value = count($post_announcement->find_today($i));
+      array_push($post_count, $value);
+      
+    }
 
-    $this->assertSame(count($pre_announcement->count_today('-2 days')), count($post_announcement->count_today('-2 days')));
+
+    $this->assertSame($pre_count[0], $post_count[0]);
     // ensure the announcement will not fire 2 days before
-    $this->assertSame((count($pre_announcement->count_today('yesterday'))+1), count($post_announcement->count_today('yesterday')));
-    $this->assertSame((count($pre_announcement->count_today('now'))+1), count($post_announcement->count_today('now')));
-    $this->assertSame((count($pre_announcement->count_today('tomorrow'))+1), count($post_announcement->count_today('tomorrow')));
-    $this->assertSame(count($pre_announcement->count_today('+2 days')), count($post_announcement->count_today('+2 days')));
+    $this->assertSame($pre_count[1]+1, $post_count[1]);
+    $this->assertSame($pre_count[2]+1, $post_count[2]);
+    $this->assertSame($pre_count[3]+1, $post_count[3]);
+    $this->assertSame($pre_count[4], $post_count[4]);
     // ensure the announcement will not fire 2 days after
 
   }
