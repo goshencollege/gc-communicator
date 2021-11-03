@@ -62,6 +62,8 @@ class OverviewController extends AbstractController
 
       $announcement = $info_form->getData();
       $announcement->setUser($user);
+      $announcement->setApproval(0);
+      // set approval to denied by default
       $em->persist($announcement);
       $em->flush();
       
