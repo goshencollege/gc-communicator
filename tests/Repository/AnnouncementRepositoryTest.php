@@ -289,7 +289,6 @@ class AnnouncementRepositoryTest extends KernelTestCase
       
     }
 
-
     $announcement = new Announcement();
     $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
     $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
@@ -324,6 +323,78 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->assertSame($pre_count[3]+1, $post_count[3]);
     $this->assertSame($pre_count[4], $post_count[4]);
     // ensure the announcement will not fire 2 days after
+
+  }
+
+  /**
+   * Testing announcement approval
+   * 
+   * Should create one unapproved announcement, then ensure that the pre count and post count haven't updated.
+   * This tests the database function and the find_today_approved() query function.
+   * 
+   * @author Daniel Boling
+   */
+  public function test_approval(): void
+  {
+    $test_user = $this->em
+    ->getRepository(User::class)
+    ->findOneByUsername("test_user");
+
+  $test_cat = $this->em
+    ->getRepository(Category::class)
+    ->findOneByName("test_category");
+
+  $pre_announcement_count = count($this->em
+    ->getRepository(Announcement::class)
+    ->find_today_approved())
+  ;
+
+  $announcement = new Announcement();
+  $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
+  $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
+  $announcement->setSubject('test_subject');
+  $announcement->setAuthor('test_author');
+  $announcement->setCategory($test_cat);
+  $announcement->setUser($test_user);
+  $announcement->setStartDate($announcement_start_date);
+  $announcement->setEndDate($announcement_end_date);
+  $announcement->setText('test_text');
+  $announcement->setApproval(0);
+  $this->em->persist($announcement);
+
+  $this->em->flush();
+
+  $post_announcement_count = count($this->em
+    ->getRepository(Announcement::class)
+    ->find_today_approved())
+  ;
+  
+  $this->assertSame($pre_announcement_count, $post_announcement_count);
+  // these should both be the same, as the created announcement should not be approved.
+
+  $announcement = new Announcement();
+  $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
+  $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
+  $announcement->setSubject('test_subject');
+  $announcement->setAuthor('test_author');
+  $announcement->setCategory($test_cat);
+  $announcement->setUser($test_user);
+  $announcement->setStartDate($announcement_start_date);
+  $announcement->setEndDate($announcement_end_date);
+  $announcement->setText('test_text');
+  $announcement->setApproval(1);
+  $this->em->persist($announcement);
+
+  $this->em->flush();
+
+  $post_announcement_count = count($this->em
+    ->getRepository(Announcement::class)
+    ->find_today_approved())
+  ;
+  
+  $this->assertSame($pre_announcement_count+1, $post_announcement_count);
+  // compared to the last, this one should pass because we added 1 approved announcement
+
 
   }
 
