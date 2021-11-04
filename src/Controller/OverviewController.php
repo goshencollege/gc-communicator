@@ -36,6 +36,33 @@ class OverviewController extends AbstractController
 
   }
 
+
+    /**
+   * This should be the main page that everyone should see. Every user should be able to see this page and everything
+   * on it. This will be modified more clearly from it's current state. Currently
+   * being used as a testing stage for database outputs.
+   * 
+   * @author Daniel Boling
+   * @return rendered overview.html.twig
+   * 
+   * @Route("/overview", name="show_all")
+   */
+  public function show_all(): Response
+  {
+
+    $announcement = $this->getDoctrine()
+      // inits the database and table Announcements;
+      ->getRepository(Announcement::class)
+      ->find_today();
+
+      return $this->render('overview.html.twig', [
+        'date' => $this->date,
+        'announcement' => $announcement,
+      ]);
+
+  }
+
+
   /**
    * Currently acts as the main input form for users.
    * Subject, Author (custom or autofilled), Category selection, text, and date
@@ -78,30 +105,6 @@ class OverviewController extends AbstractController
 
   }
 
-  /**
-   * This should be the main page that everyone should see. Every user should be able to see this page and everything
-   * on it. This will be modified more clearly from it's current state. Currently
-   * being used as a testing stage for database outputs.
-   * 
-   * @author Daniel Boling
-   * @return rendered overview.html.twig
-   * 
-   * @Route("/overview", name="show_all")
-   */
-  public function show_all(): Response
-  {
-
-    $announcement = $this->getDoctrine()
-      // inits the database and table Announcements;
-      ->getRepository(Announcement::class)
-      ->find_today();
-
-      return $this->render('overview.html.twig', [
-        'date' => $this->date,
-        'announcement' => $announcement,
-      ]);
-
-  }
 
   /**
    * Basically the same page as /overview, except shows all announcements of
@@ -128,6 +131,7 @@ class OverviewController extends AbstractController
 
   }
 
+  
   /**
    * The form page for adding new categories. This will be accessible only be admins.
    * 

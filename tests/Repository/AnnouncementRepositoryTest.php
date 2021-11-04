@@ -329,8 +329,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
   /**
    * Testing announcement approval
    * 
-   * Should create one unapproved announcement, then ensure that the pre count and post count haven't updated.
-   * This tests the database function and the find_today_approved() query function.
+   * Should create one unapproved announcement, then ensure that the pre counts and post counts follow expectations.
+   * Edit that last announcement and approve it, then ensure the pre counts and post counts follow expectations.
+   * This tests the database functionality and the find_today() query function.
    * 
    * @author Daniel Boling
    */
@@ -383,27 +384,20 @@ class AnnouncementRepositoryTest extends KernelTestCase
   $this->assertSame($pre_denied_announcement_count+1, $post_denied_announcement_count);
   // these should both be the same, as the created announcement should not be approved.
 
-  $announcement = new Announcement();
-  $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
-  $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
-  $announcement->setSubject('test_subject');
-  $announcement->setAuthor('test_author');
-  $announcement->setCategory($test_cat);
-  $announcement->setUser($test_user);
-  $announcement->setStartDate($announcement_start_date);
-  $announcement->setEndDate($announcement_end_date);
-  $announcement->setText('test_text');
-  $announcement->setApproval(1);
-  $this->em->persist($announcement);
-
+  $announcement = $this->em
+    ->getRepository(Announcement::class)
+    ->find_today('now', 0)
+  ;
+  
+  end($announcement)->setApproval(1);
   $this->em->flush();
 
-  $post_announcement_count = count($this->em
+  $post_approved_announcement_count = count($this->em
     ->getRepository(Announcement::class)
     ->find_today())
   ;
   
-  $this->assertSame($pre_announcement_count+1, $post_announcement_count);
+  $this->assertSame($pre_approved_announcement_count+1, $post_approved_announcement_count);
   // compared to the last, this one should pass because we added 1 approved announcement
 
 

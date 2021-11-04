@@ -33,6 +33,7 @@ class AnnouncementRepository extends ServiceEntityRepository
 
     $qb = $this->createQueryBuilder('a')
       ->Where('a.start_date <= :date AND a.end_date >= :date');
+    // if approval == 1, filter for approval. if approval != 1, skip this filter and return all for today
     if ($approval == 1)
     {
       $qb->andWhere('a.approval = 1');
