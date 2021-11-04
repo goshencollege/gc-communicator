@@ -253,15 +253,15 @@ class OverviewController extends AbstractController
   }
 
   /**
-   * Is called on button-click from twig file, updates active categories, and redirects to list_category
+   * Is called on button-click from twig file, updates announcement approval, and redirects to list_category
    * 
    * @author Daniel Boling
    * @return redirect to list_category
    * 
-   * @Route("/moderation/announcement/{id}", name="approve_announcement")
+   * @Route("/moderation/announcement/{id}", name="toggle_announcement_approval")
    * @IsGranted("ROLE_MODERATOR")
    */
-  public function approve_announcement(Request $request, $id): Response
+  public function toggle_announcement_approval(Request $request, $id): Response
   {
 
     $em = $this->getDoctrine()->getManager();

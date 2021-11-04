@@ -26,17 +26,21 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  private function query_today($date_input = 'now')
+  private function query_today($date_input = 'now', $approval = 1)
   {
 
     $date = new \DateTime($date_input, new \DateTimeZone('GMT'));
 
-    return $this->createQueryBuilder('a')
-      ->Where('a.start_date <= :date AND a.end_date >= :date')
-      ->setParameter('date', $date->format('Y-m-d'))
+    $qb = $this->createQueryBuilder('a')
+      ->Where('a.start_date <= :date AND a.end_date >= :date');
+    if ($approval == 1)
+    {
+      $qb->andWhere('a.approval = 1');
+    }
+    $qb->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
-      ->getQuery()
     ;
+    return $qb->getQuery();
 
   }
 
@@ -46,10 +50,10 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function find_today($date_input = 'now')
+  public function find_today($date_input = 'now', $approval = 1)
   {
 
-    return $this->query_today($date_input)
+    return $this->query_today($date_input, $approval)
       ->getResult()
     ;
 
@@ -60,10 +64,10 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function count_today($date_input = 'now')
+  public function count_today($date_input = 'now', $approval = 1)
   {
 
-    return $this->query_today($date_input)
+    return $this->query_today($date_input, $approval)
       ->getScalarResult()
     ;
 
