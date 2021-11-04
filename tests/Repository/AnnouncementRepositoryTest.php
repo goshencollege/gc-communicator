@@ -344,10 +344,15 @@ class AnnouncementRepositoryTest extends KernelTestCase
     ->getRepository(Category::class)
     ->findOneByName("test_category");
 
-  $pre_announcement_count = count($this->em
+  $pre_approved_announcement_count = count($this->em
     ->getRepository(Announcement::class)
-    ->find_today_approved())
+    ->find_today())
   ;
+
+  $pre_denied_announcement_count = count($this->em
+  ->getRepository(Announcement::class)
+  ->find_today('now', 0))
+;
 
   $announcement = new Announcement();
   $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
@@ -364,12 +369,18 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
   $this->em->flush();
 
-  $post_announcement_count = count($this->em
+  $post_approved_announcement_count = count($this->em
     ->getRepository(Announcement::class)
-    ->find_today_approved())
+    ->find_today())
   ;
+
+  $post_denied_announcement_count = count($this->em
+  ->getRepository(Announcement::class)
+  ->find_today('now', 0))
+;
   
-  $this->assertSame($pre_announcement_count, $post_announcement_count);
+  $this->assertSame($pre_approved_announcement_count, $post_approved_announcement_count);
+  $this->assertSame($pre_denied_announcement_count+1, $post_denied_announcement_count);
   // these should both be the same, as the created announcement should not be approved.
 
   $announcement = new Announcement();
@@ -389,7 +400,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
   $post_announcement_count = count($this->em
     ->getRepository(Announcement::class)
-    ->find_today_approved())
+    ->find_today())
   ;
   
   $this->assertSame($pre_announcement_count+1, $post_announcement_count);

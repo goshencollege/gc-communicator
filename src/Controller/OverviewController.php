@@ -94,7 +94,7 @@ class OverviewController extends AbstractController
     $announcement = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
-      ->find_today_approved();
+      ->find_today();
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,
@@ -243,7 +243,7 @@ class OverviewController extends AbstractController
     $announcement = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
-      ->find_today();
+      ->find_today('now', 0);
 
       return $this->render('moderation_announcements.html.twig', [
         'date' => $this->date,

@@ -72,27 +72,6 @@ class AnnouncementRepository extends ServiceEntityRepository
     ;
 
   }
-
-  /**
-   * Method using query_today to get a result array.
-   * Requirement: date match. Approved.
-   * 
-   * @author Daniel Boling
-   */
-  public function find_today_approved($date_input = 'now')
-  {
-
-    $date = new \DateTime($date_input, new \DateTimeZone('GMT'));
-
-    return $this->createQueryBuilder('a')
-      ->where('a.start_date <= :date AND a.end_date >= :date')
-      ->andWhere('a.approval = 1')
-      ->setParameter('date', $date->format('Y-m-d'))
-      ->orderBy('a.id', 'ASC')
-      ->getQuery()
-      ->getResult()
-    ;
-  }
   
 
   // /**
