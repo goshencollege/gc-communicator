@@ -68,8 +68,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setText('test_text');
-    $announcement->setStartDate(new \DateTime('now'));
-    $announcement->setEndDate(new \DateTime('now'));
+    $announcement->setApproval(1);
+    $announcement->setStartDate(new \DateTime('now', new \DateTimeZone('GMT')));
+    $announcement->setEndDate(new \DateTime('now', new \DateTimeZone('GMT')));
     $this->em->persist($announcement);
     $this->em->flush();
 
@@ -109,11 +110,11 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $pre_announcement = $this->em
       ->getRepository(Announcement::class)
-      ->find_by_day('now');
+      ->count_today();
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
-    $announcement_past_date = new \DateTime('-1 week');
+    $announcement_past_date = new \DateTime('-1 week', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -121,10 +122,11 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_past_date);
     $announcement->setEndDate($announcement_past_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_today_date = new \DateTime('now');
+    $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -132,10 +134,11 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_today_date);
     $announcement->setEndDate($announcement_today_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
-    $announcement_future_date = new \DateTime('+1 week');
+    $announcement_future_date = new \DateTime('+1 week', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -143,13 +146,14 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_future_date);
     $announcement->setEndDate($announcement_future_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $this->em->flush();
 
     $post_announcement = $this->em
       ->getRepository(Announcement::class)
-      ->find_by_day('now');
+      ->count_today();
 
     $this->assertSame(count($post_announcement), (count($pre_announcement)+1));
     // checking that the count of announcements with current date prior to addition + 1
@@ -176,7 +180,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->findOneByName("test_category");
 
     $announcement = new Announcement();
-    $announcement_today_date = new \DateTime('now');
+    $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement->setSubject('auto_subject');
     $announcement->setAuthor('auto_author');
     $announcement->setCategory($test_cat);
@@ -184,6 +188,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_today_date);
     $announcement->setEndDate($announcement_today_date);
     $announcement->setText('auto_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $test_user = $this->em
@@ -191,7 +196,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
       ->findOneByUsername("fixture_user");
 
     $announcement = new Announcement();
-    $announcement_today_date = new \DateTime('now');
+    $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -199,6 +204,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_today_date);
     $announcement->setEndDate($announcement_today_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $this->em->flush();
@@ -265,16 +271,27 @@ class AnnouncementRepositoryTest extends KernelTestCase
   {
 
     $test_user = $this->em
-    ->getRepository(User::class)
-    ->findOneByUsername("test_user");
+      ->getRepository(User::class)
+      ->findOneByUsername("test_user");
 
     $test_cat = $this->em
       ->getRepository(Category::class)
       ->findOneByName("test_category");
 
+    $pre_announcement = $this->em
+      ->getRepository(Announcement::class)
+    ;
+    $pre_count = array();
+    foreach (['-2 days', 'yesterday', 'now', 'tomorrow', '+2 days'] as $i)
+    {
+      $value = count($pre_announcement->find_today($i));
+      array_push($pre_count, $value);
+      
+    }
+
     $announcement = new Announcement();
-    $announcement_start_date = new \DateTime('yesterday');
-    $announcement_end_date = new \DateTime('tomorrow');
+    $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
+    $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
     $announcement->setSubject('test_subject');
     $announcement->setAuthor('test_author');
     $announcement->setCategory($test_cat);
@@ -282,21 +299,107 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setStartDate($announcement_start_date);
     $announcement->setEndDate($announcement_end_date);
     $announcement->setText('test_text');
+    $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $this->em->flush();
 
-    $announcement = $this->em
+    $post_announcement = $this->em
       ->getRepository(Announcement::class)
     ;
+    $post_count = array();
+    foreach (['-2 days', 'yesterday', 'now', 'tomorrow', '+2 days'] as $i)
+    {
+      $value = count($post_announcement->find_today($i));
+      array_push($post_count, $value);
+      
+    }
 
-    $this->assertSame(0, count($announcement->find_by_day('-2 days')));
+
+    $this->assertSame($pre_count[0], $post_count[0]);
     // ensure the announcement will not fire 2 days before
-    $this->assertSame(2, count($announcement->find_by_day('yesterday')));
-    $this->assertSame(6, count($announcement->find_by_day('now')));
-    $this->assertSame(2, count($announcement->find_by_day('tomorrow')));
-    $this->assertSame(0, count($announcement->find_by_day('+2 days')));
+    $this->assertSame($pre_count[1]+1, $post_count[1]);
+    $this->assertSame($pre_count[2]+1, $post_count[2]);
+    $this->assertSame($pre_count[3]+1, $post_count[3]);
+    $this->assertSame($pre_count[4], $post_count[4]);
     // ensure the announcement will not fire 2 days after
+
+  }
+
+  /**
+   * Testing announcement approval
+   * 
+   * Should create one unapproved announcement, then ensure that the pre counts and post counts follow expectations.
+   * Edit that last announcement and approve it, then ensure the pre counts and post counts follow expectations.
+   * This tests the database functionality and the find_today() query function.
+   * 
+   * @author Daniel Boling
+   */
+  public function test_approval(): void
+  {
+    $test_user = $this->em
+    ->getRepository(User::class)
+    ->findOneByUsername("test_user");
+
+  $test_cat = $this->em
+    ->getRepository(Category::class)
+    ->findOneByName("test_category");
+
+  $pre_approved_announcement_count = count($this->em
+    ->getRepository(Announcement::class)
+    ->find_today())
+  ;
+
+  $pre_denied_announcement_count = count($this->em
+  ->getRepository(Announcement::class)
+  ->find_today('now', 0))
+;
+
+  $announcement = new Announcement();
+  $announcement_start_date = new \DateTime('yesterday', new \DateTimeZone('GMT'));
+  $announcement_end_date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
+  $announcement->setSubject('test_subject');
+  $announcement->setAuthor('test_author');
+  $announcement->setCategory($test_cat);
+  $announcement->setUser($test_user);
+  $announcement->setStartDate($announcement_start_date);
+  $announcement->setEndDate($announcement_end_date);
+  $announcement->setText('test_text');
+  $announcement->setApproval(0);
+  $this->em->persist($announcement);
+
+  $this->em->flush();
+
+  $post_approved_announcement_count = count($this->em
+    ->getRepository(Announcement::class)
+    ->find_today())
+  ;
+
+  $post_denied_announcement_count = count($this->em
+  ->getRepository(Announcement::class)
+  ->find_today('now', 0))
+;
+  
+  $this->assertSame($pre_approved_announcement_count, $post_approved_announcement_count);
+  $this->assertSame($pre_denied_announcement_count+1, $post_denied_announcement_count);
+  // these should both be the same, as the created announcement should not be approved.
+
+  $announcement = $this->em
+    ->getRepository(Announcement::class)
+    ->find_today('now', 0)
+  ;
+  
+  end($announcement)->setApproval(1);
+  $this->em->flush();
+
+  $post_approved_announcement_count = count($this->em
+    ->getRepository(Announcement::class)
+    ->find_today())
+  ;
+  
+  $this->assertSame($pre_approved_announcement_count+1, $post_approved_announcement_count);
+  // compared to the last, this one should pass because we added 1 approved announcement
+
 
   }
 

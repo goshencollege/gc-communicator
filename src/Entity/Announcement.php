@@ -57,6 +57,11 @@ class Announcement
    */
   private $start_date;
 
+  /**
+   * @ORM\Column(type="integer")
+   */
+  private $approval;
+
   public function getId(): ?int
   {
     return $this->id;
@@ -142,6 +147,18 @@ class Announcement
   public function setStartDate(\DateTimeInterface $start_date): self
   {
       $this->start_date = $start_date;
+
+      return $this;
+  }
+
+  public function getApproval(): ?int
+  {
+      return $this->approval;
+  }
+
+  public function setApproval(int $approval): self
+  {
+      $this->approval = $approval;
 
       return $this;
   }

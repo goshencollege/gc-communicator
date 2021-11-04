@@ -18,6 +18,7 @@ class AnnouncementRepository extends ServiceEntityRepository
   public function __construct(ManagerRegistry $registry)
   {
     parent::__construct($registry, Announcement::class);
+
   }
 
   /**
@@ -25,57 +26,53 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function find_today()
+  private function query_today($date_input = 'now', $approval = 1)
   {
 
-    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $date = new \DateTime($date_input, new \DateTimeZone('GMT'));
 
-    return $this->createQueryBuilder('a')
-      ->andWhere('a.start_date <= :date AND a.end_date >= :date')
-      ->setParameter('date', $date->format('Y-m-d'))
+    $qb = $this->createQueryBuilder('a')
+      ->Where('a.start_date <= :date AND a.end_date >= :date');
+    // if approval == 1, filter for approval. if approval != 1, skip this filter and return all for today
+    if ($approval == 1)
+    {
+      $qb->andWhere('a.approval = 1');
+    }
+    $qb->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
-      ->getQuery()
+    ;
+    return $qb->getQuery();
+
+  }
+
+  /**
+   * Method using query_today to get a result array.
+   * Requirements: date match.
+   * 
+   * @author Daniel Boling
+   */
+  public function find_today($date_input = 'now', $approval = 1)
+  {
+
+    return $this->query_today($date_input, $approval)
       ->getResult()
     ;
 
   }
 
     /**
-   * Custom method to pull announcements created for the given date
+   * Method using query_today to get a countable array.
    * 
    * @author Daniel Boling
    */
-  public function find_by_day($date)
+  public function count_today($date_input = 'now', $approval = 1)
   {
 
-    $date = new \DateTime($date, new \DateTimeZone('America/Indiana/Indianapolis'));
-
-    return $this->createQueryBuilder('a')
-      ->andWhere('a.start_date <= :date AND a.end_date >= :date')
-      ->setParameter('date', $date->format('Y-m-d'))
-      ->orderBy('a.id', 'ASC')
-      ->getQuery()
+    return $this->query_today($date_input, $approval)
       ->getScalarResult()
     ;
 
   }
-
-  /**
-   * Custom method purely for testing to return the last-inserted result.
-   * 
-   * @author Daniel Boling
-   */
-  public function findLastInserted()
-  {
-
-    return $this->createQueryBuilder('a')
-      ->orderBy('a.id', 'DESC')
-      ->setMaxResults(1)
-      ->getQuery()
-      ->getOneOrNullResult()
-    ;
-  }
-
   
 
   // /**

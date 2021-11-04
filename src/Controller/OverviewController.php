@@ -30,9 +30,38 @@ class OverviewController extends AbstractController
 
   public function __construct()
   {
-    $date = new \DateTime;
+    
+    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
     $this->date = $date->format('l, j F, Y');
+
   }
+
+
+    /**
+   * This should be the main page that everyone should see. Every user should be able to see this page and everything
+   * on it. This will be modified more clearly from it's current state. Currently
+   * being used as a testing stage for database outputs.
+   * 
+   * @author Daniel Boling
+   * @return rendered overview.html.twig
+   * 
+   * @Route("/overview", name="show_all")
+   */
+  public function show_all(): Response
+  {
+
+    $announcement = $this->getDoctrine()
+      // inits the database and table Announcements;
+      ->getRepository(Announcement::class)
+      ->find_today();
+
+      return $this->render('overview.html.twig', [
+        'date' => $this->date,
+        'announcement' => $announcement,
+      ]);
+
+  }
+
 
   /**
    * Currently acts as the main input form for users.
@@ -60,6 +89,8 @@ class OverviewController extends AbstractController
 
       $announcement = $info_form->getData();
       $announcement->setUser($user);
+      $announcement->setApproval(0);
+      // set approval to denied by default
       $em->persist($announcement);
       $em->flush();
       
@@ -74,30 +105,6 @@ class OverviewController extends AbstractController
 
   }
 
-  /**
-   * This should be the main page that everyone should see. Every user should be able to see this page and everything
-   * on it. This will be modified more clearly from it's current state. Currently
-   * being used as a testing stage for database outputs.
-   * 
-   * @author Daniel Boling
-   * @return rendered overview.html.twig
-   * 
-   * @Route("/overview", name="show_all")
-   */
-  public function show_all(): Response
-  {
-
-    $announcement = $this->getDoctrine()
-      // inits the database and table Announcements;
-      ->getRepository(Announcement::class)
-      ->find_today();
-
-      return $this->render('overview.html.twig', [
-        'date' => $this->date,
-        'announcement' => $announcement,
-      ]);
-
-  }
 
   /**
    * Basically the same page as /overview, except shows all announcements of
@@ -124,6 +131,7 @@ class OverviewController extends AbstractController
 
   }
 
+  
   /**
    * The form page for adding new categories. This will be accessible only be admins.
    * 
@@ -219,6 +227,67 @@ class OverviewController extends AbstractController
       
 
     return $this->redirectToRoute('list_category');
+
+  }
+
+  /**
+   * This should be the main page that everyone should see. Every user should be able to see this page and everything
+   * on it. This will be modified more clearly from it's current state. Currently
+   * being used as a testing stage for database outputs.
+   * 
+   * @author Daniel Boling
+   * @return rendered moderation_announcements.html.twig
+   * 
+   * @Route("/moderation/announcements", name="moderation_announcements")
+   * @IsGranted("ROLE_MODERATOR")
+   */
+  public function moderation_announcements(): Response
+  {
+
+    $announcement = $this->getDoctrine()
+      // inits the database and table Announcements;
+      ->getRepository(Announcement::class)
+      ->find_today('now', 0);
+
+      return $this->render('moderation_announcements.html.twig', [
+        'date' => $this->date,
+        'announcement' => $announcement,
+      ]);
+
+  }
+
+  /**
+   * Is called on button-click from twig file, updates announcement approval, and redirects to list_category
+   * 
+   * @author Daniel Boling
+   * @return redirect to list_category
+   * 
+   * @Route("/moderation/announcement/{id}", name="toggle_announcement_approval")
+   * @IsGranted("ROLE_MODERATOR")
+   */
+  public function toggle_announcement_approval(Request $request, $id): Response
+  {
+
+    $em = $this->getDoctrine()->getManager();
+
+    $announcement = $this->getDoctrine()
+      ->getRepository(Announcement::class)
+      ->find($id);
+      
+    if ($announcement->getApproval() == 0)
+    // if the announcement is denied, set it to approved.
+      {
+        $announcement->setApproval(1);
+
+      } else {
+      // if the condition gets here, the announcement is already approved, so set it to denied.
+        $announcement->setApproval(0);
+      }
+      $em->persist($announcement);
+      $em->flush();
+      
+
+    return $this->redirectToRoute('moderation_announcements');
 
   }
 

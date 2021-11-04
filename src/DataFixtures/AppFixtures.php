@@ -19,6 +19,7 @@ class AppFixtures extends Fixture
   public function __construct(UserPasswordHasherInterface $passwordHasher)
   {
     $this->passwordHasher = $passwordHasher;
+
   }
 
   public function load(ObjectManager $manager)
@@ -43,7 +44,7 @@ class AppFixtures extends Fixture
     $manager->persist($user);
 
     $test_user = new User();
-    $test_user->setUsername('fixture_user');
+    $test_user->setUsername('test_user');
     $test_user->setRoles(['ROLE_USER']);
     $test_user->setPassword($this->passwordHasher->hashPassword(
         $test_user,
@@ -51,8 +52,9 @@ class AppFixtures extends Fixture
     ));
     $manager->persist($test_user);
 
+
     $test_user = new User();
-    $test_user->setUsername('test_user');
+    $test_user->setUsername('fixture_user');
     $test_user->setRoles(['ROLE_USER']);
     $test_user->setPassword($this->passwordHasher->hashPassword(
         $test_user,
@@ -64,6 +66,17 @@ class AppFixtures extends Fixture
     $test_cat->setName('fixture_category');
     $test_cat->setActive(1);
     $manager->persist($test_cat);
+
+    $announcement_date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $announcement = new Announcement();
+    $announcement->setSubject('fixture_subject');
+    $announcement->setAuthor('fixture_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
+    $announcement->setText('fixture_text');
+    $announcement->setApproval(1);
 
     // loading fixtures for category table
     $cat = new Category();
@@ -82,40 +95,21 @@ class AppFixtures extends Fixture
     $manager->persist($cat);
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
-    $announcement = new Announcement();
-    $announcement_start_date = new \DateTime('yesterday');
-    $announcement_end_date = new \DateTime('yesterday');
-    $announcement->setSubject('fixture_subject');
-    $announcement->setAuthor('fixture_author');
-    $announcement->setCategory($test_cat);
-    $announcement->setUser($test_user);
-    $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_end_date);
-    $announcement->setText('fixture_text');
+
+    $annoncement_date = new \DateTime('yesterday', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
     $manager->persist($announcement);
 
-    $announcement = new Announcement();
-    $announcement_start_date = new \DateTime('now');
-    $announcement_end_date = new \DateTime('now');
-    $announcement->setSubject('fixture_subject');
-    $announcement->setAuthor('fixture_author');
-    $announcement->setCategory($cat);
-    $announcement->setUser($test_user);
-    $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_end_date);
-    $announcement->setText('fixture_text');
+
+    $annoncement_date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
     $manager->persist($announcement);
 
-    $announcement = new Announcement();
-    $announcement_start_date = new \DateTime('tomorrow');
-    $announcement_end_date = new \DateTime('tomorrow');
-    $announcement->setSubject('fixture_subject');
-    $announcement->setAuthor('fixture_author');
-    $announcement->setCategory($cat);
-    $announcement->setUser($test_user);
-    $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_end_date);
-    $announcement->setText('fixture_text');
+    $annoncement_date = new \DateTime('tomorrow', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
     $manager->persist($announcement);
 
     $manager->flush();
