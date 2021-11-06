@@ -67,17 +67,6 @@ class AppFixtures extends Fixture
     $test_cat->setActive(1);
     $manager->persist($test_cat);
 
-    $announcement_date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
-    $announcement = new Announcement();
-    $announcement->setSubject('fixture_subject');
-    $announcement->setAuthor('fixture_author');
-    $announcement->setCategory($test_cat);
-    $announcement->setUser($test_user);
-    $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
-    $announcement->setText('fixture_text');
-    $announcement->setApproval(1);
-
     // loading fixtures for category table
     $cat = new Category();
     $cat->setName('Rooms');
@@ -95,21 +84,16 @@ class AppFixtures extends Fixture
     $manager->persist($cat);
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
-
-    $annoncement_date = new \DateTime('yesterday', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
+    $announcement = new Announcement();
+    $announcement->setSubject('fixture_subject');
+    $announcement->setAuthor('fixture_author');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_date);
     $announcement->setEndDate($announcement_date);
-    $manager->persist($announcement);
-
-
-    $annoncement_date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
-    $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
-    $manager->persist($announcement);
-
-    $annoncement_date = new \DateTime('tomorrow', new \DateTimeZone('America/Indiana/Indianapolis'));
-    $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
+    $announcement->setText('fixture_text');
+    $announcement->setApproval(1);
     $manager->persist($announcement);
 
     $manager->flush();
