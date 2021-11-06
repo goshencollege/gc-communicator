@@ -124,7 +124,7 @@ class OverviewController extends AbstractController
 
     $announcement = $user->getAnnouncements();
     
-    return $this->render('overview.html.twig', [
+    return $this->render('user_overview.html.twig', [
       'date' => $this->date,
       'announcement' => $announcement,
     ]);
@@ -272,7 +272,8 @@ class OverviewController extends AbstractController
 
     $announcement = $this->getDoctrine()
       ->getRepository(Announcement::class)
-      ->find($id);
+      ->find($id)
+    ;
       
     if ($announcement->getApproval() == 0)
     // if the announcement is denied, set it to approved.
@@ -288,6 +289,53 @@ class OverviewController extends AbstractController
       
 
     return $this->redirectToRoute('moderation_announcements');
+
+  }
+
+  /**
+   * Is called on button-click from twig file, sends user to the edit form page.
+   * 
+   * @author Daniel Boling
+   * @return redirect to edit_announcement
+   * 
+   * @Route("/modify/announcement/{id}", name="modify_announcement")
+   * @IsGranted("ROLE_USER")
+   */
+  public function modify_announcement(Request $request, $id): Response
+  {
+
+    $em = $this->getDoctrine()->getManager();
+
+    $announcement = $this->getDoctrine()
+      ->getRepository(Announcement::class)
+      ->find($id)
+    ;
+
+    $user = $this->getUser();
+
+    $info_form = $this->createForm(NewAnnouncement::class, $announcement);
+
+    $info_form->handleRequest($request);
+
+    if($info_form->isSubmitted() && $info_form->isValid()){
+
+      $announcement = $info_form->getData();
+      $announcement->setUser($user);
+      $announcement->setApproval(0);
+      // set approval to denied by default
+      $em->persist($announcement);
+      $em->flush();
+      
+      return $this->redirectToRoute('show_all_user');
+    }
+
+    return $this->render('new_announcement.html.twig', [
+      'info_form' => $info_form->createView(),
+      // 'date_form' => $date_form->createView(),
+      'date' => $this->date,
+    ]);
+    
+    
 
   }
 

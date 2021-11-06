@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="stylesheet.css">
+
+    <title>Communicator - Moderation - Announcements</title>
+  </head>
+
+  <body>
+    <div class="w3-panel">
+      <h2><b>Announcements</b></h2>
+      <h3><b>Moderation</b></h3>
+      <p>{{ date }}</p>
+    </div>
+    <div class="w3-panel .dbtheme-purple">
+      <table class="w3-table-all">
+        <tr>
+          <th>Subject</th>
+          <th>Author</th>
+          <th>User</th>
+          <th>Category</th>
+          <th>Text</th>
+          <th>Approval</th>
+          <th></th>
+        </tr>
+        {% for row in announcement %} {# simple loop to output rows #}
+          <tr>
+            <td>{{ row.subject }}</td>
+            <td>{{ row.author }}</td>
+            <td>{{ row.user.username }}</td>
+            <td>{{ row.category.name }}</td>
+            <td>{{ row.text }}</td>
+            <td>{{ row.approval }}</td>
+            <td><a href="{{ path('modify_announcement',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">Edit</a></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+
+
+</html>
