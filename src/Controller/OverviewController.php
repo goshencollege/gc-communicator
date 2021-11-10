@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
-use App\Form\NewAnnouncement;
+use App\Form\AnnouncementForm;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -81,7 +81,7 @@ class OverviewController extends AbstractController
     $announcement = new Announcement();
     $user = $this->getUser();
 
-    $info_form = $this->createForm(NewAnnouncement::class, $announcement);
+    $info_form = $this->createForm(AnnouncementForm::class, $announcement);
 
     $info_form->handleRequest($request);
 
@@ -313,20 +313,26 @@ class OverviewController extends AbstractController
 
     $user = $this->getUser();
 
-    $info_form = $this->createForm(NewAnnouncement::class, $announcement);
+    $info_form = $this->createForm(AnnouncementForm::class, $announcement);
 
     $info_form->handleRequest($request);
 
     if($info_form->isSubmitted() && $info_form->isValid()){
+      $user = $this->getUser();
+      if($user == $announcement->getUser() or in_array($user->getRoles()[0], ["ROLE_ADMIN", "ROLE_MODERATOR"])){
 
-      $announcement = $info_form->getData();
-      $announcement->setUser($user);
-      $announcement->setApproval(0);
-      // set approval to denied by default
-      $em->persist($announcement);
-      $em->flush();
-      
-      return $this->redirectToRoute('show_all_user');
+        $announcement = $info_form->getData();
+        $announcement->setApproval(0);
+        // set approval to denied by default
+        $em->persist($announcement);
+        $em->flush();
+        
+        return $this->redirectToRoute('show_all_user');
+      }else{
+        return $this->render('unauthenticated.html.twig', [
+          'date' => $this->date,
+        ]);
+      }
     }
 
     return $this->render('new_announcement.html.twig', [
