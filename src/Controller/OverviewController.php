@@ -310,17 +310,13 @@ class OverviewController extends AbstractController
       ->getRepository(Announcement::class)
       ->find($id)
     ;
+    if($this->getUser() == $announcement->getUser() or $this->isGranted('ROLE_MODERATOR')){
 
-    $user = $this->getUser();
+      $info_form = $this->createForm(AnnouncementForm::class, $announcement);
 
-    $info_form = $this->createForm(AnnouncementForm::class, $announcement);
+      $info_form->handleRequest($request);
 
-    $info_form->handleRequest($request);
-
-    if($info_form->isSubmitted() && $info_form->isValid()){
-      $user = $this->getUser();
-      if($user == $announcement->getUser() or in_array($user->getRoles()[0], ["ROLE_ADMIN", "ROLE_MODERATOR"])){
-
+      if($info_form->isSubmitted() && $info_form->isValid()){
         $announcement = $info_form->getData();
         $announcement->setApproval(0);
         // set approval to denied by default
@@ -328,20 +324,19 @@ class OverviewController extends AbstractController
         $em->flush();
         
         return $this->redirectToRoute('show_all_user');
-      }else{
-        return $this->render('unauthenticated.html.twig', [
-          'date' => $this->date,
-        ]);
-      }
-    }
 
-    return $this->render('new_announcement.html.twig', [
-      'info_form' => $info_form->createView(),
-      // 'date_form' => $date_form->createView(),
-      'date' => $this->date,
-    ]);
-    
-    
+      }
+
+      return $this->render('new_announcement.html.twig', [
+        'info_form' => $info_form->createView(),
+        // 'date_form' => $date_form->createView(),
+        'date' => $this->date,
+      ]);
+    } else {
+      return $this->render('unauthenticated.html.twig', [
+        'date' => $this->date,
+      ]);
+    }
 
   }
 
