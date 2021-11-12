@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
@@ -333,9 +334,7 @@ class OverviewController extends AbstractController
         'date' => $this->date,
       ]);
     } else {
-      return $this->render('unauthenticated.html.twig', [
-        'date' => $this->date,
-      ]);
+      return throw new AccessDeniedHttpException("Unauthorized");
     }
 
   }

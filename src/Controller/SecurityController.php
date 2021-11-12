@@ -26,6 +26,7 @@ class SecurityController extends AbstractController
     return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
   }
 
+
   /**
    * @Route("/logout", name="app_logout")
    */
@@ -34,6 +35,23 @@ class SecurityController extends AbstractController
     throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
   }
 
+
+  // /**
+  //  * A simple function dedicated for redirection when the incorrect user is signed in,
+  //  * or there is no user signed it at all.
+  //  * 
+  //  * @author Daniel Boling
+  //  * @return rendered unauthenticated.html.twig
+  //  * 
+  //  * @Route('/unauthorized', name='unauthorized')
+  //  */
+  // public function unauthorized(): Response
+  // {
+  //   return $this->render('unauthorized.html.twig', [
+  //     'date' => $this->date,
+  //   ]);
+  // }
+  
 }
 
 // EOF
