@@ -324,8 +324,11 @@ class OverviewController extends AbstractController
         $em->persist($announcement);
         $em->flush();
         
-        return $this->redirectToRoute('show_all_user');
-        #$this->redirect($request->server->get('HTTP_REFERER'));
+        if ($this->getUser() == $announcement->getUser()){
+          return $this->redirectToRoute('show_all_user');
+        } else {
+          return $this->redirectToRoute('moderation_announcements');
+        }
 
       }
 
