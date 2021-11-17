@@ -89,12 +89,21 @@ class OverviewControllerTest extends WebTestCase
         $response = $client->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
 
-        // authenticate a test user and check that the page returns a 200 code
+        // authenticate a fixture user and check that the page returns a 200 code
         $client->loginUser($announcement->getUser());
         $client->request('GET', '/modify/announcement/' . $announcement->getId());
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
 
+        $crawler = $client->request('GET', '/modify/announcement/' . $announcement->getId());
+        $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
+        $form = $buttonCrawlerNode->form();
+        $pre_form_fields = $form->getValues();
+
+        $client->submit($form, [
+            'announcement_form[subject]' => 'Change',
+            'announcement_form[text]' => 'change lorem ispum',
+        ]);
         
 
 

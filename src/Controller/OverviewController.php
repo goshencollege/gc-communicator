@@ -328,7 +328,7 @@ class OverviewController extends AbstractController
 
       }
 
-      return $this->render('new_announcement.html.twig', [
+      return $this->render('modify_announcement.html.twig', [
         'info_form' => $info_form->createView(),
         // 'date_form' => $date_form->createView(),
         'date' => $this->date,
