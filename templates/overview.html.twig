@@ -8,7 +8,8 @@
 
   <body>
     <div class="w3-panel">
-      <h2><b>{{ announcement|length }} New Announcements</b></h2>
+      <h2><b>{{ announcement|length }} New Announcement{% if announcement|length > 1 or announcement|length == 0 %}s{% endif %}</b></h2>
+      <h3><b>Overview</b></h3>
       <p>{{ date }}</p>
     </div>
     <div class="w3-panel .dbtheme-purple">
@@ -34,4 +35,6 @@
   </body>
 
 
+
 </html>
+

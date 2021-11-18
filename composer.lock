@@ -3654,16 +3654,16 @@
         },
         {
             "name": "symfony/framework-bundle",
-            "version": "v5.3.7",
+            "version": "v5.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/framework-bundle.git",
-                "reference": "5d4fcef02a42ea86280afcbacedf8de7a039032c"
+                "reference": "2ff74f86abf2f67f2d0b53e23ab7a268b105dcfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/5d4fcef02a42ea86280afcbacedf8de7a039032c",
-                "reference": "5d4fcef02a42ea86280afcbacedf8de7a039032c",
+                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/2ff74f86abf2f67f2d0b53e23ab7a268b105dcfe",
+                "reference": "2ff74f86abf2f67f2d0b53e23ab7a268b105dcfe",
                 "shasum": ""
             },
             "require": {
@@ -3785,7 +3785,7 @@
             "description": "Provides a tight integration between Symfony components and the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/framework-bundle/tree/v5.3.7"
+                "source": "https://github.com/symfony/framework-bundle/tree/v5.3.10"
             },
             "funding": [
                 {
@@ -3801,7 +3801,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-08-26T08:37:07+00:00"
+            "time": "2021-10-26T11:54:54+00:00"
         },
         {
             "name": "symfony/http-client",
