@@ -20,6 +20,7 @@
           <th>User</th>
           <th>Category</th>
           <th>Text</th>
+          <th>File</th>
         </tr>
         {% for row in announcement %} {# simple loop to output rows #}
           <tr>
@@ -28,6 +29,7 @@
             <td>{{ row.user.username }}</td>
             <td>{{ row.category.name }}</td>
             <td>{{ row.text }}</td>
+            <td><a href="{{ asset('uploads/files/' ~ announcement.filename) }}">View File</a></td>
           </tr>
         {% endfor %}
       </table>

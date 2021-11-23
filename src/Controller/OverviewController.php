@@ -15,6 +15,7 @@ use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
 use App\Form\AnnouncementForm;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -75,7 +76,7 @@ class OverviewController extends AbstractController
    * @Route("/new", name="new_announcement")
    * @IsGranted("ROLE_USER")
    */
-  public function new_announcement(Request $request): Response
+  public function new_announcement(Request $request, SluggerInterface $slugger): Response
   {
 
     $em = $this->getDoctrine()->getManager();
@@ -87,11 +88,30 @@ class OverviewController extends AbstractController
     $info_form->handleRequest($request);
 
     if($info_form->isSubmitted() && $info_form->isValid()){
-
       $announcement = $info_form->getData();
+      $file = $info_form->get('file')->getData();
       $announcement->setUser($user);
       $announcement->setApproval(0);
       // set approval to denied by default
+
+      if ($file) {
+        $original_filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        // this is needed to safely include the file name as part of the URL
+        $safe_filename = $slugger->slug($original_filename);
+        $new_filename = $safe_filename.'-'.uniqid().'.'.$file->guessExtension();
+
+        try {
+          $file->move(
+            $this->getParameter('file_directory'),
+            $new_filename
+          );
+        } catch (FileException $e) {
+          // handle exception
+        }
+
+        $announcement->setFilename($new_filename);
+
+      }
       $em->persist($announcement);
       $em->flush();
       

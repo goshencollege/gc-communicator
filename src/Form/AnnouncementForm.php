@@ -45,7 +45,11 @@ class AnnouncementForm extends AbstractType
             ->add('end_date', DateType::class, [
                 'data' => new \DateTime,
             ])
-            ->add('filename', FileType::class)
+            ->add('file', FileType::class, [
+                'label' => 'Filename',
+                'mapped' => false,
+                'required' => false,
+            ])
             ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
         ;
     
