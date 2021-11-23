@@ -95,6 +95,7 @@ class OverviewController extends AbstractController
       // set approval to denied by default
 
       if ($file) {
+        // if a file is in the form
         $original_filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         // this is needed to safely include the file name as part of the URL
         $safe_filename = $slugger->slug($original_filename);
@@ -103,7 +104,7 @@ class OverviewController extends AbstractController
         try {
           $file->move(
             $this->getParameter('file_directory'),
-            $new_filename
+            $new_filename,
           );
         } catch (FileException $e) {
           // handle exception
@@ -360,6 +361,22 @@ class OverviewController extends AbstractController
     } else {
       return throw new AccessDeniedHttpException("Unauthorized");
     }
+
+  }
+
+
+  /**
+   * Function for handling file rendering
+   * 
+   * @author Daniel Boling
+   * @return Rendered file
+   * 
+   * @Route(name="view_file")
+   */
+  public function view_file(Request $request, $url): Response
+  {
+
+    return $this->render($url);
 
   }
 

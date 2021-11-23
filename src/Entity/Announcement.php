@@ -43,11 +43,6 @@ class Announcement
   private $category;
 
   /**
-   * @ORM\Column(type="string", length=255, nullable=true)
-   */
-  private $recurrence;
-
-  /**
    * @ORM\Column(type="date")
    */
   private $end_date;
