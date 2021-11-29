@@ -16,16 +16,10 @@ use App\Entity\User;
 use App\Entity\Category;
 use App\Form\AnnouncementForm;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-
 
 class OverviewController extends AbstractController
 {
@@ -89,30 +83,9 @@ class OverviewController extends AbstractController
 
     if($info_form->isSubmitted() && $info_form->isValid()){
       $announcement = $info_form->getData();
-      $file = $info_form->get('file')->getData();
       $announcement->setUser($user);
       $announcement->setApproval(0);
       // set approval to denied by default
-
-      if ($file) {
-        // if a file is in the form
-        $original_filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        // this is needed to safely include the file name as part of the URL
-        $safe_filename = $slugger->slug($original_filename);
-        $new_filename = $safe_filename.'-'.uniqid().'.'.$file->guessExtension();
-
-        try {
-          $file->move(
-            $this->getParameter('file_directory'),
-            $new_filename,
-          );
-        } catch (FileException $e) {
-          // handle exception
-        }
-
-        $announcement->setFilename($new_filename);
-
-      }
       $em->persist($announcement);
       $em->flush();
       
@@ -361,22 +334,6 @@ class OverviewController extends AbstractController
     } else {
       return throw new AccessDeniedHttpException("Unauthorized");
     }
-
-  }
-
-
-  /**
-   * Function for handling file rendering
-   * 
-   * @author Daniel Boling
-   * @return Rendered file
-   * 
-   * @Route(name="view_file")
-   */
-  public function view_file(Request $request, $url): Response
-  {
-
-    return $this->render($url);
 
   }
 

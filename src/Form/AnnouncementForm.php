@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -45,9 +46,8 @@ class AnnouncementForm extends AbstractType
             ->add('end_date', DateType::class, [
                 'data' => new \DateTime,
             ])
-            ->add('file', FileType::class, [
-                'label' => 'Filename',
-                'mapped' => false,
+            ->add('announcementFile', VichFileType::class, [
+                'mapped' => true,
                 'required' => false,
             ])
             ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])

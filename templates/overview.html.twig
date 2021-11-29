@@ -29,7 +29,7 @@
             <td>{{ row.user.username }}</td>
             <td>{{ row.category.name }}</td>
             <td>{{ row.text }}</td>
-            <td>{% if row.filename is defined and row.filename is not null %}<a href="{{ path('view_file',{ url:asset('public/uploads/files/' ~ row.filename) }) }}" class="w3-button w3-ripple w3-border myOnbutton">View File</a>{% endif %}</td>
+            <td>{% if row.filename is defined and row.filename is not null %}<a href="{{ path('view_file',{ url: asset('public/uploads/files/' ~ row.filename), filename: row.filename }) }}" class="w3-button w3-ripple w3-border myOnbutton">View File</a>{% endif %}</td>
           </tr>
         {% endfor %}
       </table>
