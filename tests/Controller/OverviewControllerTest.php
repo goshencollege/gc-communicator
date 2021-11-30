@@ -150,14 +150,28 @@ class OverviewControllerTest extends WebTestCase
 
         $client = static::createClient();
 
-        // redirect to the unauthenticated page since the wrong user is authenticated
+        // authenticate a test user and check that the page returns a 200 code
         $test_user = static::getContainer()
             ->get(UserRepository::class)
             ->findOneByUsername("test_user")
         ;
         $client->loginUser($test_user);
+        $client->request('GET', '/new');
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
 
+        $crawler = $client->request('GET', '/new');
+        $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
+        $form = $buttonCrawlerNode->form();
+
+        $form['announcement_form[category]']->select('3');
+        $form['announcement_form[announcementFile]']->upload('~/Downloads/dummy_file.txt');
         
+        $client->submit($form, [
+            'announcement_form[subject]' => 'file_subject',
+            'announcement_form[author]' => 'file_author',
+            'announcement_form[text]' => 'change lorem ispum',
+        ]);
 
     }
        
