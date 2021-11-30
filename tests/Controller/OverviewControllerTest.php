@@ -140,6 +140,26 @@ class OverviewControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test file uploading, access, deletion, and change.
+     * 
+     * @author Daniel Boling
+     */
+    public function test_files()
+    {
+
+        $client = static::createClient();
+
+        // redirect to the unauthenticated page since the wrong user is authenticated
+        $test_user = static::getContainer()
+            ->get(UserRepository::class)
+            ->findOneByUsername("test_user")
+        ;
+        $client->loginUser($test_user);
+
+        
+
+    }
        
 }
 
