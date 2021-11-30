@@ -24,6 +24,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class OverviewController extends AbstractController
 {
 
+  private $UploaderHelper;
+
   public function __construct()
   {
     
@@ -49,7 +51,9 @@ class OverviewController extends AbstractController
     $announcement = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
-      ->find_today();
+      ->find_today()
+    ;
+
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,
