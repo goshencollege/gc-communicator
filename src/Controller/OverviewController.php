@@ -202,7 +202,7 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return redirect to list_category
    * 
-   * @Route("/category/list/{id}", name="update_category")
+   * @Route("/category/update/{id}", name="update_category")
    * @IsGranted("ROLE_ADMIN")
    */
   public function update_category(Request $request, $id): Response

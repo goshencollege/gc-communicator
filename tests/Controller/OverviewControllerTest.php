@@ -8,49 +8,55 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class OverviewControllerTest extends WebTestCase
 {
-
+            
     /**
-     * Load the /add URL and ensure that it gets a 200 status code
+     * Load all authentication-required pages, check for 302, then sign into an admin user, and check *all* sites again (except functional pages).
+     * The only two pages not currently loaded are ones that update a field upon access, such as approval of announcements and activiation of categories.
      * 
      * @author Daniel Boling
      * 
      */
-    public function test_add()
+    public function test_urls()
     {
 
         $client = static::createClient();
 
         // This should return 302 since no user is authenticated
-        $client->request('GET', '/new');
-        $response = $client->getResponse();
-        $this->assertEquals(302, $response->getStatusCode());
+        $pages = array(
+            '/new',
+            '/overview/user',
+            '/category/new',
+            '/category/list',
+        );
+
+        foreach ($pages as $page){
+            // This should return 302 since no user is authenticated
+            $client->request('GET', $page);
+            $response = $client->getResponse();
+            $this->assertEquals(302, $response->getStatusCode());
+        }
 
         // authenticate a test user
         $userRepo = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepo->findOneByUsername("test_user");
+        $testUser = $userRepo->findOneByUsername("dboling");
         $client->loginUser($testUser);
 
-        // This should now return 200 since a user is authenticated
-        $client->request('GET', '/new');
-        $response = $client->getResponse();
-        $this->assertEquals(200, $response->getStatusCode());
-    }
-        
-    /**
-     * Load the /overview URL and ensure that it gets a 200 status code
-     * 
-     * @author David King
-     * 
-     */
-    public function test_overview()
-    {
+        $pages = array(
+            '/overview',
+            '/new',
+            '/overview/user',
+            '/category/new',
+            '/category/list',
+            '/moderation/announcements',
+            '/login'
+        );
 
-        $client = static::createClient();
-
-        $client->request('GET', '/overview');
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatusCode());
+        foreach ($pages as $page){
+            // these should all now return 200 since a user is authenticated
+            $client->request('GET', $page);
+            $response = $client->getResponse();
+            $this->assertEquals(200, $response->getStatusCode());
+        }
 
     }
 
@@ -63,7 +69,6 @@ class OverviewControllerTest extends WebTestCase
     {
 
         $client = static::createClient();
-
 
 
         // returns last result of all announcements
@@ -132,8 +137,10 @@ class OverviewControllerTest extends WebTestCase
             $this->assertSame($announcement->getAuthor(), $announcement_author);
 
         }
-        
+
     }
+
+       
 }
 
 
