@@ -164,8 +164,8 @@ class OverviewControllerTest extends WebTestCase
         $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
         $form = $buttonCrawlerNode->form();
 
+        $form['announcement_form[announcementFile]']->upload('Downloads/dummy_file');
         $form['announcement_form[category]']->select('3');
-        $form['announcement_form[announcementFile]']->upload('~/Downloads/dummy_file.txt');
         
         $client->submit($form, [
             'announcement_form[subject]' => 'file_subject',
