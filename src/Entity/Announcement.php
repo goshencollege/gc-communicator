@@ -6,6 +6,7 @@ use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AnnouncementRepository::class)
@@ -76,6 +77,9 @@ class Announcement
    * NOTE: This is not a mapped field of entity metadata, just a simple property.
    * 
    * @Vich\UploadableField(mapping="announcementFile", fileNameProperty="filename")
+   * @Assert\File(
+   *    maxSize = "5M",
+   * )
    * 
    * @var File|null
    */

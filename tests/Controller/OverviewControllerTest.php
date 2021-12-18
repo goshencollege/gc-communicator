@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Repository\UserRepository;
 use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Finder\Finder;
 
 class OverviewControllerTest extends WebTestCase
 {
@@ -148,6 +149,18 @@ class OverviewControllerTest extends WebTestCase
     public function test_files()
     {
 
+        $finder = new Finder();
+        // start of the process to remove all files with "dummy-file" as the file name
+
+        $finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        if ($finder->hasResults()) {
+            foreach ($finder as $file) {
+                unlink($file);
+            }
+
+        }
+        // this will be removed in a future deletion update
+
         $client = static::createClient();
 
         // authenticate a test user and check that the page returns a 200 code
@@ -164,8 +177,8 @@ class OverviewControllerTest extends WebTestCase
         $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
         $form = $buttonCrawlerNode->form();
 
-        $form['announcement_form[announcementFile]']->upload('Downloads/dummy_file');
-        $form['announcement_form[category]']->select('3');
+        $form['announcement_form']['announcementFile']['file']->upload('./bin/dummy file');
+        $form['announcement_form']['category']->select('3');
         
         $client->submit($form, [
             'announcement_form[subject]' => 'file_subject',
@@ -173,6 +186,57 @@ class OverviewControllerTest extends WebTestCase
             'announcement_form[text]' => 'change lorem ispum',
         ]);
 
+        $finder = new Finder();
+        // start the process for finding the test file
+
+        $finder->files()->in('./bin/')->name('*dummy file*');
+        if ($finder->hasResults()) {
+            foreach ($finder as $file) {
+                // there should only ever be one result, this is just for syntax
+                
+            }
+        }
+
+        $finder = new Finder();
+        // start of the process to check for test file upload
+
+        $finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        if ($finder->hasResults()) {
+            $finder = iterator_to_array($finder, false);
+            var_dump($finder);
+            echo $finder['fileName":"SplFileInfo":private'];
+
+        }
+
+        $this->assertTrue(compare_files($pre_file, $post_file));
+
+    }
+
+    private function compare_files($file_a, $file_b)
+    {
+        if (filesize($file_a) != filesize($file_b))
+            return false;
+    
+        $chunksize = 4096;
+        $fp_a = fopen($file_a, 'rb');
+        $fp_b = fopen($file_b, 'rb');
+            
+        while (!feof($fp_a) && !feof($fp_b))
+        {
+            $d_a = fread($fp_a, $chunksize);
+            $d_b = fread($fp_b, $chunksize);
+            if ($d_a === false || $d_b === false || $d_a !== $d_b)
+            {
+                fclose($fp_a);
+                fclose($fp_b);
+                return false;
+            }
+        }
+     
+        fclose($fp_a);
+        fclose($fp_b);
+              
+        return true;
     }
        
 }
