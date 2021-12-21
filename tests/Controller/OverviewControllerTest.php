@@ -149,21 +149,20 @@ class OverviewControllerTest extends WebTestCase
     public function test_files()
     {
 
-        $finder = new Finder();
+        $upload_finder = new Finder();
         // start of the process to remove all files with "dummy-file" as the file name
 
-        $finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
-        if ($finder->hasResults()) {
-            foreach ($finder as $file) {
-                unlink($file);
+        $upload_finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        // temporary function for deleting all matching (fuzzy) files
+        // this will be removed in a future deletion update
+        if ($upload_finder->hasResults()) {
+            foreach ($upload_finder as $upload_file) {
+                unlink($upload_file);
             }
 
         }
-        // this will be removed in a future deletion update
 
         $client = static::createClient();
-
-        // authenticate a test user and check that the page returns a 200 code
         $test_user = static::getContainer()
             ->get(UserRepository::class)
             ->findOneByUsername("test_user")
@@ -172,6 +171,7 @@ class OverviewControllerTest extends WebTestCase
         $client->request('GET', '/new');
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
+        // authenticate a test user and check that the page returns a 200 code
 
         $crawler = $client->request('GET', '/new');
         $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
@@ -186,57 +186,56 @@ class OverviewControllerTest extends WebTestCase
             'announcement_form[text]' => 'change lorem ispum',
         ]);
 
-        $finder = new Finder();
+        $pre_finder = new Finder();
         // start the process for finding the test file
 
-        $finder->files()->in('./bin/')->name('*dummy file*');
-        if ($finder->hasResults()) {
-            foreach ($finder as $file) {
+        $pre_finder->files()->in('bin/')->name('*dummy file*');
+        if ($pre_finder->hasResults()) {
+            foreach ($pre_finder as $pre_file) {
                 // there should only ever be one result, this is just for syntax
+                $pre_file_hash = hash_file('md5', $pre_file);
+
+            }
+        }
+
+        $post_finder = new Finder();
+        // start of the process to check for test file upload
+
+        $post_finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        if ($post_finder->hasResults()) {
+            foreach ($post_finder as $post_file) {
+                $post_file_hash = hash_file('md5', $post_file);
+
+            }
+        }
+
+        $this->assertSame($pre_file_hash, $post_file_hash);
+
+
+        $pre_finder = new Finder();
+        // start the process for finding the test file
+
+        $pre_finder->files()->in('bin/')->name('*runtests*');
+        if ($pre_finder->hasResults()) {
+            foreach ($pre_finder as $pre_file) {
+                // there should only ever be one result, this is just for syntax
+                $pre_file_hash = hash_file('md5', $pre_file);
+
+            }
+        }
+
+        $post_finder = new Finder();
+        // start of the process to check for test file upload
+
+        $post_finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        if ($post_finder->hasResults()) {
+            foreach ($post_finder as $post_file) {
+                $post_file_hash = hash_file('md5', $post_file);
                 
             }
         }
 
-        $finder = new Finder();
-        // start of the process to check for test file upload
-
-        $finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
-        if ($finder->hasResults()) {
-            $finder = iterator_to_array($finder, false);
-            var_dump($finder);
-            echo $finder['fileName":"SplFileInfo":private'];
-
-        }
-
-        $this->assertTrue(compare_files($pre_file, $post_file));
-
-    }
-
-    private function compare_files($file_a, $file_b)
-    {
-        if (filesize($file_a) != filesize($file_b))
-            return false;
-    
-        $chunksize = 4096;
-        $fp_a = fopen($file_a, 'rb');
-        $fp_b = fopen($file_b, 'rb');
-            
-        while (!feof($fp_a) && !feof($fp_b))
-        {
-            $d_a = fread($fp_a, $chunksize);
-            $d_b = fread($fp_b, $chunksize);
-            if ($d_a === false || $d_b === false || $d_a !== $d_b)
-            {
-                fclose($fp_a);
-                fclose($fp_b);
-                return false;
-            }
-        }
-     
-        fclose($fp_a);
-        fclose($fp_b);
-              
-        return true;
+        $this->assertNotSame($pre_file_hash, $post_file_hash);
     }
        
 }
