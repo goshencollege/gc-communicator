@@ -336,7 +336,7 @@ class OverviewController extends AbstractController
         'date' => $this->date,
       ]);
     } else {
-      return throw new AccessDeniedHttpException("Unauthorized");
+      throw new AccessDeniedHttpException("Unauthorized");
     }
 
   }
