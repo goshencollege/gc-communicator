@@ -4,9 +4,13 @@ namespace App\Entity;
 
 use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AnnouncementRepository::class)
+ * @Vich\Uploadable
  */
 class Announcement
 {
@@ -43,11 +47,6 @@ class Announcement
   private $category;
 
   /**
-   * @ORM\Column(type="string", length=255, nullable=true)
-   */
-  private $recurrence;
-
-  /**
    * @ORM\Column(type="date")
    */
   private $end_date;
@@ -61,6 +60,31 @@ class Announcement
    * @ORM\Column(type="integer")
    */
   private $approval;
+  
+  /**
+  * @ORM\Column(type="string", nullable=true)
+  */
+  private $filename;
+
+  /**
+   * @ORM\Column(type="datetime", nullable=true)
+   *
+   * @var \DateTimeInterface|null
+   */
+  private $updatedAt;
+
+  /**
+   * NOTE: This is not a mapped field of entity metadata, just a simple property.
+   * 
+   * @Vich\UploadableField(mapping="announcementFile", fileNameProperty="filename")
+   * @Assert\File(
+   *    maxSize = "5M",
+   * )
+   * 
+   * @var File|null
+   */
+  private $announcementFile;
+
 
   public function getId(): ?int
   {
@@ -162,5 +186,40 @@ class Announcement
 
       return $this;
   }
+
+  /**
+   * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+   * of 'UploadedFile' is injected into this setter to trigger the update. If this
+   * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+   * must be able to accept an instance of 'File' as the bundle will inject one here
+   * during Doctrine hydration.
+   *
+   * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $announcementFile
+   */
+    public function setAnnouncementFile(?File $announcementFile = null): void
+    {
+        $this->announcementFile = $announcementFile;
+
+        if (null !== $announcementFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getAnnouncementFile(): ?File
+    {
+        return $this->announcementFile;
+    }
+  
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+  
+    public function setFilename(?string $filename): void
+    {
+        $this->filename = $filename;
+    }
 
 }

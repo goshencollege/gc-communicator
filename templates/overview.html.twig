@@ -20,6 +20,7 @@
           <th>User</th>
           <th>Category</th>
           <th>Text</th>
+          <th>File</th>
         </tr>
         {% for row in announcement %} {# simple loop to output rows #}
           <tr>
@@ -28,6 +29,7 @@
             <td>{{ row.user.username }}</td>
             <td>{{ row.category.name }}</td>
             <td>{{ row.text }}</td>
+            <td>{% if row.filename is defined and row.filename is not null %}<a href="{{ vich_uploader_asset(row, 'announcementFile',  'App\\Entity\\Announcement') }}" class="w3-button w3-ripple w3-border myOnbutton" target="_blank" rel="noopener noreferrer">View File</a>{% endif %}</td>
           </tr>
         {% endfor %}
       </table>

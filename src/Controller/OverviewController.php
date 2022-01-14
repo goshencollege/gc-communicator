@@ -15,19 +15,16 @@ use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
 use App\Form\AnnouncementForm;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-
 
 class OverviewController extends AbstractController
 {
+
+  private $UploaderHelper;
 
   public function __construct()
   {
@@ -54,7 +51,9 @@ class OverviewController extends AbstractController
     $announcement = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
-      ->find_today();
+      ->find_today()
+    ;
+
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,
@@ -75,7 +74,7 @@ class OverviewController extends AbstractController
    * @Route("/new", name="new_announcement")
    * @IsGranted("ROLE_USER")
    */
-  public function new_announcement(Request $request): Response
+  public function new_announcement(Request $request, SluggerInterface $slugger): Response
   {
 
     $em = $this->getDoctrine()->getManager();
@@ -87,7 +86,6 @@ class OverviewController extends AbstractController
     $info_form->handleRequest($request);
 
     if($info_form->isSubmitted() && $info_form->isValid()){
-
       $announcement = $info_form->getData();
       $announcement->setUser($user);
       $announcement->setApproval(0);
@@ -204,7 +202,7 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return redirect to list_category
    * 
-   * @Route("/category/list/{id}", name="update_category")
+   * @Route("/category/update/{id}", name="update_category")
    * @IsGranted("ROLE_ADMIN")
    */
   public function update_category(Request $request, $id): Response
@@ -338,7 +336,7 @@ class OverviewController extends AbstractController
         'date' => $this->date,
       ]);
     } else {
-      return throw new AccessDeniedHttpException("Unauthorized");
+      throw new AccessDeniedHttpException("Unauthorized");
     }
 
   }
