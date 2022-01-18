@@ -341,6 +341,19 @@ class OverviewController extends AbstractController
 
   }
 
+  /**
+   * Function to copy an announcement exactly, load the modification page by default.
+   * 
+   * @author Daniel Boling
+   * 
+   * @Route("/copy/announcement/{id}", name="copy_announcement")
+   */
+  public function copy_announcement(Request $request, $id): Response
+  {
+    
+
+  }
+
 }
 
 // EOF
