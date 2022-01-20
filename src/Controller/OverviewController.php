@@ -332,9 +332,52 @@ class OverviewController extends AbstractController
 
       return $this->render('modify_announcement.html.twig', [
         'info_form' => $info_form->createView(),
-        // 'date_form' => $date_form->createView(),
         'date' => $this->date,
       ]);
+    } else {
+      throw new AccessDeniedHttpException("Unauthorized");
+    }
+
+  }
+
+  /**
+   * Function to copy an announcement exactly, load the modification page by default.
+   * 
+   * @author Daniel Boling
+   * 
+   * @Route("/copy/announcement/{id}", name="copy_announcement")
+   */
+  public function copy_announcement(Request $request, $id): Response
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $new_announcement = new Announcement();
+
+    $announcement = $this->getDoctrine()
+      ->getRepository(Announcement::class)
+      ->find($id)
+    ;
+
+    if($this->getUser() == $announcement->getUser()){
+
+      $info_form = $this->createForm(AnnouncementForm::class, clone $announcement);
+
+      $info_form->handleRequest($request);
+
+      if($info_form->isSubmitted() && $info_form->isValid()){
+        $new_announcement = $info_form->getData();
+        $new_announcement->setApproval(0);
+        $em->persist($new_announcement);
+        $em->flush();
+
+        return $this->redirectToRoute('show_all_user');
+      }
+
+      return $this->render('modify_announcement.html.twig', [
+        'info_form' => $info_form->createView(),
+        'date' => $this->date,
+      ]);
+
     } else {
       throw new AccessDeniedHttpException("Unauthorized");
     }
