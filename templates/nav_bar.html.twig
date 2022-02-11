@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html>
+
+    <link href="{{ asset('https://www.w3schools.com/w3css/4/w3.css') }}" rel="stylesheet"/>
+
+    <div class="w3-bar">
+      <a class="w3-button" href="{{ path('show_all') }}">All Announcements</a>
+      <a class="w3-button" href="{{ path('show_all_user') }}">My Announcements</a>
+      <a class="w3-button" href="{{ path('new_announcement') }}">New Announcement</a>
+      {% if is_granted("ROLE_MODERATOR") %}
+        <a class="w3-button" href="{{ path('moderation_announcements') }}">Moderation</a>
+        <a class="w3-button" href="{{ path('list_category') }}">Categories</a>
+      {% endif %}
+    </div>
+</html>

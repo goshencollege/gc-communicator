@@ -54,7 +54,7 @@ class AppFixtures extends Fixture
 
 
     $test_user = new User();
-    $test_user->setUsername('fixture_user');
+    $test_user->setUsername('johndoe');
     $test_user->setRoles(['ROLE_USER']);
     $test_user->setPassword($this->passwordHasher->hashPassword(
         $test_user,
@@ -63,36 +63,75 @@ class AppFixtures extends Fixture
     $manager->persist($test_user);
 
     $test_cat = new Category();
-    $test_cat->setName('fixture_category');
+    $test_cat->setName('Events (All Campus and Public)');
     $test_cat->setActive(1);
     $manager->persist($test_cat);
-
-    // loading fixtures for category table
-    $cat = new Category();
-    $cat->setName('Rooms');
-    $cat->setActive(1);
-    $manager->persist($cat);
-
-    $cat = new Category();
-    $cat->setName('Buildings');
-    $cat->setActive(1);
-    $manager->persist($cat);
-
-    $cat = new Category();
-    $cat->setName('Classes');
-    $cat->setActive(0);
-    $manager->persist($cat);
 
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement = new Announcement();
-    $announcement->setSubject('fixture_subject');
-    $announcement->setAuthor('fixture_author');
+    $announcement->setSubject('Fixture Subject');
+    $announcement->setAuthor('John Doe');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_date);
     $announcement->setEndDate($announcement_date);
-    $announcement->setText('fixture_text');
+    $announcement->setText('Lorem Ipsum');
+    $announcement->setApproval(1);
+    $manager->persist($announcement);
+
+    $test_cat = new Category();
+    $test_cat->setName('Student Life');
+    $test_cat->setActive(1);
+    $manager->persist($test_cat);
+
+    // one announcement set to a past date, one to the current date (constant) and one for a future date
+    $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
+    $announcement = new Announcement();
+    $announcement->setSubject('Fixture Subject');
+    $announcement->setAuthor('John Doe');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
+    $announcement->setText('Lorem Ipsum');
+    $announcement->setApproval(1);
+    $manager->persist($announcement);
+
+    $test_cat = new Category();
+    $test_cat->setName('Buy, Sell, Trade, Lost & Found');
+    $test_cat->setActive(1);
+    $manager->persist($test_cat);
+
+    // one announcement set to a past date, one to the current date (constant) and one for a future date
+    $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
+    $announcement = new Announcement();
+    $announcement->setSubject('Fixture Subject');
+    $announcement->setAuthor('John Doe');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
+    $announcement->setText('Lorem Ipsum');
+    $announcement->setApproval(1);
+    $manager->persist($announcement);
+
+    $test_cat = new Category();
+    $test_cat->setName('Repeat Announcement');
+    $test_cat->setActive(1);
+    $manager->persist($test_cat);
+
+
+    // one announcement set to a past date, one to the current date (constant) and one for a future date
+    $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
+    $announcement = new Announcement();
+    $announcement->setSubject('Fixture Subject');
+    $announcement->setAuthor('John Doe');
+    $announcement->setCategory($test_cat);
+    $announcement->setUser($test_user);
+    $announcement->setStartDate($announcement_date);
+    $announcement->setEndDate($announcement_date);
+    $announcement->setText('Lorem Ipsum');
     $announcement->setApproval(1);
     $manager->persist($announcement);
 

@@ -17,6 +17,7 @@ use App\Entity\Category;
 use App\Form\AnnouncementForm;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\Asset\UrlPackage;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -48,16 +49,22 @@ class OverviewController extends AbstractController
   public function show_all(): Response
   {
 
-    $announcement = $this->getDoctrine()
+    $announcements = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
       ->find_today()
     ;
 
+    $categories = $this->getDoctrine()
+      ->getRepository(Category::class)
+      ->findAll()
+    ;
+
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,
-        'announcement' => $announcement,
+        'announcements' => $announcements,
+        'categories' => $categories,
       ]);
 
   }
