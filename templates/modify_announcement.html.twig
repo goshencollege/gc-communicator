@@ -2,21 +2,55 @@
 
   <head>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="stylesheet.css">
 
-    <title>Communicator - Modify Announcement</title>
+    <title>Communicator - Add Announcement</title>
   </head>
 
   <body>
     {{ include("nav_bar.html.twig") }}
     <div class="w3-panel">
-      <h2><b>Modify Announcement</b></h2>
+      <h2><b>Submit New Announcement</b></h2>
       <p>{{ date }}</p>
     </div>
-    <div class="w3-panel">
-      {{ form(info_form) }}
+    <div class="w3-container" style="width:80%">
+      {{ form_start(ann_form) }}
+        <p>
+          {{ form_row(ann_form.subject, { 'attr': {'class': 'w3-input w3-border'} }) }}
+        </p>
+          {{ form_row(ann_form.author, { 'attr': {'class': 'w3-input w3-border'} }) }}
+        </p>
+        <p>
+          {{ form_row(ann_form.category, { 'attr': {'class': 'w3-select w3-border'} }) }} 
+        </p>
+        {{ form_row(ann_form.text, { 'attr': {'class': 'w3-input w3-border'} }) }}  
+        <p>
+          {{ form_label(ann_form.start_date, "Start Date") }}
+          <div class="w3-row w3-half">
+            <div class="w3-third">{{ form_widget(ann_form.start_date.day, { 'attr': {'class': 'w3-select'} }) }}</div>
+            <div class="w3-third">{{ form_widget(ann_form.start_date.month, { 'attr': {'class': 'w3-select'} }) }}</div>
+            <div class="w3-third">{{ form_widget(ann_form.start_date.year, { 'attr': {'class': 'w3-select'} }) }}</div>
+          </div>
+        </p>
+        <br>
+        <br>
+        <p>
+          {{ form_label(ann_form.end_date, "End Date") }}
+          <div class="w3-row w3-half">
+            <div class="w3-third">{{ form_widget(ann_form.end_date.day, { 'attr': {'class': 'w3-select'} }) }}</div>
+            <div class="w3-third">{{ form_widget(ann_form.end_date.month, { 'attr': {'class': 'w3-select'} }) }}</div>
+            <div class="w3-third">{{ form_widget(ann_form.end_date.year, { 'attr': {'class': 'w3-select'} }) }}</div>
+          </div>
+        </p>
+        <br>
+        <br>
+        <p>
+          {{ form_row(ann_form.announcementFile) }}
+        </p>
+        <p>
+          {{ form_widget(ann_form.submit, { 'attr': {'class': 'w3-button w3-border', 'label': 'Modify'} }) }}
+        </p>
+      {{ form_end(ann_form) }}
     </div>
   </body>
-
 
 </html>

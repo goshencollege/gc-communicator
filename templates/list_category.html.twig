@@ -1,7 +1,6 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="stylesheet.css">
 
     <title>Communicator - Categories</title>
   </head>
@@ -25,8 +24,8 @@
           <tr>
             <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
-            <td>{{ row.active }}</td>
-            <td><a href="{{ path('update_category',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">Toggle</a></td>
+            <td>{% if row.active == 0 %} Disabled {% elseif row.active == 1 %} Enabled {% endif %}</td>
+            <td><a href="{{ path('update_category',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">{% if row.active == 0 %} Enable {% elseif row.active == 1 %} Disable {% endif %}</a></td>
           </tr>
         {% endfor %}
       </table>

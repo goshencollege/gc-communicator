@@ -88,12 +88,12 @@ class OverviewController extends AbstractController
     $announcement = new Announcement();
     $user = $this->getUser();
 
-    $info_form = $this->createForm(AnnouncementForm::class, $announcement);
+    $ann_form = $this->createForm(AnnouncementForm::class, $announcement);
 
-    $info_form->handleRequest($request);
+    $ann_form->handleRequest($request);
 
-    if($info_form->isSubmitted() && $info_form->isValid()){
-      $announcement = $info_form->getData();
+    if($ann_form->isSubmitted() && $ann_form->isValid()){
+      $announcement = $ann_form->getData();
       $announcement->setUser($user);
       $announcement->setApproval(0);
       // set approval to denied by default
@@ -104,8 +104,7 @@ class OverviewController extends AbstractController
     }
 
     return $this->render('new_announcement.html.twig', [
-      'info_form' => $info_form->createView(),
-      // 'date_form' => $date_form->createView(),
+      'ann_form' => $ann_form->createView(),
       'date' => $this->date,
     ]);
 
@@ -168,7 +167,7 @@ class OverviewController extends AbstractController
       $em->persist($category);
       $em->flush();
       
-      return $this->redirectToRoute('show_all');
+      return $this->redirectToRoute('list_category');
       // this will be changed to redirect to the show_categories page in the next update;
     }
 
@@ -250,14 +249,21 @@ class OverviewController extends AbstractController
   public function moderation_announcements(): Response
   {
 
-    $announcement = $this->getDoctrine()
+    $announcements = $this->getDoctrine()
       // inits the database and table Announcements;
       ->getRepository(Announcement::class)
       ->find_today('now', 0);
 
+      
+    $categories = $this->getDoctrine()
+    ->getRepository(Category::class)
+    ->findAll()
+    ;
+
       return $this->render('moderation_announcements.html.twig', [
         'date' => $this->date,
-        'announcement' => $announcement,
+        'announcements' => $announcements,
+        'categories' => $categories,
       ]);
 
   }
@@ -318,12 +324,12 @@ class OverviewController extends AbstractController
     ;
     if($this->getUser() == $announcement->getUser() or $this->isGranted('ROLE_MODERATOR')){
 
-      $info_form = $this->createForm(AnnouncementForm::class, $announcement);
+      $ann_form = $this->createForm(AnnouncementForm::class, $announcement);
 
-      $info_form->handleRequest($request);
+      $ann_form->handleRequest($request);
 
-      if($info_form->isSubmitted() && $info_form->isValid()){
-        $announcement = $info_form->getData();
+      if($ann_form->isSubmitted() && $ann_form->isValid()){
+        $announcement = $ann_form->getData();
         $announcement->setApproval(0);
         // set approval to denied by default
         $em->persist($announcement);
@@ -338,7 +344,7 @@ class OverviewController extends AbstractController
       }
 
       return $this->render('modify_announcement.html.twig', [
-        'info_form' => $info_form->createView(),
+        'ann_form' => $ann_form->createView(),
         'date' => $this->date,
       ]);
     } else {
@@ -367,12 +373,12 @@ class OverviewController extends AbstractController
 
     if($this->getUser() == $announcement->getUser()){
 
-      $info_form = $this->createForm(AnnouncementForm::class, clone $announcement);
+      $ann_form = $this->createForm(AnnouncementForm::class, clone $announcement);
 
-      $info_form->handleRequest($request);
+      $ann_form->handleRequest($request);
 
-      if($info_form->isSubmitted() && $info_form->isValid()){
-        $new_announcement = $info_form->getData();
+      if($ann_form->isSubmitted() && $ann_form->isValid()){
+        $new_announcement = $ann_form->getData();
         $new_announcement->setApproval(0);
         $em->persist($new_announcement);
         $em->flush();
@@ -381,7 +387,7 @@ class OverviewController extends AbstractController
       }
 
       return $this->render('modify_announcement.html.twig', [
-        'info_form' => $info_form->createView(),
+        'ann_form' => $ann_form->createView(),
         'date' => $this->date,
       ]);
 

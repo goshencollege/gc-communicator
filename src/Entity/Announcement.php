@@ -78,7 +78,7 @@ class Announcement
    * 
    * @Vich\UploadableField(mapping="announcementFile", fileNameProperty="filename")
    * @Assert\File(
-   *    maxSize = "5M",
+   *    maxSize = "20M",
    * )
    * 
    * @var File|null
