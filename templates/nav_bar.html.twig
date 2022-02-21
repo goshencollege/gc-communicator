@@ -11,7 +11,6 @@
         {% if is_granted("ROLE_ADMIN") %}
           <a class="w3-button" href="{{ path('moderation_announcements') }}">Moderation</a>
           <a class="w3-button" href="{{ path('list_category') }}">Categories</a>
-          <a class="w3-button" href="{{ path('new_category') }}">New Category</a>
         {% elseif is_granted("ROLE_MODERATOR") %}
           <a class="w3-button" href="{{ path('moderation_announcements') }}">Moderation</a>
         {% endif %}
