@@ -18,14 +18,12 @@
       <br>
       <table class="w3-table-all">
         <tr>
-          <th>ID</th>
           <th>Name</th>
           <th>Active</th>
           <th></th>
         </tr>
         {% for row in categories %} {# simple loop to output rows #}
           <tr>
-            <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
             <td>{% if row.active == 0 %} Disabled {% elseif row.active == 1 %} Enabled {% endif %}</td>
             <td><a href="{{ path('update_category',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">{% if row.active == 0 %} Enable {% elseif row.active == 1 %} Disable {% endif %}</a></td>
