@@ -30,7 +30,7 @@ class Category
     private $active;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Announcement", mappedBy="Category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Announcement", mappedBy="category")
      */
     private $announcements;
 
