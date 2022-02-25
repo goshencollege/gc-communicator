@@ -3,13 +3,13 @@
   <head>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
-    <title>Communicator - Add Announcement</title>
+    <title>Communicator - Modify Announcement</title>
   </head>
 
   <body>
     {{ include("nav_bar.html.twig") }}
     <div class="w3-panel">
-      <h2><b>Submit New Announcement</b></h2>
+      <h2><b>Modify Announcement</b></h2>
       <p>{{ date }}</p>
     </div>
     <div class="w3-container" style="width:80%">
@@ -47,7 +47,7 @@
           {{ form_row(ann_form.announcementFile) }}
         </p>
         <p>
-          {{ form_widget(ann_form.submit, { 'attr': {'class': 'w3-button w3-border', 'label': 'Modify'} }) }}
+          {{ form_row(ann_form.submit, { 'attr': {'class': 'w3-button w3-border'}, 'label': 'Modify' }) }}
         </p>
       {{ form_end(ann_form) }}
     </div>
