@@ -109,7 +109,7 @@ class OverviewControllerTest extends WebTestCase
             $this->assertEquals(200, $response->getStatusCode());
 
             $crawler = $client->request('GET', '/modify/announcement/' . $announcement->getId());
-            $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
+            $buttonCrawlerNode = $crawler->selectButton('Modify');
             $form = $buttonCrawlerNode->form();
             $pre_form_fields = $form->getValues();
 
