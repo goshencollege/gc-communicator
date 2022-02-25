@@ -43,7 +43,7 @@ class OverviewControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $pages = array(
-            '/overview',
+            '/',
             '/new',
             '/overview/user',
             '/category/new',
@@ -177,7 +177,7 @@ class OverviewControllerTest extends WebTestCase
         $buttonCrawlerNode = $crawler->selectButton('Submit');
         $form = $buttonCrawlerNode->form();
 
-        $form['announcement_form']['announcementFile']['file']->upload('bin/dummy-file');
+        $form['announcement_form']['announcementFile']['file']->upload('bin/dummy-file.txt');
         $form['announcement_form']['category']->select('3');
         
         $client->submit($form, [

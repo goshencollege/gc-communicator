@@ -44,7 +44,7 @@ class OverviewController extends AbstractController
    * @author Daniel Boling
    * @return rendered overview.html.twig
    * 
-   * @Route("/overview", name="show_all")
+   * @Route("/", name="show_all")
    */
   public function show_all(): Response
   {

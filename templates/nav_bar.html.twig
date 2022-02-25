@@ -17,6 +17,8 @@
       </div>
       {% if app.user %}
         <div class="w3-right w3-button w3-hover-white">{{ app.user.username }}</div>
+      {% else %}
+        <a class="w3-right w3-button" href="{{ path('app_login') }}">Login</a>
       {% endif %}
     </div>
 </html>
