@@ -1,30 +1,32 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="stylesheet.css">
 
     <title>Communicator - Categories</title>
   </head>
 
   <body>
+    {{ include("nav_bar.html.twig") }}
+
     <div class="w3-panel">
       <h2><b>Categories</b></h2>
       <p>{{ date }}</p>
     </div>
-    <div class="w3-panel .dbtheme-purple">
+    <div class="w3-panel">
+      <a class="w3-button w3-border" href="{{ path('new_category') }}">New Category</a>
+      <br>
+      <br>
       <table class="w3-table-all">
         <tr>
-          <th>ID</th>
           <th>Name</th>
           <th>Active</th>
           <th></th>
         </tr>
         {% for row in categories %} {# simple loop to output rows #}
           <tr>
-            <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
-            <td>{{ row.active }}</td>
-            <td><a href="{{ path('update_category',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">Toggle</a></td>
+            <td>{% if row.active == 0 %} Disabled {% elseif row.active == 1 %} Enabled {% endif %}</td>
+            <td><a href="{{ path('update_category',{ id: row.id }) }}" class="w3-button w3-ripple w3-border myOnbutton">{% if row.active == 0 %} Enable {% elseif row.active == 1 %} Disable {% endif %}</a></td>
           </tr>
         {% endfor %}
       </table>

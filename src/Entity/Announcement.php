@@ -78,7 +78,9 @@ class Announcement
    * 
    * @Vich\UploadableField(mapping="announcementFile", fileNameProperty="filename")
    * @Assert\File(
-   *    maxSize = "5M",
+   *    maxSize = "20M",
+   *    mimeTypes = {"image/jpg", "image/jpeg", "image/png", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword", "text/plain", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+   *    mimeTypesMessage = "- Invalid file type. Available file types are word documents, pdfs, images, and excel files."
    * )
    * 
    * @var File|null

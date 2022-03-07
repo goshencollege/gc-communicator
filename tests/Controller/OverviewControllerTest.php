@@ -43,7 +43,7 @@ class OverviewControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $pages = array(
-            '/overview',
+            '/',
             '/new',
             '/overview/user',
             '/category/new',
@@ -109,7 +109,7 @@ class OverviewControllerTest extends WebTestCase
             $this->assertEquals(200, $response->getStatusCode());
 
             $crawler = $client->request('GET', '/modify/announcement/' . $announcement->getId());
-            $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
+            $buttonCrawlerNode = $crawler->selectButton('Modify');
             $form = $buttonCrawlerNode->form();
             $pre_form_fields = $form->getValues();
 
@@ -152,7 +152,7 @@ class OverviewControllerTest extends WebTestCase
         $upload_finder = new Finder();
         // start of the process to remove all files with "dummy-file" as the file name
 
-        $upload_finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        $upload_finder->files()->in('./public/uploads/files')->name('*dummy-file*');
         // temporary function for deleting all matching (fuzzy) files
         // this will be removed in a future deletion update
         if ($upload_finder->hasResults()) {
@@ -174,10 +174,10 @@ class OverviewControllerTest extends WebTestCase
         // authenticate a test user and check that the page returns a 200 code
 
         $crawler = $client->request('GET', '/new');
-        $buttonCrawlerNode = $crawler->selectButton('Submit Announcement');
+        $buttonCrawlerNode = $crawler->selectButton('Submit');
         $form = $buttonCrawlerNode->form();
 
-        $form['announcement_form']['announcementFile']['file']->upload('./bin/dummy file');
+        $form['announcement_form']['announcementFile']['file']->upload('bin/dummy-file.txt');
         $form['announcement_form']['category']->select('3');
         
         $client->submit($form, [
@@ -189,7 +189,7 @@ class OverviewControllerTest extends WebTestCase
         $pre_finder = new Finder();
         // start the process for finding the test file
 
-        $pre_finder->files()->in('bin/')->name('*dummy file*');
+        $pre_finder->files()->in('bin')->name('*dummy-file*');
         if ($pre_finder->hasResults()) {
             foreach ($pre_finder as $pre_file) {
                 // there should only ever be one result, this is just for syntax
@@ -201,7 +201,7 @@ class OverviewControllerTest extends WebTestCase
         $post_finder = new Finder();
         // start of the process to check for test file upload
 
-        $post_finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        $post_finder->files()->in('./public/uploads/files')->name('*dummy-file*');
         if ($post_finder->hasResults()) {
             foreach ($post_finder as $post_file) {
                 $post_file_hash = hash_file('md5', $post_file);
@@ -215,7 +215,7 @@ class OverviewControllerTest extends WebTestCase
         $pre_finder = new Finder();
         // start the process for finding the test file
 
-        $pre_finder->files()->in('bin/')->name('*runtests*');
+        $pre_finder->files()->in('bin')->name('*runtests*');
         if ($pre_finder->hasResults()) {
             foreach ($pre_finder as $pre_file) {
                 // there should only ever be one result, this is just for syntax
@@ -227,7 +227,7 @@ class OverviewControllerTest extends WebTestCase
         $post_finder = new Finder();
         // start of the process to check for test file upload
 
-        $post_finder->files()->in('./public/uploads/files/')->name('*dummy-file*');
+        $post_finder->files()->in('./public/uploads/files')->name('*dummy-file*');
         if ($post_finder->hasResults()) {
             foreach ($post_finder as $post_file) {
                 $post_file_hash = hash_file('md5', $post_file);

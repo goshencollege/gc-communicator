@@ -1,18 +1,21 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="stylesheet.css">
 
     <title>Communicator - New Category</title>
   </head>
 
   <body>
+    {{ include("nav_bar.html.twig") }}
     <div class="w3-panel">
       <h2><b>Create New Category</b></h2>
       <p>{{ date }}</p>
     </div>
-    <div class="w3-panel">
-      {{ form(form) }}
+    <div class="w3-container w3-third">
+      {{ form_start(form) }}
+        <p>{{ form_row(form.name, { 'attr': {'class': 'w3-input w3-border', 'label': 'Category Name'} }) }}</p>
+        <p>{{ form_widget(form.submit, { 'attr': {'class': 'w3-button w3-border'} }) }}</p>
+      {{ form_end(form) }}
     </div>
   </body>
 

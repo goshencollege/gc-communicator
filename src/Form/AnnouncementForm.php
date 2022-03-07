@@ -37,7 +37,7 @@ class AnnouncementForm extends AbstractType
                     ;
                 },
                 'choice_label' => 'name',
-                'placeholder' => 'Category',
+                'placeholder' => 'Select a Category',
             ])
             ->add('text', TextareaType::class)
             ->add('start_date', DateType::class, [
@@ -50,7 +50,9 @@ class AnnouncementForm extends AbstractType
                 'mapped' => true,
                 'required' => false,
             ])
-            ->add('submit', SubmitType::class, ['label' => 'Submit Announcement'])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Submit Announcement'
+            ])
         ;
     
 

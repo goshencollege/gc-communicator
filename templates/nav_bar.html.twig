@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+
+    <link href="{{ asset('https://www.w3schools.com/w3css/4/w3.css') }}" rel="stylesheet"/>
+
+    <div class="w3-bar">
+      <div class="w3-left">
+        <a class="w3-button" href="{{ path('show_all') }}">All Announcements</a>
+        <a class="w3-button" href="{{ path('show_all_user') }}">My Announcements</a>
+        <a class="w3-button" href="{{ path('new_announcement') }}">New Announcement</a>
+        {% if is_granted("ROLE_ADMIN") %}
+          <a class="w3-button" href="{{ path('moderation_announcements') }}">Moderation</a>
+          <a class="w3-button" href="{{ path('list_category') }}">Categories</a>
+        {% elseif is_granted("ROLE_MODERATOR") %}
+          <a class="w3-button" href="{{ path('moderation_announcements') }}">Moderation</a>
+        {% endif %}
+      </div>
+      {% if app.user %}
+        <div class="w3-right w3-button w3-hover-white">{{ app.user.username }}</div>
+      {% else %}
+        <a class="w3-right w3-button" href="{{ path('app_login') }}">Login</a>
+      {% endif %}
+    </div>
+</html>
