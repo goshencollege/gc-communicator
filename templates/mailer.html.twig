@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
+
+  <body>
+    <div class="w3-container">
+      <a name="top"></a>
+      <p class="w3-normal"><b>{{ announcements|length }} Announcement{% if announcements|length > 1 or announcements|length == 0 %}s{% endif %}</b></p>
+      <p>{{ date }}</p>
+    </div>
+    <div class="w3-panel">
+      <ul>
+        {% for row in announcements %}
+          <li><a href="#{{ row.id }}">{{ row.subject }}</a></li>
+        {% endfor %}
+      </ul>
+      {% for category in categories %}
+        <hr>
+        <h2>{{ category.name }}</h2>
+        <div class="w3-panel">
+          {% for row in announcements %}
+            {% if row.category.name == category.name %}
+              <a name="{{ row.id }}"></a>
+              <hr>
+              <h3>{{ row.subject }}</h3>
+              <p class="author">{{ row.author }}</p>
+              <div class="w3-card"><p>{{ row.text }}</p></div>
+              {% if row.filename is defined and row.filename is not null %}<a href="{{ vich_uploader_asset(row, 'announcementFile',  'App\\Entity\\Announcement') }}" class="w3-button w3-ripple w3-border myOnbutton" target="_blank" rel="noopener noreferrer">View File</a> {{ row.filename[0:-27] ~ row.filename[-4:] }}{% endif %}
+              <a href="#top"><p class="w3-tiny w3-serif">Top</p></a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+  </body>
+
+</html>
+
