@@ -9,7 +9,7 @@
 
   <body>
     {{ include("nav_bar.html.twig") }}
-    <div class="w3-panel">
+    <div class="w3-container">
       <h2><b>{{ announcements|length }} Announcement{% if announcements|length > 1 or announcements|length == 0 %}s{% endif %}</b></h2>
       <h3><b>Overview</b></h3>
       <p>{{ date }}</p>

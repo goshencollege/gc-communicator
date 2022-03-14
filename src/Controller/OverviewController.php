@@ -18,7 +18,9 @@ use App\Form\AnnouncementForm;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Asset\UrlPackage;
-
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -69,48 +71,6 @@ class OverviewController extends AbstractController
 
   }
 
-
-  /**
-   * Currently acts as the main input form for users.
-   * Subject, Author (custom or autofilled), Category selection, text, and date
-   * are available to be input.
-   * 
-   * @author Daniel Boling
-   * @return rendered form and redirect to overview when submitted
-   * 
-   * @Route("/new", name="new_announcement")
-   * @IsGranted("ROLE_USER")
-   */
-  public function new_announcement(Request $request, SluggerInterface $slugger): Response
-  {
-
-    $em = $this->getDoctrine()->getManager();
-    $announcement = new Announcement();
-    $user = $this->getUser();
-
-    $ann_form = $this->createForm(AnnouncementForm::class, $announcement);
-
-    $ann_form->handleRequest($request);
-
-    if($ann_form->isSubmitted() && $ann_form->isValid()){
-      $announcement = $ann_form->getData();
-      $announcement->setUser($user);
-      $announcement->setApproval(0);
-      // set approval to denied by default
-      $em->persist($announcement);
-      $em->flush();
-      
-      return $this->redirectToRoute('show_all');
-    }
-
-    return $this->render('new_announcement.html.twig', [
-      'ann_form' => $ann_form->createView(),
-      'date' => $this->date,
-    ]);
-
-  }
-
-
   /**
    * Basically the same page as /overview, except shows all announcements of
    * the currently logged in user.
@@ -136,266 +96,57 @@ class OverviewController extends AbstractController
 
   }
 
-  
   /**
-   * The form page for adding new categories. This will be accessible only be admins.
-   * 
-   * @author Daniel Boling
-   * @return rendered new_category.html.twig
-   * 
-   * @Route("/category/new", name="new_category")
-   * @IsGranted("ROLE_ADMIN")
-   */
-  public function new_category(Request $request): Response
-  {
-
-    $em = $this->getDoctrine()->getManager();
-    $category = new Category();
-    // Init the category object for the category table;
-
-    $form = $this->createFormBuilder($category)
-      ->add('name', TextType::class)
-      ->add('submit', SubmitType::class, ['label' => 'Add Category'])
-      ->getForm();
-
-    $form->handleRequest($request);
-    if($form->isSubmitted() && $form->isValid()){
-      // should pull data from the form and flush it to the database;
-      $category = $form->getData();   
-      $category->setActive(1);
-      // will always be set to active by default;
-      $em->persist($category);
-      $em->flush();
-      
-      return $this->redirectToRoute('list_category');
-      // this will be changed to redirect to the show_categories page in the next update;
-    }
-
-    return $this->render('new_category.html.twig', [
-      'form' => $form->createView(),
-      'date' => $this->date,
-    ]);
-  }
-
-  /**
-   * The page for listing all categories in the system, wether they are active or not,
-   * and then providing simple means of toggling active/inactive.
-   * Will only accessible by admins
+   * Mailing function - This will take all approved announcements for the day and compile them into
+   * email that is sent to a specific group (?) for the college.
    * 
    * @author Daniel Boling
    * 
-   * @Route("/category/list", name="list_category")
-   * @IsGranted("ROLE_ADMIN")
-   */
-  public function list_category(Request $request): Response
-  {
-
-    $categories = $this->getDoctrine()
-    // inits the database and Category table;
-    ->getRepository(Category::class)
-    ->findAll();
-
-
-    return $this->render('list_category.html.twig', [
-      'categories' => $categories,
-      'date' => $this->date,
-    ]);
-  }
-  
-  /**
-   * Is called on button-click from twig file, updates active categories, and redirects to list_category
-   * 
-   * @author Daniel Boling
-   * @return redirect to list_category
-   * 
-   * @Route("/category/update/{id}", name="update_category")
-   * @IsGranted("ROLE_ADMIN")
-   */
-  public function update_category(Request $request, $id): Response
-  {
-
-    $em = $this->getDoctrine()->getManager();
-
-    $category = $this->getDoctrine()
-      ->getRepository(Category::class)
-      ->find($id);
-      
-    if ($category->getActive() == 1)
-      {
-        $category->setActive(0);
-
-      } else {
-        $category->setActive(1);
-      }
-      $em->persist($category);
-      $em->flush();
-      
-
-    return $this->redirectToRoute('list_category');
-
-  }
-
-  /**
-   * This should be the main page that everyone should see. Every user should be able to see this page and everything
-   * on it. This will be modified more clearly from it's current state. Currently
-   * being used as a testing stage for database outputs.
-   * 
-   * @author Daniel Boling
-   * @return rendered moderation_announcements.html.twig
-   * 
-   * @Route("/moderation/announcements", name="moderation_announcements")
+   * @Route("/email", name="send_email")
    * @IsGranted("ROLE_MODERATOR")
    */
-  public function moderation_announcements(): Response
+  public function send_email(MailerInterface $mailer, Request $request): Response
   {
 
-    $announcements = $this->getDoctrine()
-      // inits the database and table Announcements;
-      ->getRepository(Announcement::class)
-      ->find_today('now', 0);
+    $submittedToken = $request->get('csrf_token');
 
+    if ($this->isCsrfTokenValid('send email', $submittedToken)) {
+      // prevent users from entering the route url to send an email
       
-    $categories = $this->getDoctrine()
-    ->getRepository(Category::class)
-    ->findAll()
-    ;
+      $announcements = $this->getDoctrine()
+          ->getRepository(Announcement::class)
+          ->find_today()
+      ;
 
-      return $this->render('moderation_announcements.html.twig', [
-        'date' => $this->date,
-        'announcements' => $announcements,
-        'categories' => $categories,
-      ]);
+      $categories = $this->getDoctrine()
+        ->getRepository(Category::class)
+        ->findAll()
+      ;
 
-  }
+      $email = (new TemplatedEmail())
+        ->to("someone@example.com")
+        // leave above as is, the emails are handled in the .env.local file, keeping security during repo update.
+        ->subject('Communicator - ' . $this->date)
+        ->htmlTemplate('mailer.html.twig')
+        //->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
+        ->context([
+          'date' => $this->date,
+          'announcements' => $announcements,
+          'categories' => $categories,
+        ])
+      ;
 
-  /**
-   * Is called on button-click from twig file, updates announcement approval, and redirects to list_category
-   * 
-   * @author Daniel Boling
-   * @return redirect to list_category
-   * 
-   * @Route("/moderation/announcement/{id}", name="toggle_announcement_approval")
-   * @IsGranted("ROLE_MODERATOR")
-   */
-  public function toggle_announcement_approval(Request $request, $id): Response
-  {
+      $mailer->send($email);    
 
-    $em = $this->getDoctrine()->getManager();
+      return $this->redirectToRoute('moderation_announcements');
 
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->find($id)
-    ;
-      
-    if ($announcement->getApproval() == 0)
-    // if the announcement is denied, set it to approved.
-      {
-        $announcement->setApproval(1);
-
-      } else {
-      // if the condition gets here, the announcement is already approved, so set it to denied.
-        $announcement->setApproval(0);
-      }
-      $em->persist($announcement);
-      $em->flush();
-      
-
-    return $this->redirectToRoute('moderation_announcements');
-
-  }
-
-  /**
-   * Is called on button-click from twig file, sends user to the edit form page.
-   * 
-   * @author Daniel Boling
-   * @return redirect to edit_announcement
-   * 
-   * @Route("/modify/announcement/{id}", name="modify_announcement")
-   * @IsGranted("ROLE_USER")
-   */
-  public function modify_announcement(Request $request, $id): Response
-  {
-
-    $em = $this->getDoctrine()->getManager();
-
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->find($id)
-    ;
-    if($this->getUser() == $announcement->getUser() or $this->isGranted('ROLE_MODERATOR')){
-
-      $ann_form = $this->createForm(AnnouncementForm::class, $announcement);
-
-      $ann_form->handleRequest($request);
-
-      if($ann_form->isSubmitted() && $ann_form->isValid()){
-        $announcement = $ann_form->getData();
-        $announcement->setApproval(0);
-        // set approval to denied by default
-        $em->persist($announcement);
-        $em->flush();
-        
-        if ($this->getUser() == $announcement->getUser()){
-          return $this->redirectToRoute('show_all_user');
-        } else {
-          return $this->redirectToRoute('moderation_announcements');
-        }
-
-      }
-
-      return $this->render('modify_announcement.html.twig', [
-        'ann_form' => $ann_form->createView(),
-        'date' => $this->date,
-      ]);
     } else {
-      throw new AccessDeniedHttpException("Unauthorized");
+
+      return $this->redirectToRoute('moderation_announcements');
     }
 
   }
 
-  /**
-   * Function to copy an announcement exactly, load the modification page by default.
-   * 
-   * @author Daniel Boling
-   * 
-   * @Route("/copy/announcement/{id}", name="copy_announcement")
-   */
-  public function copy_announcement(Request $request, $id): Response
-  {
-    $em = $this->getDoctrine()->getManager();
-
-    $new_announcement = new Announcement();
-
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->find($id)
-    ;
-
-    if($this->getUser() == $announcement->getUser()){
-
-      $ann_form = $this->createForm(AnnouncementForm::class, clone $announcement);
-
-      $ann_form->handleRequest($request);
-
-      if($ann_form->isSubmitted() && $ann_form->isValid()){
-        $new_announcement = $ann_form->getData();
-        $new_announcement->setApproval(0);
-        $em->persist($new_announcement);
-        $em->flush();
-
-        return $this->redirectToRoute('show_all_user');
-      }
-
-      return $this->render('modify_announcement.html.twig', [
-        'ann_form' => $ann_form->createView(),
-        'date' => $this->date,
-      ]);
-
-    } else {
-      throw new AccessDeniedHttpException("Unauthorized");
-    }
-
-  }
 
 }
 

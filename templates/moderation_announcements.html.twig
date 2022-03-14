@@ -7,43 +7,46 @@
 
   <body>
     {{ include("nav_bar.html.twig") }}
-    <div class="w3-panel">
+    <div class="w3-container">
       <h2><b>Announcements</b></h2>
       <h3><b>Moderation</b></h3>
       <p>{{ date }}</p>
+      <div class="w3-panel w3-right">
+        <a href="{{ path('send_email', {"csrf_token" : csrf_token('send email') }) }}" class="w3-button w3-ripple w3-border" onclick="return confirm('Are you sure you want to delete this item?');">Submit Email</a>
+      </div>
     </div>
-      {% for category in categories %}
-        <ul class="w3-ul w3-border">
-          <li><h2>{{ category.name }}</h2></li>
-          <div class="w3-panel">
-          {% for row in announcements %}
-            {% if row.category.name == category.name %}
-              <li>
-                <h3>{{ row.subject }}</h3>
-                <p class="author">{{ row.author }}</p>
-                <p>&nbsp&nbsp&nbsp&nbsp{{ row.text }}</p>
-                {% if row.filename is defined and row.filename is not null %}<a href="{{ vich_uploader_asset(row, 'announcementFile',  'App\\Entity\\Announcement') }}" class="w3-button w3-ripple w3-border myOnbutton" target="_blank" rel="noopener noreferrer">View File</a> {{ row.filename[0:-27] ~ row.filename[-4:] }}{% endif %}
-                <p>Approval: {% if row.approval == 0 %} Waiting {% elseif row.approval == 1 %} Approved {% elseif row.appeal == 2 %} Denied {% endif %}</p>
-                {% if row.approval == 0 %}
-                  <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
-                    class="w3-button w3-ripple w3-border myOnbutton">Approve</a>
-                  <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
-                    class="w3-button w3-ripple w3-border myOnbutton">Deny</a>
-                {% elseif row.approval == 1 %}
-                  <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
-                    class="w3-button w3-ripple w3-border myOnbutton">Deny</a>
-                {% elseif row.approval == 2 %}
-                  <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
-                    class="w3-button w3-ripple w3-border myOnbutton">Approve</a>
-                {% endif %}
-                <a href="{{ path('modify_announcement',{ id: row.id }) }}" 
-                  class="w3-button w3-ripple w3-border myOnbutton">Modify</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-          </div>
-        </ul>
-      {% endfor %}
+    {% for category in categories %}
+      <ul class="w3-ul w3-border">
+        <li><h2>{{ category.name }}</h2></li>
+        <div class="w3-panel">
+        {% for row in announcements %}
+          {% if row.category.name == category.name %}
+            <li>
+              <h3>{{ row.subject }}</h3>
+              <p class="author">{{ row.author }}</p>
+              <p>&nbsp&nbsp&nbsp&nbsp{{ row.text }}</p>
+              {% if row.filename is defined and row.filename is not null %}<a href="{{ vich_uploader_asset(row, 'announcementFile',  'App\\Entity\\Announcement') }}" class="w3-button w3-ripple w3-border myOnbutton" target="_blank" rel="noopener noreferrer">View File</a> {{ row.filename[0:-27] ~ row.filename[-4:] }}{% endif %}
+              <p>Approval: {% if row.approval == 0 %} Waiting {% elseif row.approval == 1 %} Approved {% elseif row.appeal == 2 %} Denied {% endif %}</p>
+              {% if row.approval == 0 %}
+                <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
+                  class="w3-button w3-ripple w3-border myOnbutton">Approve</a>
+                <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
+                  class="w3-button w3-ripple w3-border myOnbutton">Deny</a>
+              {% elseif row.approval == 1 %}
+                <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
+                  class="w3-button w3-ripple w3-border myOnbutton">Deny</a>
+              {% elseif row.approval == 2 %}
+                <a href="{{ path('toggle_announcement_approval',{ id: row.id }) }}" 
+                  class="w3-button w3-ripple w3-border myOnbutton">Approve</a>
+              {% endif %}
+              <a href="{{ path('modify_announcement',{ id: row.id }) }}" 
+                class="w3-button w3-ripple w3-border myOnbutton">Modify</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        </div>
+      </ul>
+    {% endfor %}
 
   </body>
 

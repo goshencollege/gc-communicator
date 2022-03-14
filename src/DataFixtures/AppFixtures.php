@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement = new Announcement();
-    $announcement->setSubject('Fixture Subject');
+    $announcement->setSubject('Fixture Subject 1');
     $announcement->setAuthor('John Doe');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
@@ -88,7 +88,7 @@ class AppFixtures extends Fixture
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement = new Announcement();
-    $announcement->setSubject('Fixture Subject');
+    $announcement->setSubject('Fixture Subject 2');
     $announcement->setAuthor('John Doe');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
@@ -106,7 +106,7 @@ class AppFixtures extends Fixture
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement = new Announcement();
-    $announcement->setSubject('Fixture Subject');
+    $announcement->setSubject('Fixture Subject 3');
     $announcement->setAuthor('John Doe');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
@@ -125,7 +125,7 @@ class AppFixtures extends Fixture
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement_date = new \DateTime('now', new \DateTimeZone('GMT'));
     $announcement = new Announcement();
-    $announcement->setSubject('Fixture Subject');
+    $announcement->setSubject('Fixture Subject 4');
     $announcement->setAuthor('John Doe');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
