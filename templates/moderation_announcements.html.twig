@@ -12,7 +12,7 @@
       <h3><b>Moderation</b></h3>
       <p>{{ date }}</p>
       <div class="w3-panel w3-right">
-        <a href="{{ path('send_email', {"csrf_token" : csrf_token('send email') }) }}" class="w3-button w3-ripple w3-border" onclick="return confirm('Are you sure you want to delete this item?');">Submit Email</a>
+        <a href="{{ path('send_email', {"csrf_token" : csrf_token('send email') }) }}" class="w3-button w3-ripple w3-border" onclick="return confirm('Are you sure you want to send the Communicator?');">Submit Email</a>
       </div>
     </div>
     {% for category in categories %}
