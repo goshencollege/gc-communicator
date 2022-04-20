@@ -68,24 +68,22 @@ class OverviewControllerTest extends WebTestCase
      */
     public function test_modify_announcement()
     {
-
         $client = static::createClient();
-
+        // creates a client for the test to use
 
         // returns last result of all announcements
         $announcement = static::getContainer()
-            ->get(AnnouncementRepository::class)
-            ->findAll()
+          ->get(AnnouncementRepository::class)
+          ->findAll()
         ;
         $announcement = end($announcement);
         // the user should be fixture_user and the id should be 1 every time.
 
-        // return 302 since no user is authenticated
         $client->request('GET', '/modify/announcement/' . $announcement->getId());
         $response = $client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
+        // return 302 since no user is authenticated
 
-        // redirect to the unauthenticated page since the wrong user is authenticated
         $test_user = static::getContainer()
             ->get(UserRepository::class)
             ->findOneByUsername("test_user")
@@ -94,13 +92,16 @@ class OverviewControllerTest extends WebTestCase
         $client->request('GET', '/modify/announcement/' . $announcement->getId());
         $response = $client->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
+        // redirect to the unauthenticated page since the wrong user is authenticated
 
         $moderator_user = static::getContainer()
+        // pulls the fixture-defined moderator account for permissions testing
             ->get(UserRepository::class)
             ->findOneByUsername("dboling")
         ;
 
         $users = array($announcement->getUser(), $moderator_user);
+        // loads both the fixture announcement owner and the moderator to test both permissions
         foreach ($users as $user){
             // authenticate a fixture user and check that the page returns a 200 code
             $client->loginUser($user);
@@ -113,17 +114,18 @@ class OverviewControllerTest extends WebTestCase
             $form = $buttonCrawlerNode->form();
             $pre_form_fields = $form->getValues();
 
-            $announcement_subject = $pre_form_fields['announcement_form[subject]'];
-            $announcement_author = $pre_form_fields['announcement_form[author]'];
+            $announcement_subject = $pre_form_fields['ann_modify_form[subject]'];
+            $announcement_author = $pre_form_fields['ann_modify_form[author]'];
             $this->assertSame($announcement->getSubject(), $announcement_subject);
             $this->assertSame($announcement->getAuthor(), $announcement_author);
 
             $client->submit($form, [
-                'announcement_form[subject]' => 'Change',
-                'announcement_form[text]' => 'change lorem ispum',
+                'ann_modify_form[subject]' => 'Change',
+                'ann_modify_form[text]' => 'change lorem ispum',
             ]);
             
             $post_form_fields = $form->getValues();
+            // pulls all form indices from the form
 
             // returns last result of all announcements
             $announcement = static::getContainer()
@@ -132,8 +134,8 @@ class OverviewControllerTest extends WebTestCase
             ;
             $announcement = end($announcement);
 
-            $announcement_subject = $post_form_fields['announcement_form[subject]'];
-            $announcement_author = $post_form_fields['announcement_form[author]'];
+            $announcement_subject = $post_form_fields['ann_modify_form[subject]'];
+            $announcement_author = $post_form_fields['ann_modify_form[author]'];
             $this->assertSame($announcement->getSubject(), $announcement_subject);
             $this->assertSame($announcement->getAuthor(), $announcement_author);
 
@@ -177,13 +179,13 @@ class OverviewControllerTest extends WebTestCase
         $buttonCrawlerNode = $crawler->selectButton('Submit');
         $form = $buttonCrawlerNode->form();
 
-        $form['announcement_form']['announcementFile']['file']->upload('bin/dummy-file.txt');
-        $form['announcement_form']['category']->select('3');
+        $form['ann_new_form']['announcementFile']['file']->upload('bin/dummy-file.txt');
+        $form['ann_new_form']['category']->select('3');
         
         $client->submit($form, [
-            'announcement_form[subject]' => 'file_subject',
-            'announcement_form[author]' => 'file_author',
-            'announcement_form[text]' => 'change lorem ispum',
+            'ann_new_form[subject]' => 'file_subject',
+            'ann_new_form[author]' => 'file_author',
+            'ann_new_form[text]' => 'change lorem ispum',
         ]);
 
         $pre_finder = new Finder();

@@ -10,10 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
+use App\Repository\CategoryRepository;
+use App\Repository\AnnouncementRepository;
 use App\Form\AnnouncementForm;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -28,11 +31,14 @@ class CategoryController extends AbstractController
 
   private $UploaderHelper;
 
-  public function __construct()
+  public function __construct(EntityManagerInterface $entityManager, AnnouncementRepository $announcement_repo, CategoryRepository $category_repo)
   {
-    
+    $this->em = $entityManager;
     $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
     $this->date = $date->format('l, j F, Y');
+
+    $this->announcement_repo = $announcement_repo;
+    $this->category_repo = $category_repo;
 
   }
 
@@ -47,8 +53,6 @@ class CategoryController extends AbstractController
    */
   public function new_category(Request $request): Response
   {
-
-    $em = $this->getDoctrine()->getManager();
     $category = new Category();
     // Init the category object for the category table;
 
@@ -88,17 +92,13 @@ class CategoryController extends AbstractController
    */
   public function list_category(Request $request): Response
   {
-
-    $categories = $this->getDoctrine()
-    // inits the database and Category table;
-    ->getRepository(Category::class)
-    ->findAll();
-
+    $categories = $this->category_repo->findAll();
 
     return $this->render('list_category.html.twig', [
       'categories' => $categories,
       'date' => $this->date,
     ]);
+
   }
   
   /**
@@ -112,12 +112,7 @@ class CategoryController extends AbstractController
    */
   public function update_category(Request $request, $id): Response
   {
-
-    $em = $this->getDoctrine()->getManager();
-
-    $category = $this->getDoctrine()
-      ->getRepository(Category::class)
-      ->find($id);
+    $category = $this->category_repo->find($id);
       
     if ($category->getActive() == 1)
       {

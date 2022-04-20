@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Form;
 
 use App\Entity\Category;
@@ -19,8 +18,15 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 
-class AnnouncementForm extends AbstractType
+class AnnModifyForm extends AbstractType
 {
+
+    public function __construct()
+    {
+      $this->date = new \DateTime('tomorrow', new \DateTimeZone('America/Indiana/Indianapolis'));
+  
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -41,10 +47,10 @@ class AnnouncementForm extends AbstractType
             ])
             ->add('text', TextareaType::class)
             ->add('start_date', DateType::class, [
-                'data' => new \DateTime,
+                'days' => range($this->date->format('d'), $this->date->format('t'))
             ])
             ->add('end_date', DateType::class, [
-                'data' => new \DateTime,
+                'days' => range($this->date->format('d'), $this->date->format('d')+4)
             ])
             ->add('announcementFile', VichFileType::class, [
                 'mapped' => true,

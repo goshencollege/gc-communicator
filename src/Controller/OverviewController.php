@@ -10,11 +10,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
 use App\Form\AnnouncementForm;
+use App\Repository\AnnouncementRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Asset\UrlPackage;
@@ -29,11 +32,14 @@ class OverviewController extends AbstractController
 
   private $UploaderHelper;
 
-  public function __construct()
+  public function __construct(EntityManagerInterface $entityManager, AnnouncementRepository $announcement_repo, CategoryRepository $category_repo)
   {
-    
+    $this->em = $entityManager;
     $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
     $this->date = $date->format('l, j F, Y');
+
+    $this->announcement_repo = $announcement_repo;
+    $this->category_repo = $category_repo;
 
   }
 
@@ -50,18 +56,8 @@ class OverviewController extends AbstractController
    */
   public function show_all(): Response
   {
-
-    $announcements = $this->getDoctrine()
-      // inits the database and table Announcements;
-      ->getRepository(Announcement::class)
-      ->find_today()
-    ;
-
-    $categories = $this->getDoctrine()
-      ->getRepository(Category::class)
-      ->findAll()
-    ;
-
+    $announcements = $this->announcement_repo->find_today();
+    $categories = $this->category_repo->findAll();
 
       return $this->render('overview.html.twig', [
         'date' => $this->date,
@@ -84,9 +80,7 @@ class OverviewController extends AbstractController
    */
   public function show_user(): Response
   {
-
     $user = $this->getUser();
-
     $announcement = $user->getAnnouncements();
     
     return $this->render('user_overview.html.twig', [
@@ -107,21 +101,13 @@ class OverviewController extends AbstractController
    */
   public function send_email(MailerInterface $mailer, Request $request): Response
   {
-
     $submittedToken = $request->get('csrf_token');
 
-    if ($this->isCsrfTokenValid('send email', $submittedToken)) {
+    if ($this->isCsrfTokenValid('send email', $submittedToken))
+    {
       // prevent users from entering the route url to send an email
-      
-      $announcements = $this->getDoctrine()
-          ->getRepository(Announcement::class)
-          ->find_today()
-      ;
-
-      $categories = $this->getDoctrine()
-        ->getRepository(Category::class)
-        ->findAll()
-      ;
+      $announcements = $this->announcement_repo->find_today();
+      $categories = $this->category_repo->findAll();
 
       $email = (new TemplatedEmail())
         ->to("someone@example.com")
@@ -135,19 +121,19 @@ class OverviewController extends AbstractController
           'categories' => $categories,
         ])
       ;
-
       $mailer->send($email);    
 
       return $this->redirectToRoute('moderation_announcements');
 
     } else {
-
       return $this->redirectToRoute('moderation_announcements');
+
     }
 
   }
 
 
 }
+
 
 // EOF
