@@ -28,7 +28,7 @@
           <div class="w3-row w3-half">
             {{ form_label(ann_form.start_date, "Start Date") }}
             <br>
-            <div class="w3-third">{{ form_widget(ann_form.start_date, { 'id': 'start', 'attr': { 'class': 'w3-input w3-border' } }) }}</div>
+            <div class="w3-third">{{ form_widget(ann_form.start_date, { 'id': 'start', 'name': 'start', 'attr': { 'class': 'w3-input w3-border' } }) }}</div>
           </div>
         </p>
         <br>
@@ -38,7 +38,7 @@
           <div class="w3-row w3-half">
             {{ form_label(ann_form.end_date, "End Date") }}
             <br>
-            <div class="w3-third">{{ form_widget(ann_form.end_date, { 'id': 'end', 'attr': { 'class': 'w3-input w3-border' } }) }}</div>
+            <div class="w3-third">{{ form_widget(ann_form.end_date, { 'id': 'end', 'name': 'end', 'attr': { 'class': 'w3-input w3-border' } }) }}</div>
           </div>
         </p>
         <br>
@@ -59,7 +59,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-  <script>
+<script>
   $( function() {
     var dateFormat = "mm/dd/yy",
       start = $( "#start" )
@@ -67,23 +67,22 @@
           defaultDate: "+1d",
           changeMonth: true,
           changeYear: true,
-          numberOfYears: 1,
           minDate: 0,
           maxDate: "+12M",
         })
         .on( "change", function() {
-          to.datepicker( "option", "minDate", getDate( this ) );
+          end.datepicker( "option", "minDate", getDate( this ) );
+          var result = new Date(getDate( this ));
+          end.datepicker( "option", "maxDate",  result.setDate(result.getDate() + 5));
         }),
       end = $( "#end" ).datepicker({
         defaultDate: "+1d",
         changeMonth: true,
         changeYear:true,
         numberofYears: 1,
-        minDate: 1,
-        maxDate: "+5D",
       })
       .on( "change", function() {
-        from.datepicker( "option", "maxDate", getDate( this ) );
+        start.datepicker( "option", "maxDate", getDate( this ) );
       });
  
     function getDate( element ) {
@@ -97,4 +96,4 @@
       return date;
     }
   } );
-  </script>
+</script>
