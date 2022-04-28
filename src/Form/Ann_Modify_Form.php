@@ -23,7 +23,7 @@ class AnnModifyForm extends AbstractType
 
     public function __construct()
     {
-      $this->date = new \DateTime('tomorrow', new \DateTimeZone('America/Indiana/Indianapolis'));
+      $this->date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
   
     }
 

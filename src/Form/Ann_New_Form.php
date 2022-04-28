@@ -23,47 +23,55 @@ class AnnNewForm extends AbstractType
 
     public function __construct()
     {
-      $this->date = new \DateTime('tomorrow', new \DateTimeZone('America/Indiana/Indianapolis'));
+      $this->date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
+      $this->next_month_date = new \DateTime('next month', new \DateTimeZone('GMT'));
   
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('subject', TextType::class)
-            ->add('author', TextType::class)
-            ->add('category', EntityType::class, [
-                'class' => Category::class,
-                'query_builder' => function(EntityRepository $er)
-                {
-                    return $er->createQueryBuilder('a')
-                        ->andWhere('a.active = :val')
-                        ->setParameter('val', 1)
-                        ->orderBy('a.name', 'ASC')
-                    ;
-                },
-                'choice_label' => 'name',
-                'placeholder' => 'Select a Category',
-            ])
-            ->add('text', TextareaType::class)
-            ->add('start_date', DateType::class, [
-                'data' => $this->date,
-                'days' => range($this->date->format('d'), $this->date->format('t'))
-                // this and below are required to limit date range
-            ])
-            ->add('end_date', DateType::class, [
-                'data' => $this->date,
-                'days' => range($this->date->format('d'), $this->date->format('d')+4)
-            ])
-            ->add('announcementFile', VichFileType::class, [
-                'mapped' => true,
-                'required' => false,
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Submit Announcement'
-            ])
-        ;
-    
+      $builder
+        ->add('subject', TextType::class, [
+          'required' => true,
+        ])
+        ->add('author', TextType::class, [
+          'required' => true,
+        ])
+        ->add('category', EntityType::class, [
+          'class' => Category::class,
+          'query_builder' => function(EntityRepository $er)
+          {
+            return $er->createQueryBuilder('a')
+              ->andWhere('a.active = :val')
+              ->setParameter('val', 1)
+              ->orderBy('a.name', 'ASC')
+            ;
+          },
+          'choice_label' => 'name',
+          'placeholder' => 'Select a Category',
+          'required' => true,
+        ])
+        ->add('text', TextareaType::class, [
+          'required' => true,
+        ])
+        ->add('start_date', DateType::class, [
+          'widget' => 'single_text',
+          'format' => 'MM/dd/yyyy',
+          'html5' => false,
+        ])
+        ->add('end_date', DateType::class, [
+          'widget' => 'single_text',
+          'format' => 'MM/dd/yyyy',
+          'html5' => false,
+        ])
+        ->add('announcementFile', VichFileType::class, [
+          'mapped' => true,
+          'required' => false,
+        ])
+        ->add('submit', SubmitType::class, [
+          'label' => 'Submit Announcement'
+        ])
+      ;
 
     }
 }

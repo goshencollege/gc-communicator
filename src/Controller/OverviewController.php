@@ -35,7 +35,7 @@ class OverviewController extends AbstractController
   public function __construct(EntityManagerInterface $entityManager, AnnouncementRepository $announcement_repo, CategoryRepository $category_repo)
   {
     $this->em = $entityManager;
-    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $date = new \DateTime('now', new \DateTimeZone('GMT'));
     $this->date = $date->format('l, j F, Y');
 
     $this->announcement_repo = $announcement_repo;
