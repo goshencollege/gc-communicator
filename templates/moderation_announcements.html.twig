@@ -11,6 +11,14 @@
       <h2><b>Announcements</b></h2>
       <h3><b>Moderation</b></h3>
       <p>{{ date }}</p>
+      <div class="w3-panel w3-left">
+        <div class="w3-half">
+          <a href="{{ path('moderation_announcements', { page: page - 1 }) }}" class="w3-button w3-ripple w3-border">Prev Day<a>
+        </div>
+        <div class="w3-half">
+          <a href="{{ path('moderation_announcements', { page: page + 1 }) }}" class="w3-button w3-ripple w3-border">Next Day<a>
+        </div>
+      </div>
       <div class="w3-panel w3-right">
         <a href="{{ path('send_email', {"csrf_token" : csrf_token('send email') }) }}" class="w3-button w3-ripple w3-border" onclick="return confirm('Are you sure you want to send the Communicator?');">Submit Email</a>
       </div>
@@ -25,31 +33,31 @@
               <h3>{{ row.subject }}</h3>
               <p class="author">{{ row.author }}</p>
               <div class="w3-half"><p>&nbsp&nbsp&nbsp&nbsp{{ row.text }}</p></div>
-              <br>  
+              <br>
               <br>
               <br>
               <br>
               {% set difference = row.endDate.diff(row.startDate) %}
               {% set leftDays = difference.days %}
-              <p>Date Range - {{ row.startDate|date('d/m/Y') }} -> {{ row.endDate|date('d/m/Y') }} {% if leftDays == 0 %} {# output nothing #} {% elseif leftDays == 1 %} ({{ leftDays }} day) {% else %} ({{ leftDays }} days) {% endif %}</p>
-              {% if row.filename is defined and row.filename is not null %}<a href="{{ vich_uploader_asset(row, 'announcementFile',  'App\\Entity\\Announcement') }}" class="w3-button w3-ripple w3-border myOnbutton" target="_blank" rel="noopener noreferrer">View File</a> {{ row.filename[0:-27] ~ row.filename[-4:] }}{% endif %}
+              <p>Date Range - {{ row.startDate|date("m/d/Y") }} -> {{ row.endDate|date("m/d/Y") }} {% if leftDays == 0 %} {# output nothing #} {% elseif leftDays == 1 %} ({{ leftDays }} day) {% else %} ({{ leftDays }} days) {% endif %}</p>
+              {% if row.filename is defined and row.filename is not null %}<a href="{{ vich_uploader_asset(row, 'announcementFile',  'App\\Entity\\Announcement') }}" class="w3-button w3-ripple w3-border" target="_blank" rel="noopener noreferrer">View File</a> {{ row.filename[0:-27] ~ row.filename[-4:] }}{% endif %}
               <p>Approval: {% if row.approval == -1 %} Waiting {% elseif row.approval == 1 %} Approved {% elseif row.approval == 0 %} Denied {% endif %}</p>
               {% if row.approval == -1 %}
                 {# if status is waiting #}
-                <a href="{{ path('approve_announcement',{ id: row.id }) }}"
+                <a href="{{ path('approve_announcement', { id: row.id }) }}"
                   class="w3-button w3-ripple w3-border myOnbutton">Approve</a>
-                <a href="{{ path('deny_announcement',{ id: row.id }) }}"
+                <a href="{{ path('deny_announcement', { id: row.id }) }}"
                   class="w3-button w3-ripple w3-border myOnbutton">Deny</a>
               {% elseif row.approval == 1 %}
                 {# if status is approved #}
-                <a href="{{ path('deny_announcement',{ id: row.id }) }}"
+                <a href="{{ path('deny_announcement', { id: row.id }) }}"
                   class="w3-button w3-ripple w3-border myOnbutton">Deny</a>
               {% elseif row.approval == 0 %}
                 {# if status is denied #}
                 <a href="{{ path('approve_announcement',{ id: row.id }) }}"
                   class="w3-button w3-ripple w3-border myOnbutton">Approve</a>
               {% endif %}
-              <a href="{{ path('modify_announcement',{ id: row.id }) }}"  
+              <a href="{{ path('modify_announcement', { id: row.id }) }}"  
                 class="w3-button w3-ripple w3-border myOnbutton">Modify</a>
             </li>
           {% endif %}

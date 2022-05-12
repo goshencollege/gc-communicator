@@ -82,7 +82,7 @@ class AnnouncementController extends AbstractController
 
   }
 
-    /**
+  /**
    * This should be the main page that everyone should see. Every user should be able to see this page and everything
    * on it. This will be modified more clearly from it's current state. Currently
    * being used as a testing stage for database outputs.
@@ -90,19 +90,22 @@ class AnnouncementController extends AbstractController
    * @author Daniel Boling
    * @return rendered moderation_announcements.html.twig
    * 
-   * @Route("/moderation/announcements", name="moderation_announcements")
+   * @Route("/moderation/announcements/{page}", name="moderation_announcements")
    * @IsGranted("ROLE_MODERATOR")
    */
-  public function moderation_announcements(): Response
+  public function moderation_announcements($page = 0): Response
   {
-    $announcements = $this->announcement_repo->find_today('now', 0);
+    $date = new \DateTime('now '.$page.' days', new \DateTimeZone('GMT'));
+    $date = $date->format('l, j F, Y');
 
+    $announcements = $this->announcement_repo->find_today($date, 0);
     $categories = $this->category_repo->findAll();
 
     return $this->render('moderation_announcements.html.twig', [
-      'date' => $this->date,
+      'date' => $date,
       'announcements' => $announcements,
       'categories' => $categories,
+      'page' => $page,
     ]);
 
   }
@@ -121,7 +124,7 @@ class AnnouncementController extends AbstractController
     $announcement = $this->announcement_repo->find($id);
     $announcement->setApproval(1);
     $this->em->flush();
-    return $this->redirectToRoute('moderation_announcements');
+    return $this->redirect($request->server->get('HTTP_REFERER'));
 
   }
 
@@ -140,7 +143,7 @@ class AnnouncementController extends AbstractController
     $announcement = $this->announcement_repo->find($id);
     $announcement->setApproval(0);
     $this->em->flush();
-    return $this->redirectToRoute('moderation_announcements');
+    return $this->redirect($request->server->get('HTTP_REFERER'));
 
   }
 
@@ -173,8 +176,10 @@ class AnnouncementController extends AbstractController
         if ($this->getUser() == $announcement->getUser())
         {
           return $this->redirectToRoute('show_all_user');
+
         } else {
           return $this->redirectToRoute('moderation_announcements');
+
         }
 
       }
@@ -185,6 +190,7 @@ class AnnouncementController extends AbstractController
       ]);
     } else {
       throw new AccessDeniedHttpException("Unauthorized");
+
     }
 
   }

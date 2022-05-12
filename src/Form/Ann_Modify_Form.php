@@ -47,11 +47,15 @@ class AnnModifyForm extends AbstractType
             ])
             ->add('text', TextareaType::class)
             ->add('start_date', DateType::class, [
-                'days' => range($this->date->format('d'), $this->date->format('t'))
-            ])
-            ->add('end_date', DateType::class, [
-                'days' => range($this->date->format('d'), $this->date->format('d')+4)
-            ])
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
+                'html5' => false,
+              ])
+              ->add('end_date', DateType::class, [
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
+                'html5' => false,
+              ])
             ->add('announcementFile', VichFileType::class, [
                 'mapped' => true,
                 'required' => false,

@@ -35,7 +35,7 @@ class OverviewController extends AbstractController
   public function __construct(EntityManagerInterface $entityManager, AnnouncementRepository $announcement_repo, CategoryRepository $category_repo)
   {
     $this->em = $entityManager;
-    $date = new \DateTime('now', new \DateTimeZone('GMT'));
+    $date = new \DateTime('now');
     $this->date = $date->format('l, j F, Y');
 
     $this->announcement_repo = $announcement_repo;
@@ -44,7 +44,7 @@ class OverviewController extends AbstractController
   }
 
 
-    /**
+  /**
    * This should be the main page that everyone should see. Every user should be able to see this page and everything
    * on it. This will be modified more clearly from it's current state. Currently
    * being used as a testing stage for database outputs.

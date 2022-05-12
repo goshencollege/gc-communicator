@@ -36,6 +36,7 @@ class AnnouncementRepository extends ServiceEntityRepository
     if ($approval == 1)
     {
       $qb->andWhere('a.approval = 1');
+
     }
     return $qb->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
