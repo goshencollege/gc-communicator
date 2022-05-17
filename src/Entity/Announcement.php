@@ -47,7 +47,7 @@ class Announcement
   private $category;
 
   /**
-   * @ORM\Column(type="date")
+   * @ORM\Column(type="date", nullable=true)
    */
   private $end_date;
 
@@ -158,7 +158,7 @@ class Announcement
       return $this->end_date;
   }
 
-  public function setEndDate(\DateTimeInterface $end_date): self
+  public function setEndDate(?\DateTimeInterface $end_date): self
   {
       $this->end_date = $end_date;
 
@@ -170,7 +170,7 @@ class Announcement
       return $this->start_date;
   }
 
-  public function setStartDate(\DateTimeInterface $start_date): self
+  public function setStartDate(?\DateTimeInterface $start_date): self
   {
       $this->start_date = $start_date;
 

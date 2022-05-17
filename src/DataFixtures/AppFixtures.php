@@ -123,7 +123,7 @@ class AppFixtures extends Fixture
     $manager->persist($announcement);
 
     $test_cat = new Category();
-    $test_cat->setName('Repeat Announcement');
+    $test_cat->setName('Convocation/Chapel');
     $test_cat->setActive(1);
     $manager->persist($test_cat);
 

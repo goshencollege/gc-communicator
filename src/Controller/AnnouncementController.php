@@ -67,6 +67,9 @@ class AnnouncementController extends AbstractController
     {
       $announcement = $ann_form->getData();
       $announcement->setUser($user);
+      if ($announcement->getEndDate() == null) {
+        $announcement->setEndDate($announcement->getStartDate());
+      }
       $announcement->setApproval(-1);
       // set approval to denied by default
       $this->em->persist($announcement);

@@ -55,6 +55,7 @@ class AnnModifyForm extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
                 'html5' => false,
+                'required' => false,
               ])
             ->add('announcementFile', VichFileType::class, [
                 'mapped' => true,
