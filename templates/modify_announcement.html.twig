@@ -21,10 +21,10 @@
           {{ form_row(ann_form.author, { 'attr': {'class': 'w3-input w3-border'} }) }}
         </p>
         <p>
-          {{ form_row(ann_form.category, { 'attr': {'class': 'w3-select w3-border'} }) }} 
+          {{ form_row(ann_form.category, { 'attr': {'class': 'w3-select w3-border'} }) }}
         </p>
         <p>
-          {{ form_row(ann_form.text, { 'attr': {'class': 'w3-input w3-border'} }) }}  
+          {{ form_row(ann_form.text, { 'attr': {'class': 'w3-input w3-border'} }) }}
         </p>
         <p>
           <div class="w3-row w3-half">
@@ -36,13 +36,16 @@
         <br>
         <br>
         <br>
-        <p>
-          <div class="w3-row w3-half">
-            {{ form_label(ann_form.end_date, "End Date") }}
-            <br>
-            <div class="w3-third">{{ form_widget(ann_form.end_date, { 'id': 'end', 'name': 'end' }) }}</div>
-          </div>
-        </p>
+        <button id="continue_date_button" onclick="toggle_continue_date(); return false;" class="w3-button w3-border">Set End Date</button>
+        <div id="continue_date" hidden>
+          <p>
+            <div class="w3-row w3-half">
+              {{ form_label(ann_form.continue_date, "Continue for...") }}
+              <br>
+              <div class="w3-third">{{ form_widget(ann_form.continue_date) }}</div>
+            </div>
+          </p>
+        </div>
         <br>
         <br>
         <br>
@@ -84,7 +87,7 @@
           minDate: 0,
         })
         .on( "change", function() {
-          start.datepicker( "option", "maxDate", getDate( this ) );
+          start.datepicker( "option", "maxDate", getDate( this ) )
         });
  
     function getDate( element ) {
@@ -111,4 +114,11 @@
     }
 
   } );
+</script>
+
+<script>
+  function toggle_continue_date() {
+     var continue_date_input = document.getElementById("continue_date");
+     continue_date.hidden = !continue_date.hidden;
+  }
 </script>

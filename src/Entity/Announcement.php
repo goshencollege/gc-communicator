@@ -47,14 +47,17 @@ class Announcement
   private $category;
 
   /**
+   * @ORM\Column(type="date")
+   */
+  private $start_date;
+
+  /**
    * @ORM\Column(type="date", nullable=true)
    */
   private $end_date;
 
-  /**
-   * @ORM\Column(type="date")
-   */
-  private $start_date;
+
+  private $continue_date;
 
   /**
    * @ORM\Column(type="integer")
@@ -131,62 +134,97 @@ class Announcement
 
   public function getUser(): ?User
   {
-      return $this->User;
+    return $this->User;
   }
 
   public function setUser(?User $User): self
   {
-      $this->User = $User;
+    $this->User = $User;
 
-      return $this;
+    return $this;
   }
 
   public function getCategory(): ?Category
   {
-      return $this->category;
+    return $this->category;
   }
 
   public function setCategory(?Category $category): self
   {
-      $this->category = $category;
+    $this->category = $category;
 
-      return $this;
-  }
-
-  public function getEndDate(): ?\DateTimeInterface
-  {
-      return $this->end_date;
-  }
-
-  public function setEndDate(?\DateTimeInterface $end_date): self
-  {
-      $this->end_date = $end_date;
-
-      return $this;
+    return $this;
   }
 
   public function getStartDate(): ?\DateTimeInterface
   {
-      return $this->start_date;
+    return $this->start_date;
   }
 
   public function setStartDate(?\DateTimeInterface $start_date): self
   {
-      $this->start_date = $start_date;
+    $this->start_date = $start_date;
 
-      return $this;
+    return $this;
+  }
+
+  public function getEndDate(): ?\DateTimeInterface
+  {
+    return $this->end_date;
+  }
+
+  public function setEndDate(?\DateTimeInterface $end_date): self
+  {
+
+    if ($end_date == null) {
+      // if no argument provided, create it from continue date
+      $end_date = clone $this->start_date;
+      $end_date->modify('+'.$this->continue_date.'days');
+      $this->end_date = $end_date;
+
+    } else {
+      $this->end_date = $end_date;
+
+    }
+
+    return $this; 
+
+  }
+
+  public function getContinueDate(): ?int
+  {
+    if ($this->start_date != null && $this->end_date != null) {
+      if ($this->continue_date == null) {
+        // intended to check if this is a new announcement or a modification
+        // there will never be a start/end date for a new announcement. If both are null, then it's new.
+        // if one or both exist, this is a modification, so retrieve the continue date value.
+        $this->continue_date = $this->start_date->diff($this->end_date);
+        $this->continue_date = $this->continue_date->format('%d');
+
+      }
+    }
+
+    return $this->continue_date;
+
+  }
+
+  public function setContinueDate(int $continue_date): self
+  {
+    $this->continue_date = $continue_date;
+
+    return $this;
   }
 
   public function getApproval(): ?int
   {
-      return $this->approval;
+    return $this->approval;
   }
 
   public function setApproval(int $approval): self
   {
-      $this->approval = $approval;
+    $this->approval = $approval;
 
-      return $this;
+    return $this;
   }
 
   /**
@@ -200,28 +238,28 @@ class Announcement
    */
     public function setAnnouncementFile(?File $announcementFile = null): void
     {
-        $this->announcementFile = $announcementFile;
+      $this->announcementFile = $announcementFile;
 
-        if (null !== $announcementFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
-        }
+      if (null !== $announcementFile) {
+        // It is required that at least one field changes if you are using doctrine
+        // otherwise the event listeners won't be called and the file is lost
+        $this->updatedAt = new \DateTimeImmutable();
+      }
     }
 
     public function getAnnouncementFile(): ?File
     {
-        return $this->announcementFile;
+      return $this->announcementFile;
     }
   
     public function getFilename(): ?string
     {
-        return $this->filename;
+      return $this->filename;
     }
   
     public function setFilename(?string $filename): void
     {
-        $this->filename = $filename;
+      $this->filename = $filename;
     }
 
 }

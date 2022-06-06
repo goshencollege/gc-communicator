@@ -75,7 +75,8 @@ class AppFixtures extends Fixture
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
     $announcement->setText('Join Merry Lea for a hands-on workshop to create your very own beeswax cloth wrap. This handy addition to the kitchen provides an alternative to plastic wrap or single-use plastic bags. Select a cloth pattern of your choice and learn how to prepare the ingredients to make this sustainable tool. Participants will go home with one large and one small beeswax wrap.');
     $announcement->setApproval(1);
     $manager->persist($announcement);
@@ -93,7 +94,8 @@ class AppFixtures extends Fixture
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
     $announcement->setText('Transfer, Adult & Graduate Open House
 
     Join us for an open house tailored for individuals interested in learning more about:
@@ -117,7 +119,8 @@ class AppFixtures extends Fixture
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
     $announcement->setText('The Commuter Student Association invites you to come to our potluck lunch St. Patrick\'s Day Celebration on March 17th. from 11 am - 2 pm at the Leadership Hub (Union Building, next to Leaf Raker)');
     $announcement->setApproval(1);
     $manager->persist($announcement);
@@ -136,7 +139,8 @@ class AppFixtures extends Fixture
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_date);
-    $announcement->setEndDate($announcement_date);
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
     $announcement->setText('This week for convo, we\'ll hear from some local Goshen residents, Shannan and Cory Martin, about how they invest in the local community. From 10:30 to 12:00, local agencies will be set up in the fellowship hall where you\'ll have a chance to connect around volunteer, internship, and work opportunities. Drinks, snacks, and door prizes from local organizations are part of the mix.');
     $announcement->setApproval(1);
     $manager->persist($announcement);

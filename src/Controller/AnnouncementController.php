@@ -67,11 +67,12 @@ class AnnouncementController extends AbstractController
     {
       $announcement = $ann_form->getData();
       $announcement->setUser($user);
-      if ($announcement->getEndDate() == null) {
+      if ($announcement->getContinueDate() == null) {
         $announcement->setEndDate($announcement->getStartDate());
       }
       $announcement->setApproval(-1);
-      // set approval to denied by default
+      $announcement->setEndDate(null);
+      // set approval to waiting by default
       $this->em->persist($announcement);
       $this->em->flush();
       
@@ -171,8 +172,12 @@ class AnnouncementController extends AbstractController
       if($ann_form->isSubmitted() && $ann_form->isValid())
       {
         $announcement = $ann_form->getData();
+        if ($announcement->getContinueDate() == null) {
+          $announcement->setEndDate($announcement->getStartDate());
+        }
         $announcement->setApproval(-1);
-        // set approval to denied by default
+        $announcement->setEndDate(null);
+        // set approval to waiting by default
         $this->em->persist($announcement);
         $this->em->flush();
         
@@ -210,6 +215,8 @@ class AnnouncementController extends AbstractController
     $new_announcement = new Announcement();
 
     $announcement = $this->announcement_repo->find($id);
+    $announcement->setStartDate(null);
+    $announcement->setEndDate(null);
 
     if($this->getUser() == $announcement->getUser())
     {
@@ -220,13 +227,13 @@ class AnnouncementController extends AbstractController
       {
         $new_announcement = $ann_form->getData();
         $new_announcement->setApproval(-1);
-        $em->persist($new_announcement);
-        $em->flush();
+        $this->em->persist($new_announcement);
+        $this->em->flush();
 
         return $this->redirectToRoute('show_all_user');
       }
 
-      return $this->render('modify_announcement.html.twig', [
+      return $this->render('new_announcement.html.twig', [
         'ann_form' => $ann_form->createView(),
         'date' => $this->date,
       ]);

@@ -36,13 +36,13 @@
         <br>
         <br>
         <br>
-        <button id="end_date_button" onclick="toggle_end_date()" class="w3-button w3-border">Set End Date</button>
-        <div id="end_date" hidden>
+        <button id="continue_date_button" onclick="toggle_continue_date(); return false;" class="w3-button w3-border">Set End Date</button>
+        <div id="continue_date" hidden>
           <p>
             <div class="w3-row w3-half">
-              {{ form_label(ann_form.end_date, "End Date") }}
+              {{ form_label(ann_form.continue_date, "Continue for...") }}
               <br>
-              <div class="w3-third">{{ form_widget(ann_form.end_date, { 'id': 'end', 'name': 'end', 'attr': { 'class': 'w3-input w3-border' } }) }}</div>
+              <div class="w3-third">{{ form_widget(ann_form.continue_date) }}</div>
             </div>
           </p>
         </div>
@@ -50,13 +50,13 @@
         <br>
         <br>
         <br>
-
+        <p>
           {{ form_row(ann_form.announcementFile) }}
         </p>
         <p>
           {{ form_row(ann_form.submit, { 'attr': {'class': 'w3-button w3-border', 'label': 'Submit'} }) }}
         </p>
-        {{ form_end(ann_form) }}
+      {{ form_end(ann_form) }}
     </div>
 
   </body>
@@ -120,8 +120,8 @@
 </script>
 
 <script>
-  function toggle_end_date() {
-     var end_date_input = document.getElementById("end_date");
-     end_date.hidden = !end_date.hidden;
+  function toggle_continue_date() {
+     var continue_date_input = document.getElementById("continue_date");
+     continue_date.hidden = !continue_date.hidden;
   }
 </script>

@@ -59,11 +59,11 @@ class AnnNewForm extends AbstractType
           'format' => 'MM/dd/yyyy',
           'html5' => false,
         ])
-        ->add('end_date', DateType::class, [
-          'widget' => 'single_text',
-          'format' => 'MM/dd/yyyy',
-          'html5' => false,
-          'required' => false,
+        ->add('continue_date', ChoiceType::class, [
+          'choices' => range(1, 5),
+          'choice_label' => function($choice, $key, $value) {
+            return (string)$choice.' Day(s)';
+          },
         ])
         ->add('announcementFile', VichFileType::class, [
           'mapped' => true,

@@ -119,6 +119,7 @@ class OverviewControllerTest extends WebTestCase
             $this->assertSame($announcement->getSubject(), $announcement_subject);
             $this->assertSame($announcement->getAuthor(), $announcement_author);
 
+
             $client->submit($form, [
                 'ann_modify_form[subject]' => 'Change',
                 'ann_modify_form[text]' => 'change lorem ispum',
@@ -160,8 +161,8 @@ class OverviewControllerTest extends WebTestCase
         if ($upload_finder->hasResults()) {
             foreach ($upload_finder as $upload_file) {
                 unlink($upload_file);
+                
             }
-
         }
 
         $client = static::createClient();
@@ -186,6 +187,7 @@ class OverviewControllerTest extends WebTestCase
             'ann_new_form[subject]' => 'file_subject',
             'ann_new_form[author]' => 'file_author',
             'ann_new_form[text]' => 'change lorem ispum',
+            'ann_new_form[start_date]' => (new \DateTime('now', new \DateTimeZone('GMT')))->format('Y-m-d'),
         ]);
 
         $pre_finder = new Finder();

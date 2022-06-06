@@ -29,43 +29,42 @@ class AnnModifyForm extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('subject', TextType::class)
-            ->add('author', TextType::class)
-            ->add('category', EntityType::class, [
-                'class' => Category::class,
-                'query_builder' => function(EntityRepository $er)
-                {
-                    return $er->createQueryBuilder('a')
-                        ->andWhere('a.active = :val')
-                        ->setParameter('val', 1)
-                        ->orderBy('a.name', 'ASC')
-                    ;
-                },
-                'choice_label' => 'name',
-                'placeholder' => 'Select a Category',
-            ])
-            ->add('text', TextareaType::class)
-            ->add('start_date', DateType::class, [
-                'widget' => 'single_text',
-                'format' => 'MM/dd/yyyy',
-                'html5' => false,
-              ])
-              ->add('end_date', DateType::class, [
-                'widget' => 'single_text',
-                'format' => 'MM/dd/yyyy',
-                'html5' => false,
-                'required' => false,
-              ])
-            ->add('announcementFile', VichFileType::class, [
-                'mapped' => true,
-                'required' => false,
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Submit Announcement'
-            ])
-        ;
-    
+      $builder
+        ->add('subject', TextType::class)
+        ->add('author', TextType::class)
+        ->add('category', EntityType::class, [
+          'class' => Category::class,
+          'query_builder' => function(EntityRepository $er)
+          {
+            return $er->createQueryBuilder('a')
+              ->andWhere('a.active = :val')
+              ->setParameter('val', 1)
+              ->orderBy('a.name', 'ASC')
+            ;
+          },
+          'choice_label' => 'name',
+          'placeholder' => 'Select a Category',
+        ])
+        ->add('text', TextareaType::class)
+        ->add('start_date', DateType::class, [
+            'widget' => 'single_text',
+            'format' => 'MM/dd/yyyy',
+            'html5' => false,
+          ])
+        ->add('continue_date', ChoiceType::class, [
+            'choices' => range(1, 5),
+            'choice_label' => function($choice, $key, $value) {
+              return (string)$choice.' Day(s)';
+            },
+        ])
+        ->add('announcementFile', VichFileType::class, [
+          'mapped' => true,
+          'required' => false,
+        ])
+        ->add('submit', SubmitType::class, [
+          'label' => 'Submit Announcement'
+        ])
+      ;
 
     }
 }
