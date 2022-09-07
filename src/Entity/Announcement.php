@@ -178,12 +178,14 @@ class Announcement
 
     if ($end_date == null) {
       // if no argument provided, create it from continue date
-      $end_date = clone $this->start_date;
-      $end_date->modify('+'.$this->continue_date.'days');
-      $this->end_date = $end_date;
+      $this->end_date = clone $this->start_date;
+      $this->end_date->modify('+'.($this->continue_date-1).'days');
+      // subtract 1 from the continue days for easier logic and form implementation. 
+      // the continue days count is inclusive, so 1 day is the start date only, whereas 3 days would
+      // only be the start date and 2 days in the future.
 
     } else {
-      $this->end_date = $end_date;
+      $this->end_date = $this->start_date;
 
     }
 

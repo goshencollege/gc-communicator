@@ -86,6 +86,7 @@ class AnnouncementController extends AbstractController
 
   }
 
+  
   /**
    * This should be the main page that everyone should see. Every user should be able to see this page and everything
    * on it. This will be modified more clearly from it's current state. Currently

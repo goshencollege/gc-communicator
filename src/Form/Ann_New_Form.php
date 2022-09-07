@@ -24,7 +24,6 @@ class AnnNewForm extends AbstractType
     public function __construct()
     {
       $this->date = new \DateTime('tomorrow', new \DateTimeZone('GMT'));
-      $this->next_month_date = new \DateTime('next month', new \DateTimeZone('GMT'));
   
     }
 

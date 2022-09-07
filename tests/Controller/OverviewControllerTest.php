@@ -77,7 +77,7 @@ class OverviewControllerTest extends WebTestCase
           ->findAll()
         ;
         $announcement = end($announcement);
-        // the user should be fixture_user and the id should be 1 every time.
+        // the user should be fixture_user and the announcement id should be int(1).
 
         $client->request('GET', '/modify/announcement/' . $announcement->getId());
         $response = $client->getResponse();
@@ -110,7 +110,7 @@ class OverviewControllerTest extends WebTestCase
             $this->assertEquals(200, $response->getStatusCode());
 
             $crawler = $client->request('GET', '/modify/announcement/' . $announcement->getId());
-            $buttonCrawlerNode = $crawler->selectButton('Modify');
+            $buttonCrawlerNode = $crawler->selectButton('Modify Announcement');
             $form = $buttonCrawlerNode->form();
             $pre_form_fields = $form->getValues();
 
@@ -121,12 +121,15 @@ class OverviewControllerTest extends WebTestCase
 
 
             $client->submit($form, [
-                'ann_modify_form[subject]' => 'Change',
-                'ann_modify_form[text]' => 'change lorem ispum',
+                'ann_modify_form[subject]' => 'Ann modification Subject',
+                'ann_modify_form[text]' => 'Ann modification text',
             ]);
             
             $post_form_fields = $form->getValues();
             // pulls all form indices from the form
+            // this looks weird, but it's essentially just creating an array of all
+            // values we just entered into the form, as opposed to manually writing them 
+            // all out again.
 
             // returns last result of all announcements
             $announcement = static::getContainer()
@@ -152,18 +155,18 @@ class OverviewControllerTest extends WebTestCase
     public function test_files()
     {
 
-        $upload_finder = new Finder();
-        // start of the process to remove all files with "dummy-file" as the file name
+        // $upload_finder = new Finder();
+        // // start of the process to remove all files with "dummy-file" as the file name
 
-        $upload_finder->files()->in('./public/uploads/files')->name('*dummy-file*');
-        // temporary function for deleting all matching (fuzzy) files
-        // this will be removed in a future deletion update
-        if ($upload_finder->hasResults()) {
-            foreach ($upload_finder as $upload_file) {
-                unlink($upload_file);
+        // $upload_finder->files()->in('./public/uploads/files')->name('*dummy-file*');
+        // // temporary function for deleting all matching (fuzzy) files
+        // // this will be removed in a future file deletion feature update
+        // if ($upload_finder->hasResults()) {
+        //     foreach ($upload_finder as $upload_file) {
+        //         unlink($upload_file);
                 
-            }
-        }
+        //     }
+        // }
 
         $client = static::createClient();
         $test_user = static::getContainer()
@@ -177,18 +180,30 @@ class OverviewControllerTest extends WebTestCase
         // authenticate a test user and check that the page returns a 200 code
 
         $crawler = $client->request('GET', '/new');
+        // sets the client to the form page
         $buttonCrawlerNode = $crawler->selectButton('Submit');
+        // selects the form by the button
         $form = $buttonCrawlerNode->form();
+        // grabs the form itself (the previous line doesn't to this for some reason)
 
         $form['ann_new_form']['announcementFile']['file']->upload('bin/dummy-file.txt');
         $form['ann_new_form']['category']->select('3');
         
         $client->submit($form, [
-            'ann_new_form[subject]' => 'file_subject',
-            'ann_new_form[author]' => 'file_author',
-            'ann_new_form[text]' => 'change lorem ispum',
+            'ann_new_form[subject]' => 'Ann file uploading',
+            'ann_new_form[author]' => 'Ann file uploading',
+            'ann_new_form[text]' => 'Ann file uploading',
             'ann_new_form[start_date]' => (new \DateTime('now', new \DateTimeZone('GMT')))->format('Y-m-d'),
         ]);
+
+        $announcement = static::getContainer()
+          ->get(AnnouncementRepository::class)
+          ->findAll()
+        ;
+        $announcement = end($announcement);
+
+        // var_dump($buttonCrawlerNode->getFields());
+        // var_dump($form->getValues());
 
         $pre_finder = new Finder();
         // start the process for finding the test file

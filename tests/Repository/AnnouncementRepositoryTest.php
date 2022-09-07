@@ -41,7 +41,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
    * 
    * @todo check the number of announcements retreived from the database
    * 
-   * @author David King
+   * @author David King, Daniel Boling
    * 
    */
   public function test_create(): void
@@ -63,14 +63,15 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $count_pre = count($test_user->getAnnouncements());
 
     $announcement = new Announcement();
-    $announcement->setSubject('test_subject');
-    $announcement->setAuthor('test_author');
+    $announcement->setSubject('test_modify_subject');
+    $announcement->setAuthor('test_modify_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
-    $announcement->setText('test_text');
+    $announcement->setText('Ann modification');
     $announcement->setApproval(1);
     $announcement->setStartDate(new \DateTime('now', new \DateTimeZone('GMT')));
-    $announcement->setEndDate(new \DateTime('now', new \DateTimeZone('GMT')));
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
     $this->em->persist($announcement);
     $this->em->flush();
 
@@ -86,6 +87,7 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $this->assertSame($announcement->getUser(), $announcement2->getUser());
     $this->assertSame($announcement->getText(), $announcement2->getText());
     $this->assertSame($announcement->getStartDate(), $announcement2->getStartDate());
+    $this->assertSame($announcement->getContinueDate(), $announcement2->getContinueDate());
     $this->assertSame($announcement->getEndDate(), $announcement2->getEndDate());
 
   }
@@ -115,37 +117,40 @@ class AnnouncementRepositoryTest extends KernelTestCase
     // one announcement set to a past date, one to the current date (constant) and one for a future date
     $announcement = new Announcement();
     $announcement_past_date = new \DateTime('-1 week', new \DateTimeZone('GMT'));
-    $announcement->setSubject('test_subject');
-    $announcement->setAuthor('test_author');
+    $announcement->setSubject('test_date_subject');
+    $announcement->setAuthor('test_date_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_past_date);
-    $announcement->setEndDate($announcement_past_date);
-    $announcement->setText('test_text');
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
+    $announcement->setText('Ann with dates');
     $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
     $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
-    $announcement->setSubject('test_subject');
-    $announcement->setAuthor('test_author');
+    $announcement->setSubject('test_date_subject');
+    $announcement->setAuthor('test_date_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_today_date);
-    $announcement->setEndDate($announcement_today_date);
-    $announcement->setText('test_text');
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
+    $announcement->setText('Ann with dates');
     $announcement->setApproval(1);
     $this->em->persist($announcement);
 
     $announcement = new Announcement();
     $announcement_future_date = new \DateTime('+1 week', new \DateTimeZone('GMT'));
-    $announcement->setSubject('test_subject');
-    $announcement->setAuthor('test_author');
+    $announcement->setSubject('test_date_subject');
+    $announcement->setAuthor('test_date_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_future_date);
-    $announcement->setEndDate($announcement_future_date);
-    $announcement->setText('test_text');
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
+    $announcement->setText('Ann with dates');
     $announcement->setApproval(1);
     $this->em->persist($announcement);
 
@@ -181,13 +186,14 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $announcement = new Announcement();
     $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
-    $announcement->setSubject('auto_subject');
-    $announcement->setAuthor('auto_author');
+    $announcement->setSubject('test_user_subject');
+    $announcement->setAuthor('test_user_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_today_date);
-    $announcement->setEndDate($announcement_today_date);
-    $announcement->setText('auto_text');
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
+    $announcement->setText('Ann with different users');
     $announcement->setApproval(1);
     $this->em->persist($announcement);
 
@@ -197,13 +203,14 @@ class AnnouncementRepositoryTest extends KernelTestCase
 
     $announcement = new Announcement();
     $announcement_today_date = new \DateTime('now', new \DateTimeZone('GMT'));
-    $announcement->setSubject('test_subject');
-    $announcement->setAuthor('test_author');
+    $announcement->setSubject('test_user_subject');
+    $announcement->setAuthor('test_user_author');
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_today_date);
-    $announcement->setEndDate($announcement_today_date);
-    $announcement->setText('test_text');
+    $announcement->setContinueDate(1);
+    $announcement->setEndDate(null);
+    $announcement->setText('Ann with different users');
     $announcement->setApproval(1);
     $this->em->persist($announcement);
 
@@ -297,8 +304,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
     $announcement->setCategory($test_cat);
     $announcement->setUser($test_user);
     $announcement->setStartDate($announcement_start_date);
-    $announcement->setEndDate($announcement_end_date);
-    $announcement->setText('test_text');
+    $announcement->setContinueDate(3);
+    $announcement->setEndDate(null);
+    $announcement->setText('Ann creation with date recurrence');
     $announcement->setApproval(1);
     $this->em->persist($announcement);
 
@@ -363,8 +371,9 @@ class AnnouncementRepositoryTest extends KernelTestCase
   $announcement->setCategory($test_cat);
   $announcement->setUser($test_user);
   $announcement->setStartDate($announcement_start_date);
-  $announcement->setEndDate($announcement_end_date);
-  $announcement->setText('test_text');
+  $announcement->setContinueDate(3);
+  $announcement->setEndDate(null);
+  $announcement->setText('Announcement approval');
   $announcement->setApproval(0);
   $this->em->persist($announcement);
 
