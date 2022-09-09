@@ -26,54 +26,24 @@ class AnnouncementRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  private function query_today($date_input = 'now', $approval = 1)
+  public function find_today($date_input = 'now', $approval = 1)
   {
-
     $date = new \DateTime($date_input, new \DateTimeZone('GMT'));
 
     $qb = $this->createQueryBuilder('a')
-      ->Where('a.start_date <= :date AND a.end_date >= :date');
+      ->andWhere('a.start_date <= :date AND a.end_date >= :date');
     // if approval == 1, filter for approval. if approval != 1, skip this filter and return all for today
     if ($approval == 1)
     {
       $qb->andWhere('a.approval = 1');
+
     }
-    $qb->setParameter('date', $date->format('Y-m-d'))
+    return $qb->setParameter('date', $date->format('Y-m-d'))
       ->orderBy('a.id', 'ASC')
-    ;
-    return $qb->getQuery();
+      ->getQuery()
+      ->getResult();
 
   }
-
-  /**
-   * Method using query_today to get a result array.
-   * Requirements: date match.
-   * 
-   * @author Daniel Boling
-   */
-  public function find_today($date_input = 'now', $approval = 1)
-  {
-
-    return $this->query_today($date_input, $approval)
-      ->getResult()
-    ;
-
-  }
-
-    /**
-   * Method using query_today to get a countable array.
-   * 
-   * @author Daniel Boling
-   */
-  public function count_today($date_input = 'now', $approval = 1)
-  {
-
-    return $this->query_today($date_input, $approval)
-      ->getScalarResult()
-    ;
-
-  }
-  
 
   // /**
   //  * @return Announcement[] Returns an array of Announcement objects

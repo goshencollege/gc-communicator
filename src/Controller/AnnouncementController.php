@@ -10,28 +10,36 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Kernel;
+use App\Repository\AnnouncementRepository;
+use App\Repository\CategoryRepository;
 use App\Entity\Announcement;
 use App\Entity\User;
 use App\Entity\Category;
-use App\Form\AnnouncementForm;
+use App\Form\AnnNewForm;
+use App\Form\AnnModifyForm;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Asset\UrlPackage;
-
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class AnnouncementController extends AbstractController
 {
 
   private $UploaderHelper;
 
-  public function __construct()
+  public function __construct(EntityManagerInterface $entityManager, AnnouncementRepository $announcement_repo, CategoryRepository $category_repo)
   {
+    $this->em = $entityManager;
     
-    $date = new \DateTime('now', new \DateTimeZone('America/Indiana/Indianapolis'));
+    $date = new \DateTime('now', new \DateTimeZone('GMT'));
     $this->date = $date->format('l, j F, Y');
+
+    $this->announcement_repo = $announcement_repo;
+    $this->category_repo = $category_repo;
 
   }
 
@@ -48,22 +56,25 @@ class AnnouncementController extends AbstractController
    */
   public function new_announcement(Request $request, SluggerInterface $slugger): Response
   {
-
-    $em = $this->getDoctrine()->getManager();
     $announcement = new Announcement();
     $user = $this->getUser();
 
-    $ann_form = $this->createForm(AnnouncementForm::class, $announcement);
+    $ann_form = $this->createForm(AnnNewForm::class, $announcement);
 
     $ann_form->handleRequest($request);
 
-    if($ann_form->isSubmitted() && $ann_form->isValid()){
+    if($ann_form->isSubmitted() && $ann_form->isValid())
+    {
       $announcement = $ann_form->getData();
       $announcement->setUser($user);
-      $announcement->setApproval(0);
-      // set approval to denied by default
-      $em->persist($announcement);
-      $em->flush();
+      if ($announcement->getContinueDate() == null) {
+        $announcement->setEndDate($announcement->getStartDate());
+      }
+      $announcement->setApproval(-1);
+      $announcement->setEndDate(null);
+      // set approval to waiting by default
+      $this->em->persist($announcement);
+      $this->em->flush();
       
       return $this->redirectToRoute('show_all');
     }
@@ -75,7 +86,8 @@ class AnnouncementController extends AbstractController
 
   }
 
-    /**
+  
+  /**
    * This should be the main page that everyone should see. Every user should be able to see this page and everything
    * on it. This will be modified more clearly from it's current state. Currently
    * being used as a testing stage for database outputs.
@@ -83,27 +95,22 @@ class AnnouncementController extends AbstractController
    * @author Daniel Boling
    * @return rendered moderation_announcements.html.twig
    * 
-   * @Route("/moderation/announcements", name="moderation_announcements")
+   * @Route("/moderation/announcements/{page}", name="moderation_announcements")
    * @IsGranted("ROLE_MODERATOR")
    */
-  public function moderation_announcements(): Response
+  public function moderation_announcements($page = 0): Response
   {
+    $date = new \DateTime('now '.$page.' days', new \DateTimeZone('GMT'));
+    $date = $date->format('l, j F, Y');
 
-    $announcements = $this->getDoctrine()
-      // inits the database and table Announcements;
-      ->getRepository(Announcement::class)
-      ->find_today('now', 0);
-
-      
-    $categories = $this->getDoctrine()
-    ->getRepository(Category::class)
-    ->findAll()
-    ;
+    $announcements = $this->announcement_repo->find_today($date, 0);
+    $categories = $this->category_repo->findAll();
 
     return $this->render('moderation_announcements.html.twig', [
-      'date' => $this->date,
+      'date' => $date,
       'announcements' => $announcements,
       'categories' => $categories,
+      'page' => $page,
     ]);
 
   }
@@ -114,33 +121,34 @@ class AnnouncementController extends AbstractController
    * @author Daniel Boling
    * @return redirect to list_category
    * 
-   * @Route("/moderation/announcement/{id}", name="toggle_announcement_approval")
+   * @Route("/moderation/announcement/approve/{id}", name="approve_announcement")
    * @IsGranted("ROLE_MODERATOR")
    */
-  public function toggle_announcement_approval(Request $request, $id): Response
+  public function approve_announcement(Request $request, $id): Response
   {
+    $announcement = $this->announcement_repo->find($id);
+    $announcement->setApproval(1);
+    $this->em->flush();
+    return $this->redirect($request->server->get('HTTP_REFERER'));
 
-    $em = $this->getDoctrine()->getManager();
+  }
 
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->find($id)
-    ;
-      
-    if ($announcement->getApproval() == 0)
-    // if the announcement is denied, set it to approved.
-      {
-        $announcement->setApproval(1);
 
-      } else {
-      // if the condition gets here, the announcement is already approved, so set it to denied.
-        $announcement->setApproval(0);
-      }
-      $em->persist($announcement);
-      $em->flush();
-      
-
-    return $this->redirectToRoute('moderation_announcements');
+  /**
+   * Is called on button-click from twig file, updates announcement approval, and redirects to list_category
+   * 
+   * @author Daniel Boling
+   * @return redirect to list_category
+   * 
+   * @Route("/moderation/announcement/deny/{id}", name="deny_announcement")
+   * @IsGranted("ROLE_MODERATOR")
+   */
+  public function deny_announcement(Request $request, $id): Response
+  {
+    $announcement = $this->announcement_repo->find($id);
+    $announcement->setApproval(0);
+    $this->em->flush();
+    return $this->redirect($request->server->get('HTTP_REFERER'));
 
   }
 
@@ -155,30 +163,32 @@ class AnnouncementController extends AbstractController
    */
   public function modify_announcement(Request $request, $id): Response
   {
-
-    $em = $this->getDoctrine()->getManager();
-
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->find($id)
-    ;
-    if($this->getUser() == $announcement->getUser() or $this->isGranted('ROLE_MODERATOR')){
-
-      $ann_form = $this->createForm(AnnouncementForm::class, $announcement);
-
+    $announcement = $this->announcement_repo->find($id);
+    if($this->getUser() == $announcement->getUser() or $this->isGranted('ROLE_MODERATOR'))
+    // security to only allow owners and moderators to modify an announcement
+    {
+      $ann_form = $this->createForm(AnnModifyForm::class, $announcement);
       $ann_form->handleRequest($request);
 
-      if($ann_form->isSubmitted() && $ann_form->isValid()){
+      if($ann_form->isSubmitted() && $ann_form->isValid())
+      {
         $announcement = $ann_form->getData();
-        $announcement->setApproval(0);
-        // set approval to denied by default
-        $em->persist($announcement);
-        $em->flush();
+        if ($announcement->getContinueDate() == null) {
+          $announcement->setEndDate($announcement->getStartDate());
+        }
+        $announcement->setApproval(-1);
+        $announcement->setEndDate(null);
+        // set approval to waiting by default
+        $this->em->persist($announcement);
+        $this->em->flush();
         
-        if ($this->getUser() == $announcement->getUser()){
+        if ($this->getUser() == $announcement->getUser())
+        {
           return $this->redirectToRoute('show_all_user');
+
         } else {
           return $this->redirectToRoute('moderation_announcements');
+
         }
 
       }
@@ -189,6 +199,7 @@ class AnnouncementController extends AbstractController
       ]);
     } else {
       throw new AccessDeniedHttpException("Unauthorized");
+
     }
 
   }
@@ -202,31 +213,28 @@ class AnnouncementController extends AbstractController
    */
   public function copy_announcement(Request $request, $id): Response
   {
-    $em = $this->getDoctrine()->getManager();
-
     $new_announcement = new Announcement();
 
-    $announcement = $this->getDoctrine()
-      ->getRepository(Announcement::class)
-      ->find($id)
-    ;
+    $announcement = $this->announcement_repo->find($id);
+    $announcement->setStartDate(null);
+    $announcement->setEndDate(null);
 
-    if($this->getUser() == $announcement->getUser()){
-
-      $ann_form = $this->createForm(AnnouncementForm::class, clone $announcement);
-
+    if($this->getUser() == $announcement->getUser())
+    {
+      $ann_form = $this->createForm(AnnNewForm::class, clone $announcement);
       $ann_form->handleRequest($request);
 
-      if($ann_form->isSubmitted() && $ann_form->isValid()){
+      if($ann_form->isSubmitted() && $ann_form->isValid())
+      {
         $new_announcement = $ann_form->getData();
-        $new_announcement->setApproval(0);
-        $em->persist($new_announcement);
-        $em->flush();
+        $new_announcement->setApproval(-1);
+        $this->em->persist($new_announcement);
+        $this->em->flush();
 
         return $this->redirectToRoute('show_all_user');
       }
 
-      return $this->render('modify_announcement.html.twig', [
+      return $this->render('new_announcement.html.twig', [
         'ann_form' => $ann_form->createView(),
         'date' => $this->date,
       ]);
