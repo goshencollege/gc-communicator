@@ -193,7 +193,7 @@ class OverviewControllerTest extends WebTestCase
             'ann_new_form[subject]' => 'Ann file uploading',
             'ann_new_form[author]' => 'Ann file uploading',
             'ann_new_form[text]' => 'Ann file uploading',
-            'ann_new_form[start_date]' => (new \DateTime('now', new \DateTimeZone('GMT')))->format('Y-m-d'),
+            'ann_new_form[start_date]' => (new \DateTime('now', new \DateTimeZone('GMT')))->format('m/d/Y'),
         ]);
 
         $announcement = static::getContainer()
@@ -201,9 +201,6 @@ class OverviewControllerTest extends WebTestCase
           ->findAll()
         ;
         $announcement = end($announcement);
-
-        // var_dump($buttonCrawlerNode->getFields());
-        // var_dump($form->getValues());
 
         $pre_finder = new Finder();
         // start the process for finding the test file
